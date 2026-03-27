@@ -11,35 +11,48 @@
 <title>Mi Cerebro Óptimo</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--navy:#0D1B2A;--navy2:#1B2A3B;--navy3:#1E3A5F;--bg:#F5F4F0;--card:#FFF;--text:#0D1B2A;--text2:#7A7A7A;--border:#E5E3DC;--amber:#D4853A;--green:#3D8B5E;--violet:#5A5A9E;--teal:#2A8FA8;--r:14px}
+:root{--navy:#0D1B2A;--navy2:#1B2A3B;--navy3:#1E3A5F;--bg:#F5F4F0;--text:#0D1B2A;--text2:#7A7A7A;--border:#E5E3DC;--green:#3D8B5E;--violet:#5A5A9E;--teal:#2A8FA8;--r:14px}
 html,body{height:100%;overflow:hidden;background:var(--bg)}
 body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
-.hdr{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 55%,var(--navy3) 100%);color:#fff;padding:48px 18px 18px;flex-shrink:0}
+/* HEADER */
+.hdr{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 55%,var(--navy3) 100%);color:#fff;padding:48px 18px 14px;flex-shrink:0}
 .hdr-eyebrow{font-size:9px;letter-spacing:3px;opacity:.5;text-transform:uppercase;margin-bottom:4px}
-.hdr-title{font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:14px}
-.hdr-cards{display:flex;gap:10px}
-.hdr-card{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px}
+.hdr-title{font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:12px}
+.hdr-cards{display:flex;gap:10px;margin-bottom:10px}
+.hdr-card{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:11px 13px}
 .hdr-lbl{font-size:9px;letter-spacing:2px;opacity:.6;text-transform:uppercase}
-.hdr-val{font-size:26px;font-weight:800;line-height:1;margin:3px 0 7px}
-.hdr-val span{font-size:13px;opacity:.55}
+.hdr-val{font-size:24px;font-weight:800;line-height:1;margin:3px 0 6px}
+.hdr-val span{font-size:12px;opacity:.55}
 .hdr-bar{height:3px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden}
 .hdr-fill{height:100%;border-radius:2px;transition:width .5s ease}
 .c-good{background:#5EC98A}.c-mid{background:#F5C842}.c-low{background:#E86B6B}
+/* XP BAR IN HEADER */
+.xp-bar-wrap{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:9px 12px}
+.xp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.xp-lvl{font-size:12px;font-weight:800;letter-spacing:.5px}
+.xp-pts{font-size:10px;opacity:.65}
+.xp-track{height:5px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.xp-fill{height:100%;border-radius:3px;transition:width .6s ease}
+/* NAV */
 .bnav{display:flex;background:#fff;border-top:1px solid var(--border);padding:6px 0 22px;flex-shrink:0}
 .nbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:none;background:none;cursor:pointer;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;transition:color .2s}
 .nbtn .ni{font-size:19px}
 .nbtn.active{color:var(--navy)}.nbtn:not(.active){color:#C0C0C0}
+/* SCROLL */
 .scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 14px 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
+/* DAY SELECTOR */
 .dsel{display:flex;gap:5px;margin-bottom:12px}
 .dbtn{flex:1;border:none;border-radius:10px;padding:8px 0 5px;cursor:pointer;font-size:12px;font-weight:700;background:#fff;color:var(--text2);box-shadow:0 1px 4px rgba(0,0,0,.07);transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:4px}
 .dbtn.active{background:var(--navy);color:#fff}
 .dbtn.today:not(.active){color:var(--navy)}
 .ddot{width:70%;height:3px;border-radius:2px}
+/* BLOCKS */
 .blk-hdr{display:flex;align-items:center;gap:8px;margin:13px 0 7px}
 .blk-line{flex:1;height:1px;opacity:.25}
 .blk-lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+/* HABIT CARD */
 .hcard{display:flex;align-items:center;gap:11px;background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px 13px;margin-bottom:6px;cursor:pointer;transition:all .18s;user-select:none;-webkit-user-select:none}
 .hcard.on{border-color:var(--hc)}
 .hchk{width:22px;height:22px;border-radius:50%;border:2px solid #D5D0C8;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:#fff;transition:all .18s}
@@ -48,36 +61,67 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 .hsub{font-size:11px;color:var(--text2);margin-top:1px}
 .tipbtn{border:none;background:none;font-size:15px;opacity:.35;cursor:pointer;padding:4px;flex-shrink:0}
 .tipbox{background:#FFFCF0;border:1px solid #F0D88A;border-radius:10px;padding:9px 12px;margin-bottom:6px;font-size:12px;color:#6B4E00;line-height:1.55}
-/* Water pills */
+/* WATER PILLS */
 .wcard{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px 13px;margin-bottom:6px;transition:all .18s}
 .wcard.done{background:#E0F7F0;border-color:var(--teal)}
 .wcard-top{display:flex;align-items:center;gap:11px;margin-bottom:10px}
 .wpills{display:flex;gap:7px;flex-wrap:wrap}
 .wpill{width:38px;height:38px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#C0C0C0;transition:all .18s;flex-shrink:0;user-select:none;-webkit-user-select:none}
 .wpill.on{background:var(--teal);border-color:var(--teal);color:#fff}
-/* Achievement */
-.ach{border-radius:14px;padding:15px;margin-bottom:11px;color:#E8EDF2;position:relative;overflow:hidden}
+/* ACHIEVEMENT CARD */
+.ach{border-radius:14px;padding:15px;margin-bottom:11px;position:relative;overflow:hidden}
 .ach-eye{font-size:9px;letter-spacing:2px;color:#A8B8C8;text-transform:uppercase;margin-bottom:3px}
 .ach-phase{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#C8D8E8;margin-bottom:7px}
-.ach-title{font-size:15px;font-weight:800;margin-bottom:3px;color:#B0BEC8}
+.ach-title{font-size:15px;font-weight:800;margin-bottom:3px;color:#EEF2F6}
 .ach-sub{font-size:12px;color:#D0DDE8;line-height:1.45;margin-bottom:10px}
 .ach-bar{height:7px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-bottom:5px}
 .ach-fill{height:100%;border-radius:4px;transition:width .6s ease}
 .ach-lbl{font-size:10px;color:#A0B4C4;text-align:right}
 .ach-ico{position:absolute;bottom:-4px;right:10px;font-size:50px;opacity:.12}
-/* Cards */
+/* STREAK FACT */
+.sfact{background:linear-gradient(135deg,#0F2A40,#1A3A55);border-radius:12px;padding:13px 15px;margin-bottom:11px;color:#fff}
+.sfact-hdr{font-size:10px;letter-spacing:2px;opacity:.6;text-transform:uppercase;margin-bottom:4px}
+.sfact-txt{font-size:13px;line-height:1.55;color:#D0E8F5}
+.sfact-streak{font-size:11px;color:#6BBBD0;margin-top:5px;font-weight:700}
+/* LEVEL CARD */
+.lvlcard{background:#fff;border-radius:14px;padding:14px 15px;margin-bottom:11px;box-shadow:0 1px 5px rgba(0,0,0,.07)}
+.lvl-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.lvl-badge{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lvl-info{flex:1}
+.lvl-num{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.lvl-name{font-size:15px;font-weight:800;color:var(--text)}
+.lvl-xp{font-size:11px;color:var(--text2);margin-top:1px}
+.lvl-track{height:8px;background:#EFEDE8;border-radius:4px;overflow:hidden;margin-bottom:4px}
+.lvl-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.lvl-sub{display:flex;justify-content:space-between;font-size:10px;color:var(--text2)}
+/* ACHIEVEMENTS SECTION */
+.ach-section{background:#fff;border-radius:14px;padding:14px 15px;margin-bottom:11px;box-shadow:0 1px 5px rgba(0,0,0,.07)}
+.ach-grid{display:flex;gap:8px;flex-wrap:wrap}
+.abadge{width:52px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.abadge-ico{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .15s}
+.abadge-ico:active{transform:scale(.9)}
+.abadge-lbl{font-size:9px;text-align:center;color:var(--text2);line-height:1.2;width:100%}
+.abadge.locked .abadge-ico{background:#EFEDE8;opacity:.5}
+.abadge.earned .abadge-ico{box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.abadge.hidden-locked .abadge-ico{background:#EFEDE8}
+/* ACH DETAIL */
+.ach-detail{background:#FFFCF0;border:1px solid #F0D88A;border-radius:10px;padding:10px 13px;margin-bottom:8px;font-size:12px;color:#6B4E00;line-height:1.5}
+/* CARDS */
 .card{background:#fff;border-radius:var(--r);padding:15px;margin-bottom:11px;box-shadow:0 1px 5px rgba(0,0,0,.055)}
 .ctitle{font-size:10px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+/* WEEK */
 .wbars{display:flex;gap:5px;align-items:flex-end;height:68px;margin-bottom:4px}
 .wcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
 .wnum{font-size:9px;color:var(--text2);height:12px}
 .wtrack{width:100%;flex:1;background:#EFEDE8;border-radius:5px;overflow:hidden;display:flex;align-items:flex-end}
 .wfill{width:100%;border-radius:5px;transition:height .5s ease}
 .wlbl{font-size:11px;font-weight:700}
+/* GRID */
 .grow{display:flex;align-items:center;gap:3px;margin-bottom:5px}
 .gname{font-size:11px;color:#555;width:128px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gcell{flex:1;height:19px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#fff}
 .gtotal{width:26px;text-align:right;font-size:10px;color:var(--text2);flex-shrink:0}
+/* YEAR */
 .stats3{display:flex;gap:8px;margin-bottom:11px}
 .scard{flex:1;background:#fff;border-radius:12px;padding:12px 8px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
 .sval{font-size:22px;font-weight:800;color:var(--navy)}
@@ -96,6 +140,7 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 .wpbtn:disabled{opacity:.3;cursor:default}
 .wplbl{flex:1;text-align:center;font-size:13px;font-weight:700;color:var(--navy)}
 .sinf{font-size:12px;color:var(--text2);margin-bottom:10px}
+/* CONFIG */
 .cfgitem{background:#fff;border-radius:12px;padding:14px 15px;margin-bottom:8px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
 .cfgico{font-size:22px}.cfginf{flex:1}
 .cfglbl{font-size:14px;font-weight:600}
@@ -110,29 +155,98 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .ibtitle{font-size:14px;font-weight:800;margin-bottom:2px}
 .ibsub{font-size:11px;opacity:.8;line-height:1.4}
 .ibbtn{background:#fff;color:var(--navy);border:none;border-radius:9px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0}
+/* MONTH BARS */
 .mbars{display:flex;gap:4px;align-items:flex-end;height:55px;margin-bottom:6px}
 .mcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
 .mtrack{width:100%;height:48px;background:#EFEDE8;border-radius:4px;overflow:hidden;display:flex;align-items:flex-end}
 .mfill{width:100%;border-radius:4px;transition:height .5s ease}
 .mlbl{font-size:8px;color:var(--text2)}
+/* TOAST */
 .toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--navy);color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;z-index:9999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* SEL DOT */
 .sel-dot{width:11px;height:11px;border-radius:2px;display:inline-block}
+/* LEVEL UP OVERLAY */
+#lvlup{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9990;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
+#lvlup.show{display:flex}
+.lvlup-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.particle{position:absolute;width:6px;height:6px;border-radius:50%;animation:fall 3s ease-in infinite}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.lvlup-inner{text-align:center;z-index:1;padding:30px}
+.lvlup-ico{font-size:80px;margin-bottom:16px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.lvlup-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;animation:slideUp .4s ease .2s both}
+.lvlup-num{font-size:48px;font-weight:900;color:#fff;line-height:1;margin-bottom:4px;animation:slideUp .4s ease .3s both}
+.lvlup-name{font-size:20px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:24px;animation:slideUp .4s ease .4s both}
+.lvlup-tap{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:1px;animation:pulse 2s ease infinite}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
+/* ACH UNLOCK OVERLAY */
+#achup{position:fixed;bottom:88px;left:14px;right:14px;background:var(--navy);color:#fff;border-radius:14px;padding:14px 16px;z-index:9995;display:none;align-items:center;gap:12px}
+#achup.show{display:flex;animation:slideUpToast .35s ease}
+@keyframes slideUpToast{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.achup-ico{font-size:32px;flex-shrink:0}
+.achup-inf{flex:1}
+.achup-tag{font-size:9px;letter-spacing:2px;opacity:.6;text-transform:uppercase}
+.achup-name{font-size:15px;font-weight:800}
+.achup-desc{font-size:11px;opacity:.7;margin-top:1px}
+
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes glow{0%,100%{opacity:1}50%{opacity:.55}}
 .fadein{animation:fadeIn .25s ease}
 .glowing{animation:glow 2s ease infinite}
+/* MAESTRÍA */
+.mcard{background:#fff;border-radius:14px;padding:14px 15px;margin-bottom:8px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
+.mcard-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.mcard-ico{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.mcard-inf{flex:1}
+.mcard-name{font-size:13px;font-weight:700;color:var(--text)}
+.mcard-sub{font-size:11px;color:var(--text2);margin-top:1px}
+.mcard-medal{font-size:20px;flex-shrink:0}
+.mtrack-wrap{display:flex;gap:3px;flex-wrap:wrap}
+.mchk{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
+.mchk.done{background:#3D8B5E;color:#fff}
+.mchk.empty{background:#EFEDE8;color:#BDBDB0}
+.mchk.bronze{background:#CD7F32;color:#fff}
+.mchk.silver{background:#A8A9AD;color:#fff}
+.mchk.gold{background:#FFD700;color:#7A5C00}
+.mchk.divider{background:transparent;width:8px;pointer-events:none}
+.gold-panel{background:linear-gradient(135deg,#1A1500,#2A2200);border-radius:14px;padding:15px;margin-bottom:11px;color:#fff}
+.gold-panel-title{font-size:11px;letter-spacing:2px;opacity:.6;text-transform:uppercase;margin-bottom:10px}
+.gold-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.gold-item:last-child{border:none}
+.gold-coin{font-size:22px;flex-shrink:0}
+.gold-lbl{font-size:13px;font-weight:700}
+.gold-sub{font-size:11px;opacity:.65;margin-top:1px}
 </style>
 </head>
 <body>
 <div id="app"></div>
+<div id="lvlup" onclick="closeLvlUp()">
+  <div class="lvlup-particles" id="particles"></div>
+  <div class="lvlup-inner">
+    <div class="lvlup-ico" id="lu-ico"></div>
+    <div class="lvlup-badge" id="lu-badge">LEVEL UP</div>
+    <div class="lvlup-num" id="lu-num"></div>
+    <div class="lvlup-name" id="lu-name"></div>
+    <div class="lvlup-tap">Toca para continuar</div>
+  </div>
+</div>
+<div id="achup">
+  <div class="achup-ico" id="au-ico"></div>
+  <div class="achup-inf">
+    <div class="achup-tag">Logro desbloqueado</div>
+    <div class="achup-name" id="au-name"></div>
+    <div class="achup-desc" id="au-desc"></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <script>
 'use strict';
 /* ── HABITS ── */
 const HABITS=[
   {id:'agua',    e:'💧',lbl:'Agua + sal + limón al despertar',blk:'Mañana',   freq:'daily',tip:'Antes de todo. Rehidrata el cerebro tras 7-8h de ayuno nocturno.'},
-  {id:'aguafria',e:'🥶',lbl:'Rostro en agua fría (30-60s)',  blk:'Mañana',   freq:'daily',tip:'Activa el nervio vago en segundos. Reduce cortisol, activa modo parasimpático. Cientificamente comprobado — equivale a reiniciar el sistema nervioso.'},
+  {id:'aguafria',e:'🥶',lbl:'Rostro en agua fría (30-60s)',  blk:'Mañana',   freq:'daily',tip:'Activa el nervio vago en segundos. Reduce cortisol, modo parasimpático. Científicamente comprobado.'},
   {id:'sol',     e:'☀️',lbl:'Luz solar primeros 30 min',     blk:'Mañana',   freq:'daily',tip:'Fija el ritmo circadiano. Mejora el sueño esa misma noche.'},
   {id:'cafe',    e:'☕',lbl:'Café después de 90 min',        blk:'Mañana',   freq:'daily',tip:'Deja que el cortisol natural suba solo. El café rinde 40% más así.'},
   {id:'huevo',   e:'🥚',lbl:'Huevo entero',                  blk:'Día',      freq:'daily',tip:'Colina → acetilcolina: el neurotransmisor clave de la memoria.'},
@@ -142,13 +256,87 @@ const HABITS=[
   {id:'cre5g',   e:'🧪',lbl:'Creatina 5g (con agua)',        blk:'Día',      freq:'daily',tip:'Tómala con 500ml de agua. Construye creatina cerebral gradualmente.',minP:1,maxP:1},
   {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g', blk:'Día',      freq:'daily',tip:'4 tomas: desayuno, comida, merienda, cena. CRÍTICO: 7 botellas de agua hoy.',minP:2,maxP:2},
   {id:'cremnt',  e:'🧪',lbl:'Creatina 5g mantenimiento',     blk:'Día',      freq:'daily',tip:'El cerebro ya está saturado. 5g/día mantiene el nivel óptimo.',minP:3,maxP:9},
-  {id:'vino',    e:'🚫',lbl:'Sin vino hoy',                  blk:'Noche',    freq:'daily',tip:'El alcohol fragmenta el sueño REM y agota la serotonina. Mayor impacto cognitivo.'},
+  {id:'vino',    e:'🚫',lbl:'Sin vino hoy',                  blk:'Noche',    freq:'daily',tip:'El alcohol fragmenta el sueño REM y agota la serotonina.'},
   {id:'fruta',   e:'🍌',lbl:'Plátano o kiwi en la noche',   blk:'Noche',    freq:'daily',tip:'Serotonina natural para mejor transición al sueño profundo.'},
   {id:'gomitas', e:'🍬',lbl:'Gomitas 45 min antes de dormir',blk:'Noche',    freq:'daily',tip:'L-teanina + Magnesio + 5-HTP. Siempre con agua.'},
   {id:'frio',    e:'❄️',lbl:'Cuarto fresco al dormir',       blk:'Noche',    freq:'daily',tip:'18-20°C es la temperatura óptima para sueño profundo.'},
-  {id:'walk5am', e:'🌅',lbl:'Caminata 5am (madrugada)',        blk:'Actividad',freq:'daily',tip:'Luz natural temprana + movimiento en ayunas activa BDNF y fija el ritmo circadiano desde temprano. Potencia todo el protocolo de mañana.'},
+  {id:'walk5am', e:'🌅',lbl:'Caminata 5am (madrugada)',      blk:'Actividad',freq:'daily',tip:'Luz natural temprana + movimiento en ayunas activan BDNF y fijan el ritmo circadiano.'},
   {id:'pasos',   e:'🚶',lbl:'9,000+ pasos',                  blk:'Actividad',freq:'daily',tip:'Activa BDNF — el fertilizante de tus neuronas.'},
 ];
+
+/* ── 30 LEVELS ── */
+const LEVELS=[
+  {n:'Semilla Neural',      i:'🌱'},{n:'Primer Sorbo',        i:'💧'},
+  {n:'Amanecer Cognitivo',  i:'☀️'},{n:'En Movimiento',       i:'🚶'},
+  {n:'Chispa Activa',       i:'⚡'},{n:'Protocolo Iniciado',  i:'🧪'},
+  {n:'Enfoque Emergente',   i:'🎯'},{n:'Llama Encendida',     i:'🔥'},
+  {n:'Voluntad Forjada',    i:'💪'},{n:'Flujo Constante',     i:'🌊'},
+  {n:'Sinapsis Activa',     i:'🧠'},{n:'Sueño Dominado',      i:'🌙'},
+  {n:'Alquimista Neural',   i:'⚗️'},{n:'Momentum Imparable',  i:'🏃'},
+  {n:'Veterano del Hábito', i:'🎖️'},{n:'Explorador Neuronal', i:'🔬'},
+  {n:'Mente Blindada',      i:'🛡️'},{n:'Estrella en Ascenso', i:'🌟'},
+  {n:'Élite Cognitiva',     i:'🏆'},{n:'Código Neuronal',     i:'🧬'},
+  {n:'Visión Expandida',    i:'🔮'},{n:'Máquina Afinada',     i:'⚙️'},
+  {n:'Conciencia Plena',    i:'🌌'},{n:'Diamante Mental',     i:'💎'},
+  {n:'Trascendencia',       i:'🚀'},{n:'Mente Maestra',       i:'🌠'},
+  {n:'Soberano Cognitivo',  i:'👑'},{n:'Arquitecto del Ser',  i:'✨'},
+  {n:'Singularidad Neural', i:'🌀'},{n:'Arquitecto Neuronal', i:'🧿'},
+];
+const LEVEL_XP=[0,400,900,1600,2500,3700,5200,6800,8000,9500,11000,12800,15000,17000,19000,21000,23000,25000,27000,29000,30500,31700,32700,33500,34200,34800,35300,35700,36000,36300];
+
+function lvlColor(l){
+  if(l<=5)return'#7B8794';
+  if(l<=10)return'#3B82F6';
+  if(l<=15)return'#8B5CF6';
+  if(l<=20)return'#F59E0B';
+  if(l<=25)return'#10B981';
+  return'#F97316';
+}
+
+/* ── ACHIEVEMENTS (20 total, 7 hidden) ── */
+const ACHS=[
+  {id:'week1',    i:'🌊',n:'Primera Ola',         desc:'7 días de racha consecutiva',           secret:false},
+  {id:'streak14', i:'🔥',n:'Fuego Interno',        desc:'14 días de racha',                      secret:false},
+  {id:'streak30', i:'💫',n:'Mes de Fuego',          desc:'30 días de racha',                      secret:false},
+  {id:'streak50', i:'🧠',n:'Neuroatleta',           desc:'50 días de racha',                      secret:true},
+  {id:'bottles50',i:'🫗',n:'Medio Centenar',        desc:'50 botellas de agua completadas',        secret:true},
+  {id:'bottles100',i:'💧',n:'Acuífero',             desc:'100 botellas de agua completadas',       secret:false},
+  {id:'coldface30',i:'🧊',n:'Wim Hof Jr.',          desc:'30 días de agua fría en el rostro',      secret:false},
+  {id:'nowine14', i:'🌙',n:'Noctámbulo Reformado',  desc:'14 días seguidos sin vino',              secret:false},
+  {id:'cre5g',    i:'🧪',n:'Científico',             desc:'Fase de 5g creatina desbloqueada',       secret:false},
+  {id:'cre20g',   i:'⚡',n:'Carga Máxima',           desc:'Fase de 20g creatina desbloqueada',      secret:false},
+  {id:'walk5am7', i:'🌄',n:'Alba Conquistada',       desc:'7 días de caminata 5am',                 secret:true},
+  {id:'walk5am21',i:'🌅',n:'El Madrugador',          desc:'21 días de caminata 5am',                secret:false},
+  {id:'perf_week',i:'🎯',n:'Semana Perfecta',        desc:'7 días consecutivos al 100%',            secret:false},
+  {id:'month80',  i:'💪',n:'Mes de Hierro',          desc:'30 días al 80%+',                        secret:true},
+  {id:'morning7', i:'✨',n:'Ritual Sagrado',          desc:'7 días completando todos los hábitos de Mañana',secret:true},
+  {id:'level10',  i:'🎖️',n:'Décimo Nivel',           desc:'Alcanza el nivel 10',                    secret:false},
+  {id:'level15',  i:'🌟',n:'A Medio Camino',          desc:'Nivel 15 alcanzado',                     secret:true},
+  {id:'level20',  i:'💎',n:'Élite',                   desc:'Alcanza el nivel 20',                    secret:false},
+  {id:'level25',  i:'🚀',n:'En Órbita',               desc:'Nivel 25 alcanzado',                     secret:true},
+  {id:'level30',  i:'👑',n:'Arquitecto Neuronal',     desc:'Nivel máximo alcanzado — 30',            secret:false},
+];
+
+/* ── STREAK SCIENCE FACTS ── */
+const SFACTS=[
+  'Tu hipocampo está generando nuevas neuronas ahora mismo. Esto es neuroplasticidad real.',
+  'Con esta racha, tu BDNF aumentó hasta un 30% — es el fertilizante de tus neuronas.',
+  'Tu cortisol basal ya bajó. El sistema nervioso está más calmado que hace unas semanas.',
+  'Tu variabilidad cardíaca mejora con cada día. Señal de un nervio vago más activo.',
+  'La creatina cerebral acumulada ya está mejorando tu velocidad de procesamiento.',
+  'Tu ritmo circadiano está sincronizado. El sueño profundo dura más ahora.',
+  'Los cambios en la mielina de tus neuronas tardan 30 días — ya los tienes.',
+  'Tu amígdala se está recalibrando. Las respuestas al estrés serán menos intensas.',
+  'La acetilcolina del huevo ya está activa en tu hipocampo mejorando la memoria.',
+  'Tu microbioma intestinal cambió. El eje intestino-cerebro trabaja a tu favor.',
+  'La inflamación cerebral bajó gracias a la cúrcuma y omega-3 acumulados.',
+  'Tu corteza prefrontal tiene más volumen de materia gris que hace unas semanas.',
+  'Las mitocondrias neuronales son más eficientes. Piensas más rápido con menos energía.',
+  'Estás en el top 5% de personas que mantienen un protocolo cognitivo activo.',
+  'Tu serotonina basal subió. Menos irritabilidad, mejor estado de ánimo por defecto.',
+];
+
+/* ── OTHER CONSTANTS ── */
 const PHASES=[
   {n:'Sin creatina',    i:'🔒',bg:'linear-gradient(135deg,#1E1E35,#2A2A4E)',fi:'#7B7BCE',goal:7, unit:'días agua completa', next:'Completa 3L de agua 7 días seguidos'},
   {n:'Fase 1 · 5g/día', i:'🧪',bg:'linear-gradient(135deg,#0E2A18,#1A4028)',fi:'#5EC98A',goal:14,unit:'días agua + creatina',next:'Agua + creatina 14 días seguidos'},
@@ -162,8 +350,8 @@ const DL=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
 /* ── STATE ── */
-let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null};
-let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,YSW=null,PROMPT=null;
+let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
+let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null;
 
 /* ── DATE ── */
 function todayStr(){const d=new Date();return fmt(d)}
@@ -187,18 +375,17 @@ function curMon(){return shift(monday(todayStr()),WOFF*7)}
 
 /* ── STORAGE ── */
 function load(){
-  try{const r=localStorage.getItem('cog5');if(r){const p=JSON.parse(r);DB=p.d||{};SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null},p.s||{});}}catch(e){}
+  try{const r=localStorage.getItem('cog6');if(r){const p=JSON.parse(r);DB=p.d||{};SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},p.s||{});SETS.achievements=SETS.achievements||{};}}catch(e){}
 }
-function save(){try{localStorage.setItem('cog5',JSON.stringify({d:DB,s:SETS}))}catch(e){}}
+function save(){try{localStorage.setItem('cog6',JSON.stringify({d:DB,s:SETS}))}catch(e){}}
 
 /* ── HABIT UTILS ── */
 function ph(){return SETS.phase||0}
-function wg(){return ph()===2?7:6} // 3.5L on 20g, 3L otherwise
+function wg(){return ph()===2?7:6}
 function wLabel(){return ph()===2?'3.5L · 7 botellas':'3L · 6 botellas'}
 function activeH(){return HABITS.filter(h=>h.minP===undefined||(ph()>=h.minP&&ph()<=h.maxP))}
 function dailyH(){return activeH().filter(h=>h.freq==='daily')}
 function dd(s){return DB[s]||{}}
-
 function dayRate(s){
   const d=dd(s),W=wg(),dl=dailyH();
   const hd=dl.filter(h=>d[h.id]).length;
@@ -221,21 +408,152 @@ function rc(r){return r>=80?'#3D8B5E':r>=50?'#C87820':r>0?'#C04040':'#BDBDB0'}
 function rbg(r){return r>=80?'#D4EDDA':r>=50?'#FFF3CD':r>0?'#F8D7DA':'#F2F0EA'}
 function hmcls(r){return r===0?'hm0':r<40?'hm1':r<60?'hm2':r<80?'hm3':'hm4'}
 
+/* ── XP / LEVEL SYSTEM ── */
+function calcXP(){
+  let xp=0;
+  Object.values(DB).forEach(d=>{
+    HABITS.forEach(h=>{if(d[h.id])xp+=5;});
+    xp+=Math.min(d.agua||0,7)*3;
+    const allH=HABITS.filter(h=>d[h.id]).length;
+    const wFull=(d.agua||0)>=6;
+    const raw=Math.round((allH+(wFull?6:0))/(HABITS.length+6)*100);
+    if(raw>=100)xp+=20;else if(raw>=80)xp+=10;
+  });
+  xp+=Math.floor(calcStreakDays()/7)*50;
+  return xp;
+}
+function calcLvl(xp){
+  let l=1;
+  for(let i=1;i<LEVEL_XP.length;i++){if(xp>=LEVEL_XP[i])l=i+1;else break;}
+  return l;
+}
+function xpPct(xp){
+  const l=calcLvl(xp);
+  if(l>=30)return 100;
+  const s=LEVEL_XP[l-1],e=LEVEL_XP[l];
+  return Math.round((xp-s)/(e-s)*100);
+}
+function xpToNext(xp){
+  const l=calcLvl(xp);
+  if(l>=30)return 0;
+  return LEVEL_XP[l]-xp;
+}
+
+/* ── STREAK / HABIT STREAK ── */
+function calcStreakDays(){
+  let c=0,d=todayStr();
+  for(let i=0;i<500;i++){if(dayRate(d)>0)c++;else break;d=shift(d,-1);}
+  return c;
+}
+function habitConsecDays(id){
+  let c=0,d=todayStr();
+  for(let i=0;i<500;i++){if(dd(d)[id])c++;else break;d=shift(d,-1);}
+  return c;
+}
+function totalBottles(){return Object.values(DB).reduce((s,d)=>s+(d.agua||0),0)}
+function daysAbove(pct,n){
+  let c=0,d=todayStr();
+  for(let i=0;i<n;i++){if(dayRate(d)>=pct)c++;d=shift(d,-1);}
+  return c;
+}
+function morningStreakDays(){
+  const mh=HABITS.filter(h=>h.blk==='Mañana');
+  let c=0,d=todayStr();
+  for(let i=0;i<500;i++){const x=dd(d);if(mh.every(h=>x[h.id]))c++;else break;d=shift(d,-1);}
+  return c;
+}
+function perfDayStreak(){
+  let c=0,d=todayStr();
+  for(let i=0;i<500;i++){if(dayRate(d)>=100)c++;else break;d=shift(d,-1);}
+  return c;
+}
+
+/* ── ACHIEVEMENTS CHECK ── */
+function checkAchievements(){
+  const earned=SETS.achievements||{};
+  let changed=false;
+  const xp=calcXP(),lvl=calcLvl(xp),str=calcStreakDays(),btls=totalBottles();
+  ACHS.forEach(a=>{
+    if(earned[a.id])return;
+    let met=false;
+    const id=a.id;
+    if(id==='week1')met=str>=7;
+    else if(id==='streak14')met=str>=14;
+    else if(id==='streak30')met=str>=30;
+    else if(id==='streak50')met=str>=50;
+    else if(id==='bottles50')met=btls>=50;
+    else if(id==='bottles100')met=btls>=100;
+    else if(id==='coldface30')met=habitConsecDays('aguafria')>=30;
+    else if(id==='nowine14')met=habitConsecDays('vino')>=14;
+    else if(id==='cre5g')met=ph()>=1;
+    else if(id==='cre20g')met=ph()>=2;
+    else if(id==='walk5am7')met=habitConsecDays('walk5am')>=7;
+    else if(id==='walk5am21')met=habitConsecDays('walk5am')>=21;
+    else if(id==='perf_week')met=perfDayStreak()>=7;
+    else if(id==='month80')met=daysAbove(80,30)>=30;
+    else if(id==='morning7')met=morningStreakDays()>=7;
+    else if(id==='level10')met=lvl>=10;
+    else if(id==='level15')met=lvl>=15;
+    else if(id==='level20')met=lvl>=20;
+    else if(id==='level25')met=lvl>=25;
+    else if(id==='level30')met=lvl>=30;
+    if(met){earned[a.id]=todayStr();changed=true;setTimeout(()=>showAchUnlock(a),600);}
+  });
+  if(changed){SETS.achievements=earned;save();}
+}
+
+/* ── LEVEL UP OVERLAY ── */
+let _luq=[];
+function triggerLevelUp(lvl){
+  _luq.push(lvl);
+  if(_luq.length===1)showNextLvlUp();
+}
+function showNextLvlUp(){
+  if(!_luq.length)return;
+  const lvl=_luq[0];
+  const info=LEVELS[lvl-1];
+  const c=lvlColor(lvl);
+  document.getElementById('lu-ico').textContent=info.i;
+  document.getElementById('lu-num').textContent='Nivel '+lvl;
+  document.getElementById('lu-num').style.color=c;
+  document.getElementById('lu-name').textContent=info.n;
+  const badge=document.getElementById('lu-badge');
+  badge.textContent='LEVEL UP';
+  badge.style.background=c;badge.style.color='#fff';
+  // Particles
+  const pc=document.getElementById('particles');
+  pc.innerHTML='';
+  const colors=['#FFD700','#FF6B6B','#6BFFB8','#6BB5FF','#FFB86B','#C06BFF'];
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*2}s;animation-duration:${2+Math.random()*2}s;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px`;
+    pc.appendChild(p);
+  }
+  document.getElementById('lvlup').classList.add('show');
+}
+function closeLvlUp(){
+  document.getElementById('lvlup').classList.remove('show');
+  _luq.shift();
+  if(_luq.length)setTimeout(showNextLvlUp,300);
+}
+
+/* ── ACH UNLOCK NOTIFICATION ── */
+let _at=null;
+function showAchUnlock(a){
+  document.getElementById('au-ico').textContent=a.i;
+  document.getElementById('au-name').textContent=a.n;
+  document.getElementById('au-desc').textContent=a.desc;
+  const el=document.getElementById('achup');
+  el.classList.add('show');
+  clearTimeout(_at);
+  _at=setTimeout(()=>{el.classList.remove('show');},3500);
+}
+
 /* ── PHASE SYSTEM ── */
-function waterStreak(goal){
-  let c=0,d=todayStr();
-  for(let i=0;i<60;i++){if((dd(d).agua||0)>=goal)c++;else break;d=shift(d,-1);}
-  return c;
-}
-function creStreak(){
-  let c=0,d=todayStr();
-  for(let i=0;i<60;i++){const x=dd(d);if((x.agua||0)>=6&&x.cre5g)c++;else break;d=shift(d,-1);}
-  return c;
-}
-function daysInPhase(){
-  if(!SETS.phaseStart)return 0;
-  return Math.max(0,Math.round((new Date(todayStr()+'T12:00:00')-new Date(SETS.phaseStart+'T12:00:00'))/86400000));
-}
+function waterStreak(g){let c=0,d=todayStr();for(let i=0;i<200;i++){if((dd(d).agua||0)>=g)c++;else break;d=shift(d,-1);}return c;}
+function creStreak(){let c=0,d=todayStr();for(let i=0;i<200;i++){const x=dd(d);if((x.agua||0)>=6&&x.cre5g)c++;else break;d=shift(d,-1);}return c;}
+function daysInPhase(){if(!SETS.phaseStart)return 0;return Math.max(0,Math.round((new Date(todayStr()+'T12:00:00')-new Date(SETS.phaseStart+'T12:00:00'))/86400000));}
 function phaseProgress(){
   const p=ph();
   if(p===0){const s=waterStreak(6);return{c:s,g:7,pct:Math.min(100,Math.round(s/7*100))};}
@@ -245,15 +563,26 @@ function phaseProgress(){
 }
 function checkUnlock(){
   const p=ph();
-  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();save();unlockToast('🧪 ¡LOGRO DESBLOQUEADO! Ya puedes tomar 5g de creatina');}
-  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();save();unlockToast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día · Carga máxima');}
-  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();save();unlockToast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento permanente');}
+  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
+  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
+  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
 }
-function unlockToast(m){setTimeout(()=>{toast(m);render();},200);}
 
 /* ── TOGGLE / WATER ── */
-function toggle(s,id){if(!DB[s])DB[s]={};DB[s][id]=!DB[s][id];save();checkUnlock();}
-function setWater(s,n){if(!DB[s])DB[s]={};DB[s].agua=n;save();checkUnlock();}
+function toggle(s,id){
+  const xpB=calcXP(),lvlB=calcLvl(xpB);
+  if(!DB[s])DB[s]={};DB[s][id]=!DB[s][id];save();
+  const xpA=calcXP(),lvlA=calcLvl(xpA);
+  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  checkUnlock();checkAchievements();
+}
+function setWater(s,n){
+  const xpB=calcXP(),lvlB=calcLvl(xpB);
+  if(!DB[s])DB[s]={};DB[s].agua=n;save();
+  const xpA=calcXP(),lvlA=calcLvl(xpA);
+  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  checkUnlock();checkAchievements();
+}
 
 /* ── TOAST ── */
 let _tt=null;
@@ -262,38 +591,89 @@ function toast(m){const el=document.getElementById('toast');el.textContent=m;el.
 /* ── RENDER ── */
 function render(){
   const m=curMon(),wr=weekRate(m),dr=dayRate(ADATE);
+  const xp=calcXP(),lvl=calcLvl(xp),pct=xpPct(xp),lc=lvlColor(lvl),li=LEVELS[lvl-1];
   const dc=dr>=80?'c-good':dr>=50?'c-mid':'c-low';
   const wc=wr>=80?'c-good':wr>=50?'c-mid':'c-low';
+  const xpNext=lvl<30?LEVEL_XP[lvl]-xp:0;
   const hdr=`<div class="hdr">
 <div class="hdr-eyebrow">Protocolo Cognitivo · ${new Date().getFullYear()}</div>
 <div class="hdr-title">Mi Cerebro Óptimo 🧠 <span style="font-size:11px;opacity:.45;font-weight:400;letter-spacing:1px">v3.0</span></div>
 <div class="hdr-cards">
 <div class="hdr-card"><div class="hdr-lbl">Hoy</div><div class="hdr-val">${dr}<span>%</span></div><div class="hdr-bar"><div class="hdr-fill ${dc}" style="width:${dr}%"></div></div></div>
 <div class="hdr-card"><div class="hdr-lbl">Esta semana</div><div class="hdr-val">${wr}<span>%</span></div><div class="hdr-bar"><div class="hdr-fill ${wc}" style="width:${wr}%"></div></div></div>
-</div></div>`;
-  const content={today:vToday(),week:vWeek(m),year:vYear(),config:vConfig()}[VIEW]||'';
-  const nav=`<div class="bnav">${[['today','📋','Hoy'],['week','📊','Semana'],['year','📅','Año'],['config','⚙️','Config']].map(([v,i,l])=>`<button class="nbtn${VIEW===v?' active':''}" data-nav="${v}"><span class="ni">${i}</span>${l}</button>`).join('')}</div>`;
+</div>
+<div class="xp-bar-wrap">
+<div class="xp-top">
+<span class="xp-lvl" style="color:${lc}">${li.i} Nv.${lvl} · ${li.n}</span>
+<span class="xp-pts">${xp.toLocaleString()} XP${lvl<30?' · faltan '+xpNext.toLocaleString():' · MAX'}</span>
+</div>
+<div class="xp-track"><div class="xp-fill" style="width:${pct}%;background:${lc}"></div></div>
+</div>
+</div>`;
+  const content={today:vToday(xp,lvl,lc,li),week:vWeek(m),year:vYear(),logros:vLogros(),config:vConfig()}[VIEW]||'';
+  const nav=`<div class="bnav">${[['today','📋','Hoy'],['week','📊','Semana'],['year','📅','Año'],['logros','🏅','Logros'],['config','⚙️','Config']].map(([v,i,l])=>`<button class="nbtn${VIEW===v?' active':''}" data-nav="${v}"><span class="ni">${i}</span>${l}</button>`).join('')}</div>`;
   document.getElementById('app').innerHTML=hdr+`<div class="scroll fadein" id="sc">${content}</div>`+nav;
 }
 
 /* ── TODAY ── */
-function vToday(){
+function vToday(xp,lvl,lc,li){
   const today=todayStr(),m=monday(today),dates=week7(m),p=ph(),W=wg(),prog=phaseProgress(),info=PHASES[p];
-  const daySel=`<div class="dsel">${dates.map((s,i)=>{
-    const r=dayRate(s),isA=s===ADATE,isT=s===today;
-    return`<button class="dbtn${isA?' active':''}${isT?' today':''}" data-day="${s}">${DS[i]}<div class="ddot" style="background:${isA?'rgba(255,255,255,.45)':rc(r)}"></div></button>`;
-  }).join('')}</div>`;
+  const daySel=`<div class="dsel">${dates.map((s,i)=>{const r=dayRate(s),isA=s===ADATE,isT=s===today;return`<button class="dbtn${isA?' active':''}${isT?' today':''}" data-day="${s}">${DS[i]}<div class="ddot" style="background:${isA?'rgba(255,255,255,.45)':rc(r)}"></div></button>`;}).join('')}</div>`;
 
-  // Achievement card
+  // Level card
+  const pct=xpPct(xp),nxt=lvl<30?LEVEL_XP[lvl]-xp:0;
+  const lvlCard=`<div class="lvlcard">
+<div class="lvl-top">
+<div class="lvl-badge" style="background:${lc}22">${li.i}</div>
+<div class="lvl-info">
+<div class="lvl-num" style="color:${lc}">Nivel ${lvl} de 30</div>
+<div class="lvl-name">${li.n}</div>
+<div class="lvl-xp">${xp.toLocaleString()} XP total</div>
+</div>
+</div>
+<div class="lvl-track"><div class="lvl-fill" style="width:${pct}%;background:${lc}"></div></div>
+<div class="lvl-sub"><span>${pct}% hacia Nv.${Math.min(lvl+1,30)}</span><span>${lvl<30?nxt.toLocaleString()+' XP para subir':'Nivel máximo 🏆'}</span></div>
+</div>`;
+
+  // Streak science fact
+  const str=calcStreakDays();
+  const factHtml=str>=3?`<div class="sfact">
+<div class="sfact-hdr">🔬 Tu cerebro ahora mismo</div>
+<div class="sfact-txt">${SFACTS[(str-1)%SFACTS.length]}</div>
+<div class="sfact-streak">🔥 Racha de ${str} días consecutivos</div>
+</div>`:'';
+
+  // Creatine phase achievement
   const achBody=p===3?
     `<div class="ach-phase">${info.i} ${info.n}</div><div class="ach-title">Protocolo completo — Nivel máximo</div><div class="ach-sub">5g/día para siempre. Tu cerebro está en modo óptimo permanente.</div>`:
     `<div class="ach-phase">${info.i} ${info.n}</div>
-<div class="ach-title">${p===0?'Construye el hábito del agua primero':p===1?'Siguiente: Fase 20g/día desbloqueada':'Carga activa — ¡casi terminado!'}</div>
+<div class="ach-title">${p===0?'Construye el hábito del agua primero':p===1?'Siguiente: Fase 20g desbloqueada':'Carga activa — ¡casi!'}</div>
 <div class="ach-sub">${info.next}</div>
 <div class="ach-bar"><div class="ach-fill ${prog.pct<100?'glowing':''}" style="width:${prog.pct}%;background:${info.fi}"></div></div>
-<div class="ach-lbl">${prog.c}/${prog.g} ${info.unit}</div>`;
+<div class="ach-lbl">${prog.c}/${prog.g===999?'∞':prog.g} ${PHASES[p].unit}</div>`;
+  const achCard=`<div class="ach" style="${info.bg}"><div class="ach-ico">${info.i}</div>${achBody}</div>`;
 
-  const ach=`<div class="ach" style="${info.bg}"><div class="ach-ico">${info.i}</div>${achBody}</div>`;
+  // Mini achievements
+  const earned=SETS.achievements||{};
+  const earnedList=ACHS.filter(a=>earned[a.id]);
+  const achMini=`<div class="ach-section">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<div class="ctitle" style="margin:0">Logros · ${earnedList.length}/${ACHS.length}</div>
+<button style="border:none;background:none;font-size:12px;color:var(--teal);font-weight:700;cursor:pointer" data-showach="1">${SHOW_ACH?'Ocultar ▲':'Ver todos ▼'}</button>
+</div>
+${earnedList.length===0?'<p style="font-size:12px;color:var(--text2);text-align:center;padding:8px 0">Completa hábitos para desbloquear logros 🔒</p>':
+`<div class="ach-grid">${earnedList.slice(0,SHOW_ACH?999:6).map(a=>`<div class="abadge earned" data-ach="${a.id}">
+<div class="abadge-ico" style="background:${lc}18">${a.i}</div>
+<div class="abadge-lbl">${a.n}</div>
+</div>`).join('')}</div>`}
+${SHOW_ACH?`<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+<div class="ctitle">Bloqueados</div>
+<div class="ach-grid">${ACHS.filter(a=>!earned[a.id]).map(a=>a.secret?
+`<div class="abadge hidden-locked"><div class="abadge-ico">🔒</div><div class="abadge-lbl">???</div></div>`:
+`<div class="abadge locked" data-ach="${a.id}"><div class="abadge-ico">${a.i}</div><div class="abadge-lbl">${a.n}</div></div>`
+).join('')}</div></div>`:''}
+${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${ACHS.find(a=>a.id===ACH_TIP)?.n}</strong><br>${ACHS.find(a=>a.id===ACH_TIP)?.desc}${earned[ACH_TIP]?' · Desbloqueado '+earned[ACH_TIP]:''}</div>`:''}
+</div>`;
 
   const d=dd(ADATE),dl=dailyH();
   const dobj=new Date(ADATE+'T12:00:00');
@@ -305,21 +685,17 @@ function vToday(){
     const bh=activeH().filter(h=>h.blk===blk);
     const {c}=BC[blk];
     hab+=`<div class="blk-hdr"><div class="blk-line" style="background:${c}"></div><div class="blk-lbl" style="color:${c}">${blk}</div><div class="blk-line" style="background:${c}"></div></div>`;
-
-    // Water pills in Día block
     if(blk==='Día'){
-      const wc=d.agua||0;
-      const pills=Array.from({length:W},(_,i)=>`<div class="wpill${i<wc?' on':''}" data-wp="${ADATE}|${i}">${i<wc?'✓':'·'}</div>`).join('');
-      hab+=`<div class="wcard${wc>=W?' done':''}">
+      const wc2=d.agua||0;
+      const pills=Array.from({length:W},(_,i)=>`<div class="wpill${i<wc2?' on':''}" data-wp="${ADATE}|${i}">${i<wc2?'✓':'·'}</div>`).join('');
+      hab+=`<div class="wcard${wc2>=W?' done':''}">
 <div class="wcard-top">
-<div style="width:22px;height:22px;border-radius:50%;border:2px solid ${wc>=W?'var(--teal)':'#D5D0C8'};background:${wc>=W?'var(--teal)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0">${wc>=W?'✓':''}</div>
-<div style="flex:1"><div class="hlbl">💧 Hidratación · ${wLabel()}</div><div class="hsub">${wc} de ${W} botellas · ${wc*500}ml tomados</div></div>
+<div style="width:22px;height:22px;border-radius:50%;border:2px solid ${wc2>=W?'var(--teal)':'#D5D0C8'};background:${wc2>=W?'var(--teal)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0">${wc2>=W?'✓':''}</div>
+<div style="flex:1"><div class="hlbl">💧 Hidratación · ${wLabel()}</div><div class="hsub">${wc2} de ${W} botellas · ${wc2*500}ml</div></div>
 <button class="tipbtn" data-tip="__agua">ℹ️</button>
-</div>
-<div class="wpills">${pills}</div>
-</div>${TIP==='__agua'?`<div class="tipbox">💡 Cada burbuja = 1 botella de 500ml completada. Tócalas en orden. Meta: ${W} botellas = ${W/2}L.${p===2?' Fase 20g requiere 3.5L para proteger los riñones.':''}</div>`:''}`;
+</div><div class="wpills">${pills}</div>
+</div>${TIP==='__agua'?`<div class="tipbox">💡 Cada burbuja = 1 botella de 500ml. Meta: ${W} botellas = ${W/2}L.${p===2?' Fase 20g: 3.5L para proteger riñones.':''}</div>`:''}`;
     }
-
     bh.forEach(h=>{
       const on=!!d[h.id],st=TIP===h.id;
       const o3w=week7(monday(ADATE)).filter(s=>dd(s).omega3).length;
@@ -334,7 +710,7 @@ ${h.id==='cre20g'?`<div class="hsub" style="color:#C87820;font-weight:600">⚠�
 </div>${st?`<div class="tipbox">💡 ${h.tip}</div>`:''}`;
     });
   });
-  return daySel+ach+info2+hab;
+  return daySel+lvlCard+factHtml+achCard+achMini+info2+hab;
 }
 
 /* ── WEEK ── */
@@ -345,17 +721,15 @@ function vWeek(m){
   const bars=`<div class="card"><div class="ctitle">Tasa de éxito por día</div>
 <div class="wbars">${dates.map((s,i)=>{const r=drs[i],isT=s===today;return`<div class="wcol"><div class="wnum">${r>0?r+'%':''}</div><div class="wtrack"><div class="wfill" style="height:${r}%;background:${rc(r)}"></div></div><div class="wlbl" style="color:${isT?'var(--navy)':'var(--text2)'};font-weight:${isT?800:400}">${DS[i]}</div></div>`;}).join('')}
 </div></div>`;
-
   const W=wg(),allH=activeH();
   const gh=`<div class="grow"><div class="gname"></div>${dates.map((s,i)=>{const isT=s===today;return`<div class="gcell" style="background:none;color:${isT?'var(--navy)':'#AAA'};font-weight:${isT?700:400};font-size:11px">${DS[i]}</div>`;}).join('')}<div class="gtotal"></div></div>`;
-  const wr=`<div class="grow"><div class="gname">💧 Agua (${W/2}L)</div>${dates.map(s=>{const c=Math.min(dd(s).agua||0,W),p=Math.round(c/W*100);const bg=p>=100?'var(--teal)':p>=50?'#6BBBD0':'#EFEDE8';return`<div class="gcell" style="background:${bg};color:${p>=50?'#fff':'#999'}">${p>=100?'✓':c||''}</div>`;}).join('')}<div class="gtotal">${dates.filter(s=>(dd(s).agua||0)>=W).length}/7</div></div>`;
+  const wr=`<div class="grow"><div class="gname">💧 Agua (${W/2}L)</div>${dates.map(s=>{const c=Math.min(dd(s).agua||0,W),pp=Math.round(c/W*100);const bg=pp>=100?'var(--teal)':pp>=50?'#6BBBD0':'#EFEDE8';return`<div class="gcell" style="background:${bg};color:${pp>=50?'#fff':'#999'}">${pp>=100?'✓':c||''}</div>`;}).join('')}<div class="gtotal">${dates.filter(s=>(dd(s).agua||0)>=W).length}/7</div></div>`;
   const gr=allH.map(h=>{const {c}=BC[h.blk];const tot=dates.filter(s=>dd(s)[h.id]).length;return`<div class="grow"><div class="gname">${h.e} ${h.lbl.substring(0,18)}</div>${dates.map(s=>{const on=!!dd(s)[h.id];return`<div class="gcell" style="background:${on?c:'#EFEDE8'}">${on?'✓':''}</div>`;}).join('')}<div class="gtotal">${tot}/7</div></div>`;}).join('');
   const grid=`<div class="card"><div class="ctitle">Grid de hábitos</div>${gh}${wr}${gr}</div>`;
-
   const wr2=weekRate(m);
-  const sum=`<div class="sumbox" style="background:${rbg(wr2)}"><div class="sumtitle">${wr2>=80?'🏆':wr2>=60?'💪':wr2>=40?'📈':'🌱'} ${wr2}% esta semana</div><div class="sumtext">${wr2>=80?'Semana excelente. Tu cerebro ya está notando los cambios.':wr2>=60?'Buen progreso. Agua y sin vino son la clave para subir más.':wr2>=40?'En construcción. Empieza por los 3 hábitos de mañana.':'Empezando. Solo agua y luz solar son suficientes para arrancar.'}</div></div>`;
-  const pm=shift(m,-7),pwr=weekRate(pm),cwr=weekRate(m),dif=cwr-pwr,s=dif>=0?'↑':'↓',col=dif>=0?'#3D8B5E':'#C04040';
-  const cmp=`<div class="card"><div class="ctitle">vs semana anterior</div><div style="display:flex;align-items:center;gap:10px;text-align:center"><div style="flex:1"><div style="font-size:28px;font-weight:800;color:${rc(pwr)}">${pwr}%</div><div style="font-size:10px;color:var(--text2)">${weekLabel(pm)}</div></div><div style="font-size:22px;font-weight:800;color:${col}">${s}${Math.abs(dif)}%</div><div style="flex:1"><div style="font-size:28px;font-weight:800;color:${rc(cwr)}">${cwr}%</div><div style="font-size:10px;color:var(--text2)">${weekLabel(m)}</div></div></div></div>`;
+  const sum=`<div class="sumbox" style="background:${rbg(wr2)}"><div class="sumtitle">${wr2>=80?'🏆':wr2>=60?'💪':wr2>=40?'📈':'🌱'} ${wr2}% esta semana</div><div class="sumtext">${wr2>=80?'Semana excelente.':wr2>=60?'Buen progreso. Agua y sin vino son la clave.':wr2>=40?'En construcción. Empieza por los hábitos de mañana.':'Empezando. Solo agua y luz solar para arrancar.'}</div></div>`;
+  const pm=shift(m,-7),pwr=weekRate(pm),cwr=weekRate(m),dif=cwr-pwr,sg=dif>=0?'↑':'↓',col=dif>=0?'#3D8B5E':'#C04040';
+  const cmp=`<div class="card"><div class="ctitle">vs semana anterior</div><div style="display:flex;align-items:center;gap:10px;text-align:center"><div style="flex:1"><div style="font-size:28px;font-weight:800;color:${rc(pwr)}">${pwr}%</div><div style="font-size:10px;color:var(--text2)">${weekLabel(pm)}</div></div><div style="font-size:22px;font-weight:800;color:${col}">${sg}${Math.abs(dif)}%</div><div style="flex:1"><div style="font-size:28px;font-weight:800;color:${rc(cwr)}">${cwr}%</div><div style="font-size:10px;color:var(--text2)">${weekLabel(m)}</div></div></div></div>`;
   return nav+bars+grid+sum+cmp;
 }
 
@@ -365,7 +739,14 @@ function vYear(){
   const rates=mons.map(x=>weekRate(x)),done=rates.filter(r=>r>0).length,best=Math.max(...rates,0);
   let streak=0;const cm=monday(today);
   for(let i=mons.indexOf(cm);i>=0;i--){if(rates[i]>=50)streak++;else break;}
-  const stats=`<div class="stats3"><div class="scard"><div class="sval">${done}</div><div class="slbl">Semanas con datos</div></div><div class="scard"><div class="sval">${best}%</div><div class="slbl">Mejor semana</div></div><div class="scard"><div class="sval">${streak}</div><div class="slbl">Racha ≥50%</div></div></div>`;
+  const xp=calcXP(),lvl=calcLvl(xp);
+  const stats=`<div class="stats3"><div class="scard"><div class="sval">${done}</div><div class="slbl">Semanas activas</div></div><div class="scard"><div class="sval">${best}%</div><div class="slbl">Mejor semana</div></div><div class="scard"><div class="sval" style="color:${lvlColor(lvl)}">${lvl}</div><div class="slbl">Nivel actual</div></div></div>`;
+  // Gold habits panel
+  const golds=goldHabits();
+  const goldPanel=golds.length>0?`<div class="gold-panel">
+<div class="gold-panel-title">🪙 Hábitos con maestría oro</div>
+${golds.map(h=>`<div class="gold-item"><div class="gold-coin">🪙</div><div><div class="gold-lbl">${h.e} ${h.lbl}</div><div class="gold-sub">13 semanas al 100% · Maestría máxima</div></div></div>`).join('')}
+</div>`:'';
   const mR=Array.from({length:12},(_,m)=>{const mm=mons.filter(x=>new Date(x+'T12:00:00').getMonth()===m);if(!mm.length)return 0;const rr=mm.map(x=>weekRate(x)).filter(r=>r>0);return rr.length?Math.round(rr.reduce((a,b)=>a+b,0)/rr.length):0;});
   const mBars=`<div class="card"><div class="ctitle">Promedio mensual</div><div class="mbars">${mR.map((r,m)=>`<div class="mcol"><div class="mtrack"><div class="mfill" style="height:${r}%;background:${rc(r)}"></div></div><div class="mlbl">${MS[m].charAt(0)}</div></div>`).join('')}</div></div>`;
   let lastM=-1,mLbls='';
@@ -382,29 +763,138 @@ function vYear(){
     const r=weekRate(YSW),wd=week7(YSW);
     det=`<div class="card"><div class="ctitle">Semana ${weekLabel(YSW)}</div><div style="text-align:center;margin-bottom:12px"><span style="font-size:34px;font-weight:800;color:${rc(r)}">${r}%</span></div>${activeH().map(h=>{const{c}=BC[h.blk],dn=wd.filter(s=>dd(s)[h.id]).length;return`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span style="width:20px">${h.e}</span><span style="flex:1;font-size:12px">${h.lbl.substring(0,24)}</span><div style="display:flex;gap:2px">${Array.from({length:7},(_,i)=>`<span class="sel-dot" style="background:${dn>i?c:'#EFEDE8'}"></span>`).join('')}</div><span style="font-size:10px;color:var(--text2);width:22px;text-align:right">${dn}/7</span></div>`;}).join('')}</div>`;
   }
-  return stats+mBars+hm+det;
+  return stats+goldPanel+mBars+hm+det;
+}
+
+/* ── MAESTRÍA CALCULATIONS ── */
+function yearMondays2(){return yearMondays(new Date().getFullYear());}
+// Count weeks where habit was marked every single day (Mon-Sun)
+function habitMasteryWeeks(hid){
+  const allW=yearMondays2();
+  let count=0;
+  allW.forEach(mon=>{
+    const days=week7(mon);
+    // Only count completed weeks (all 7 days done OR week is in the past)
+    const today=todayStr();
+    const weekDone=days.every(s=>s>today?false:!!dd(s)[hid]);
+    if(weekDone)count++;
+  });
+  return Math.min(count,13);
+}
+// Water mastery: weeks with full water goal every day
+function waterMasteryWeeks(){
+  const allW=yearMondays2(),W=wg(),today=todayStr();
+  let count=0;
+  allW.forEach(mon=>{
+    const days=week7(mon);
+    const weekDone=days.every(s=>s>today?false:(dd(s).agua||0)>=W);
+    if(weekDone)count++;
+  });
+  return Math.min(count,13);
+}
+function masteryLevel(weeks){return Math.min(13,Math.floor(weeks));}
+function masteryMedal(lvl){return lvl>=13?'🥇':lvl>=8?'🥈':lvl>=4?'🥉':null;}
+function masteryMedalName(lvl){return lvl>=13?'Oro':lvl>=8?'Plata':lvl>=4?'Bronce':null;}
+
+// Get all HABITS that have reached gold (for Año panel)
+function goldHabits(){
+  const golds=[];
+  HABITS.forEach(h=>{
+    const w=habitMasteryWeeks(h.id);
+    if(masteryLevel(w)>=13)golds.push({...h,weeks:w});
+  });
+  const ww=waterMasteryWeeks();
+  if(masteryLevel(ww)>=13)golds.push({id:'__agua',e:'💧',lbl:'Hidratación 3L',weeks:ww});
+  return golds;
+}
+
+/* ── LOGROS VIEW ── */
+function vLogros(){
+  const earned=SETS.achievements||{};
+  const xp=calcXP(),lvl=calcLvl(xp),lc=lvlColor(lvl);
+
+  // Section 1: Maestría por hábito
+  const maestriaHabits=[...HABITS,{id:'__agua',e:'💧',lbl:'Hidratación 3L',blk:'Día',freq:'daily',tip:''}];
+  const maestriaRows=maestriaHabits.map(h=>{
+    const weeks=h.id==='__agua'?waterMasteryWeeks():habitMasteryWeeks(h.id);
+    const lvlM=masteryLevel(weeks);
+    const medal=masteryMedal(lvlM);
+    const medalName=masteryMedalName(lvlM);
+
+    // Build 13 checkboxes split in groups of 4 (with divider every 4)
+    let cells='';
+    for(let i=1;i<=13;i++){
+      // Add divider every 4
+      if(i===5||i===9||i===13){cells+=`<div class="mchk divider"></div>`;}
+      const filled=i<=weeks;
+      let cls='empty';
+      if(filled){
+        if(i<=4)cls='bronze';
+        else if(i<=8)cls='silver';
+        else cls='gold';
+      }
+      cells+=`<div class="mchk ${cls}">${filled?'✓':''}</div>`;
+    }
+
+    const nextMilestone=lvlM<4?`🥉 en ${4-weeks} sem`:lvlM<8?`🥈 en ${8-weeks} sem`:lvlM<13?`🥇 en ${13-weeks} sem`:'';
+
+    return`<div class="mcard">
+<div class="mcard-hdr">
+<div class="mcard-ico">${h.e}</div>
+<div class="mcard-inf">
+<div class="mcard-name">${h.lbl}</div>
+<div class="mcard-sub">Nivel ${lvlM}/13 · ${weeks} sem completas${nextMilestone?' · '+nextMilestone:''}</div>
+</div>
+<div class="mcard-medal">${medal||'⬜'}</div>
+</div>
+<div class="mtrack-wrap">${cells}</div>
+</div>`;
+  }).join('');
+
+  const maestriaSection=`<div class="card"><div class="ctitle">🏅 Maestría por hábito</div>
+<div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.5">Cada ✅ = 1 semana al 100% en ese hábito · Cada 4 semanas sube un nivel<br><span style="color:#CD7F32">🥉 Nivel 4</span> · <span style="color:#888">🥈 Nivel 8</span> · <span style="color:#B8860B">🥇 Nivel 13</span></div>
+${maestriaRows}</div>`;
+
+  // Section 2: Logros por consistencia
+  const earnedList=ACHS.filter(a=>earned[a.id]);
+  const lockedList=ACHS.filter(a=>!earned[a.id]);
+  const logroSection=`<div class="card"><div class="ctitle">🎖️ Logros desbloqueados · ${earnedList.length}/${ACHS.length}</div>
+${earnedList.length===0?'<p style="font-size:12px;color:var(--text2);text-align:center;padding:12px 0">Completa hábitos para desbloquear logros 🔒</p>':
+`<div class="ach-grid" style="margin-bottom:14px">${earnedList.map(a=>`<div class="abadge earned" data-ach="${a.id}">
+<div class="abadge-ico" style="background:${lc}18">${a.i}</div>
+<div class="abadge-lbl">${a.n}</div>
+</div>`).join('')}</div>`}
+<div class="ctitle" style="margin-bottom:8px">Por desbloquear</div>
+<div class="ach-grid">${lockedList.map(a=>a.secret?
+`<div class="abadge hidden-locked"><div class="abadge-ico">🔒</div><div class="abadge-lbl">???</div></div>`:
+`<div class="abadge locked" data-ach="${a.id}"><div class="abadge-ico">${a.i}</div><div class="abadge-lbl">${a.n}</div></div>`
+).join('')}</div>
+${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${ACHS.find(a=>a.id===ACH_TIP)?.n}</strong><br>${ACHS.find(a=>a.id===ACH_TIP)?.desc}${earned[ACH_TIP]?' · Desbloqueado el '+earned[ACH_TIP]:''}</div>`:''}
+</div>`;
+
+  return maestriaSection+logroSection;
 }
 
 /* ── CONFIG ── */
 function vConfig(){
   const p=ph(),info=PHASES[p],prog=phaseProgress();
   const ins=PROMPT?`<div class="ibanner"><div class="ibico">📲</div><div class="ibinf"><div class="ibtitle">Instalar como app</div><div class="ibsub">Agrégala a tu pantalla de inicio</div></div><button class="ibbtn" id="ins-btn">Instalar</button></div>`:'';
+  const xp=calcXP(),lvl=calcLvl(xp),lc=lvlColor(lvl);
+  const lvlList=`<div class="card"><div class="ctitle">Todos los niveles</div><div style="max-height:220px;overflow-y:auto">${LEVELS.map((l,i)=>{const lv=i+1,c=lvlColor(lv),isC=lv===lvl;return`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);opacity:${lv>lvl?.4:1}"><span style="font-size:16px;width:24px">${l.i}</span><span style="flex:1;font-size:12px;font-weight:${isC?700:400};color:${isC?c:'var(--text)'}">${lv}. ${l.n}</span><span style="font-size:10px;color:${c};font-weight:600">${isC?'← aquí':''}${lv===30?'MAX':''}</span></div>`;}).join('')}</div></div>`;
   const phCtrl=`<div class="card"><div class="ctitle">Fase de creatina</div>
 <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Fase actual: <strong style="color:var(--text)">${info.i} ${info.n}</strong><br>Progreso: ${prog.c}/${prog.g===999?'∞':prog.g} ${info.unit}</div>
 <div style="display:flex;gap:7px;flex-wrap:wrap">${PHASES.map((ph,i)=>`<button data-sp="${i}" style="padding:7px 11px;border-radius:9px;border:1.5px solid ${p===i?'var(--navy)':'var(--border)'};background:${p===i?'var(--navy)':'#fff'};color:${p===i?'#fff':'var(--text2)'};font-size:12px;font-weight:${p===i?700:400};cursor:pointer">${ph.i} ${ph.n.replace('🏆 ','')}</button>`).join('')}</div>
-<p style="font-size:11px;color:var(--text2);margin-top:10px">Ajusta manualmente si lo necesitas</p></div>`;
-  return ins+phCtrl+`
+<p style="font-size:11px;color:var(--text2);margin-top:10px">Ajusta manualmente si necesitas</p></div>`;
+  return ins+phCtrl+lvlList+`
 <div class="card"><div class="ctitle">Notificaciones</div>
 <div class="cfgitem" style="margin-bottom:0"><div class="cfgico">🔔</div><div class="cfginf"><div class="cfglbl">Recordatorio diario</div><div class="cfgsub">${SETS.notifications?'Activadas':'Desactivadas'} · ${SETS.reminderTime}</div></div><button class="toggle ${SETS.notifications?'on':'off'}" id="ntog"></button></div>
 <input type="time" id="rtim" value="${SETS.reminderTime}">
-</div>
-<div class="card"><div class="ctitle">Protocolo cognitivo completo</div>
-<div style="font-size:13px;color:var(--text2);line-height:1.9">🥶 Rostro en agua fría → nervio vago<br>💧 Agua en pasos de 500ml<br>🧪 Creatina con sistema de desbloqueo<br>🧠 14 hábitos basados en evidencia<br>😴 Protocolo de sueño profundo<br><br><span style="font-size:11px;opacity:.6">v4.0 · Datos guardados en tu dispositivo</span></div></div>`;
+</div>`;
 }
 
 /* ── EVENTS ── */
 document.addEventListener('click',e=>{
-  const n=e.target.closest('[data-nav]');if(n){VIEW=n.dataset.nav;TIP=null;render();return;}
+  const n=e.target.closest('[data-nav]');if(n){VIEW=n.dataset.nav;TIP=null;ACH_TIP=null;render();return;}
   const dy=e.target.closest('[data-day]');if(dy){ADATE=dy.dataset.day;TIP=null;render();return;}
   const wp=e.target.closest('[data-wp]');
   if(wp){const[s,idx]=wp.dataset.wp.split('|');const i=parseInt(idx);const cur=dd(s).agua||0;setWater(s,i<cur?i:i+1);render();return;}
@@ -413,10 +903,12 @@ document.addEventListener('click',e=>{
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render();return;}
   const wn=e.target.closest('[data-wn]');if(wn){WOFF=Math.min(0,WOFF+parseInt(wn.dataset.wn));render();return;}
   const hm=e.target.closest('[data-hm]');if(hm){YSW=YSW===hm.dataset.hm?null:hm.dataset.hm;render();return;}
+  const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
+  const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
   const sp=e.target.closest('[data-sp]');
-  if(sp){const p=parseInt(sp.dataset.sp);SETS.phase=p;SETS.phaseStart=p>0?todayStr():null;save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p]);return;}
+  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
   if(e.target.id==='ntog'){
-    if(!SETS.notifications){if('Notification' in window){Notification.requestPermission().then(p=>{SETS.notifications=p==='granted';toast(SETS.notifications?'✅ Activadas':'❌ Permiso denegado');save();render();scheduleR();});}else toast('No soportado en este navegador');}
+    if(!SETS.notifications){if('Notification' in window){Notification.requestPermission().then(p3=>{SETS.notifications=p3==='granted';toast(SETS.notifications?'✅ Activadas':'❌ Permiso denegado');save();render();scheduleR();});}else toast('No soportado');}
     else{SETS.notifications=false;save();render();toast('Desactivadas');}return;
   }
   if(e.target.id==='ins-btn'&&PROMPT){PROMPT.prompt();PROMPT.userChoice.then(r=>{if(r.outcome==='accepted')toast('¡App instalada! 🎉');PROMPT=null;render();});}
@@ -439,7 +931,7 @@ if('serviceWorker' in navigator){try{const sw=`self.addEventListener('install',(
 try{const m={name:'Mi Cerebro Óptimo',short_name:'Cerebro',start_url:'.',display:'standalone',background_color:'#F5F4F0',theme_color:'#0D1B2A',icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1B2A'/><text y='.9em' font-size='72' x='14'>🧠</text></svg>",sizes:'any',type:'image/svg+xml'}]};const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l);}catch(e){}
 
 /* ── INIT ── */
-load();render();scheduleR();
+load();checkAchievements();render();scheduleR();
 </script>
 </body>
 </html>
