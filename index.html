@@ -56,15 +56,15 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 .wpill{width:38px;height:38px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#C0C0C0;transition:all .18s;flex-shrink:0;user-select:none;-webkit-user-select:none}
 .wpill.on{background:var(--teal);border-color:var(--teal);color:#fff}
 /* Achievement */
-.ach{border-radius:14px;padding:15px;margin-bottom:11px;color:#fff;position:relative;overflow:hidden}
-.ach-eye{font-size:9px;letter-spacing:2px;opacity:.6;text-transform:uppercase;margin-bottom:3px}
-.ach-phase{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;margin-bottom:7px}
-.ach-title{font-size:15px;font-weight:800;margin-bottom:3px}
-.ach-sub{font-size:12px;opacity:.8;line-height:1.45;margin-bottom:10px}
-.ach-bar{height:7px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden;margin-bottom:5px}
+.ach{border-radius:14px;padding:15px;margin-bottom:11px;color:#E8EDF2;position:relative;overflow:hidden}
+.ach-eye{font-size:9px;letter-spacing:2px;color:#A8B8C8;text-transform:uppercase;margin-bottom:3px}
+.ach-phase{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#C8D8E8;margin-bottom:7px}
+.ach-title{font-size:15px;font-weight:800;margin-bottom:3px;color:#B0BEC8}
+.ach-sub{font-size:12px;color:#D0DDE8;line-height:1.45;margin-bottom:10px}
+.ach-bar{height:7px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-bottom:5px}
 .ach-fill{height:100%;border-radius:4px;transition:width .6s ease}
-.ach-lbl{font-size:10px;opacity:.7;text-align:right}
-.ach-ico{position:absolute;bottom:-4px;right:10px;font-size:50px;opacity:.15}
+.ach-lbl{font-size:10px;color:#A0B4C4;text-align:right}
+.ach-ico{position:absolute;bottom:-4px;right:10px;font-size:50px;opacity:.12}
 /* Cards */
 .card{background:#fff;border-radius:var(--r);padding:15px;margin-bottom:11px;box-shadow:0 1px 5px rgba(0,0,0,.055)}
 .ctitle{font-size:10px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
@@ -146,6 +146,7 @@ const HABITS=[
   {id:'fruta',   e:'🍌',lbl:'Plátano o kiwi en la noche',   blk:'Noche',    freq:'daily',tip:'Serotonina natural para mejor transición al sueño profundo.'},
   {id:'gomitas', e:'🍬',lbl:'Gomitas 45 min antes de dormir',blk:'Noche',    freq:'daily',tip:'L-teanina + Magnesio + 5-HTP. Siempre con agua.'},
   {id:'frio',    e:'❄️',lbl:'Cuarto fresco al dormir',       blk:'Noche',    freq:'daily',tip:'18-20°C es la temperatura óptima para sueño profundo.'},
+  {id:'walk5am', e:'🌅',lbl:'Caminata 5am (madrugada)',        blk:'Actividad',freq:'daily',tip:'Luz natural temprana + movimiento en ayunas activa BDNF y fija el ritmo circadiano desde temprano. Potencia todo el protocolo de mañana.'},
   {id:'pasos',   e:'🚶',lbl:'9,000+ pasos',                  blk:'Actividad',freq:'daily',tip:'Activa BDNF — el fertilizante de tus neuronas.'},
 ];
 const PHASES=[
