@@ -71,12 +71,12 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 /* ACHIEVEMENT CARD */
 .ach{border-radius:14px;padding:15px;margin-bottom:11px;position:relative;overflow:hidden}
 .ach-eye{font-size:9px;letter-spacing:2px;color:#A8B8C8;text-transform:uppercase;margin-bottom:3px}
-.ach-phase{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#C8D8E8;margin-bottom:7px}
-.ach-title{font-size:15px;font-weight:800;margin-bottom:3px;color:#EEF2F6}
-.ach-sub{font-size:12px;color:#D0DDE8;line-height:1.45;margin-bottom:10px}
-.ach-bar{height:7px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-bottom:5px}
+.ach-phase{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#D8E8F4;margin-bottom:7px}
+.ach-title{font-size:15px;font-weight:800;margin-bottom:3px;color:#B0BEC8}
+.ach-sub{font-size:12px;color:#C8D8E4;line-height:1.45;margin-bottom:10px}
+.ach-bar{height:7px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden;margin-bottom:5px}
 .ach-fill{height:100%;border-radius:4px;transition:width .6s ease}
-.ach-lbl{font-size:10px;color:#A0B4C4;text-align:right}
+.ach-lbl{font-size:10px;color:#A8C0CC;text-align:right}
 .ach-ico{position:absolute;bottom:-4px;right:10px;font-size:50px;opacity:.12}
 /* STREAK FACT */
 .sfact{background:linear-gradient(135deg,#0F2A40,#1A3A55);border-radius:12px;padding:13px 15px;margin-bottom:11px;color:#fff}
@@ -195,6 +195,25 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 @keyframes glow{0%,100%{opacity:1}50%{opacity:.55}}
 .fadein{animation:fadeIn .25s ease}
 .glowing{animation:glow 2s ease infinite}
+/* DAY COMPLETE OVERLAY */
+#daycomplete{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9985;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:30px}
+#daycomplete.show{display:flex;animation:fadeIn .3s ease}
+.dc-inner{text-align:center;max-width:320px}
+.dc-emoji{font-size:72px;margin-bottom:16px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+.dc-xp{display:inline-block;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#fff;font-size:13px;font-weight:800;padding:5px 16px;border-radius:20px;margin-bottom:14px;letter-spacing:1px}
+.dc-streak{font-size:12px;color:#FFD700;font-weight:700;margin-bottom:10px}
+.dc-msg{font-size:15px;color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:20px}
+.dc-tap{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+/* CHEST OVERLAY */
+#chest{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9987;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:30px}
+#chest.show{display:flex;animation:fadeIn .3s ease}
+.ch-inner{text-align:center;max-width:320px}
+.ch-title{font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:16px}
+.ch-ico{font-size:90px;margin-bottom:8px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+.ch-xp{font-size:52px;font-weight:900;color:#FFD700;line-height:1;margin-bottom:6px;animation:slideUp .4s ease .3s both}
+.ch-lbl{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:6px;animation:slideUp .4s ease .4s both}
+.ch-rank{font-size:13px;font-weight:700;margin-bottom:20px;animation:slideUp .4s ease .5s both}
+.ch-tap{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
 /* MAESTRÍA */
 .mcard{background:#fff;border-radius:14px;padding:14px 15px;margin-bottom:8px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
 .mcard-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -232,6 +251,25 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <div class="lvlup-tap">Toca para continuar</div>
   </div>
 </div>
+<div id="daycomplete" onclick="closeDayComplete()">
+  <div class="dc-inner">
+    <div class="dc-emoji" id="dc-emoji"></div>
+    <div class="dc-xp" id="dc-xp"></div>
+    <div class="dc-streak" id="dc-streak"></div>
+    <div class="dc-msg" id="dc-msg"></div>
+    <div class="dc-tap">Toca para continuar</div>
+  </div>
+</div>
+<div id="chest" onclick="closeChest()">
+  <div class="ch-inner">
+    <div class="ch-title">☀️ Cofre semanal</div>
+    <div class="ch-ico">🎁</div>
+    <div class="ch-xp" id="ch-xp"></div>
+    <div class="ch-lbl">XP bonus esta semana</div>
+    <div class="ch-rank" id="ch-rank"></div>
+    <div class="ch-tap">Toca para continuar</div>
+  </div>
+</div>
 <div id="achup">
   <div class="achup-ico" id="au-ico"></div>
   <div class="achup-inf">
@@ -245,24 +283,49 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 'use strict';
 /* ── HABITS ── */
 const HABITS=[
-  {id:'agua',    e:'💧',lbl:'Agua + sal + limón al despertar',blk:'Mañana',   freq:'daily',tip:'Antes de todo. Rehidrata el cerebro tras 7-8h de ayuno nocturno.'},
-  {id:'aguafria',e:'🥶',lbl:'Rostro en agua fría (30-60s)',  blk:'Mañana',   freq:'daily',tip:'Activa el nervio vago en segundos. Reduce cortisol, modo parasimpático. Científicamente comprobado.'},
-  {id:'sol',     e:'☀️',lbl:'Luz solar primeros 30 min',     blk:'Mañana',   freq:'daily',tip:'Fija el ritmo circadiano. Mejora el sueño esa misma noche.'},
-  {id:'cafe',    e:'☕',lbl:'Café después de 90 min',        blk:'Mañana',   freq:'daily',tip:'Deja que el cortisol natural suba solo. El café rinde 40% más así.'},
-  {id:'huevo',   e:'🥚',lbl:'Huevo entero',                  blk:'Día',      freq:'daily',tip:'Colina → acetilcolina: el neurotransmisor clave de la memoria.'},
-  {id:'nueces',  e:'🌰',lbl:'Almendras (15-20 piezas)',       blk:'Día',      freq:'daily',tip:'Vitamina E — protege membranas neuronales. Cómelas con piel. Remójalas la noche anterior para mejor absorción.'},
-  {id:'curcuma', e:'🫚',lbl:'Cúrcuma + pimienta negra',      blk:'Día',      freq:'daily',tip:'La pimienta aumenta 2,000% la absorción. Anti-neuroinflamatorio potente.'},
-  {id:'omega3',  e:'🐟',lbl:'Omega-3 (sardina o atún)',      blk:'Día',      freq:'3x',   tip:'DHA: componente estructural de membranas neuronales. Meta: 3×/semana.'},
-  {id:'cre5g',   e:'🧪',lbl:'Creatina 5g (con agua)',        blk:'Día',      freq:'daily',tip:'Tómala con 500ml de agua. Construye creatina cerebral gradualmente.',minP:1,maxP:1},
-  {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g', blk:'Día',      freq:'daily',tip:'4 tomas: desayuno, comida, merienda, cena. CRÍTICO: 7 botellas de agua hoy.',minP:2,maxP:2},
-  {id:'cremnt',  e:'🧪',lbl:'Creatina 5g mantenimiento',     blk:'Día',      freq:'daily',tip:'El cerebro ya está saturado. 5g/día mantiene el nivel óptimo.',minP:3,maxP:9},
-  {id:'vino',    e:'🚫',lbl:'Sin vino hoy',                  blk:'Noche',    freq:'daily',tip:'El alcohol fragmenta el sueño REM y agota la serotonina.'},
-  {id:'fruta',   e:'🍌',lbl:'Plátano o kiwi en la noche',   blk:'Noche',    freq:'daily',tip:'Serotonina natural para mejor transición al sueño profundo.'},
-  {id:'gomitas', e:'🍬',lbl:'Gomitas 45 min antes de dormir',blk:'Noche',    freq:'daily',tip:'L-teanina + Magnesio + 5-HTP. Siempre con agua.'},
-  {id:'frio',    e:'❄️',lbl:'Cuarto fresco al dormir',       blk:'Noche',    freq:'daily',tip:'18-20°C es la temperatura óptima para sueño profundo.'},
-  {id:'walk5am', e:'🌅',lbl:'Caminata 5am (madrugada)',      blk:'Actividad',freq:'daily',tip:'Luz natural temprana + movimiento en ayunas activan BDNF y fijan el ritmo circadiano.'},
-  {id:'pasos',   e:'🚶',lbl:'9,000+ pasos',                  blk:'Actividad',freq:'daily',tip:'Activa BDNF — el fertilizante de tus neuronas.'},
+  // MAÑANA — en ayunas
+  {id:'agua',    e:'💧',lbl:'Agua + sal + limón al despertar',blk:'Mañana',freq:'daily',
+   tip:'Tras 7-8h de ayuno el cerebro está deshidratado. La sal repone electrolitos que el café posterior elimina. El limón activa enzimas digestivas.\n📚 Popkin et al., Nutrition Reviews (2010): incluso 1-2% de deshidratación reduce cognición y memoria de trabajo.'},
+  {id:'aguafria',e:'🥶',lbl:'Rostro en agua fría (30-60s)',  blk:'Mañana',freq:'daily',
+   tip:'El agua fría activa el reflejo de inmersión: estimula el nervio trigémino → nervio vago → sistema parasimpático. Reduce cortisol en segundos y mejora HRV (variabilidad cardíaca).\n📚 Khurana & Wu, Clinical Autonomic Research (2006): la bradicardia inicia en promedio 5.6s tras el estímulo frío en el rostro.'},
+  {id:'sol',     e:'☀️',lbl:'Luz solar primeros 30 min',     blk:'Mañana',freq:'daily',
+   tip:'La luz solar matutina (10,000 lux) suprime la melatonina residual y ancla el ritmo circadiano. Esto mejora directamente la calidad del sueño esa misma noche y regula el eje cortisol-serotonina.\n📚 Czeisler et al., Science (1986): la luz matutina es el zeitgeber más poderoso para el reloj circadiano humano.'},
+  {id:'huevo',   e:'🥚',lbl:'Huevo entero (en ayunas)',      blk:'Mañana',freq:'daily',
+   tip:'La yema tiene ~147mg de colina. En el cerebro, la colina se convierte en acetilcolina — el neurotransmisor de la memoria y el aprendizaje. Mejor con yema líquida (calor alto destruye fosfolípidos) y con grasa (vitamina B12 liposoluble).\n📚 Zeisel & da Costa, Nutrition Reviews (2009): la colina dietética es esencial para la función del hipocampo y la síntesis de acetilcolina.'},
+  {id:'cre5g',   e:'🧪',lbl:'Creatina 5g en ayunas (+ 500ml agua)', blk:'Mañana',freq:'daily',
+   tip:'En ayunas la creatina se absorbe sin competir con otros alimentos. El cortisol matutino favorece su transporte muscular y cerebral. SIEMPRE con mínimo 500ml de agua.\n📚 Smith et al., Alzheimer\'s & Dementia (2025): 20g/día aumentó creatina cerebral 11% en pacientes con Alzheimer, mejorando memoria de trabajo.',minP:1,maxP:1},
+  {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g',  blk:'Mañana',freq:'daily',
+   tip:'Divide en 4 tomas de 5g: al despertar, mediodía, tarde y noche. CRÍTICO: necesitas 7 botellas de agua hoy. La carga satura el cerebro en 5-7 días vs 28 días con 5g.\n📚 Harris et al., Clinical Science (1992): el protocolo de carga de 20g/día es el más eficiente para saturar fosfocreatina muscular y cerebral.',minP:2,maxP:2},
+  {id:'cremnt',  e:'🧪',lbl:'Creatina 5g mantenimiento',     blk:'Mañana',freq:'daily',
+   tip:'Tras la fase de carga, 5g/día mantiene la saturación cerebral indefinidamente. El cerebro ya opera con reservas de fosfocreatina óptimas para sinapsis y memoria.\n📚 Rawson & Volek, J Strength Cond Res (2003): 5g/día es suficiente para mantener niveles elevados de creatina muscular y cerebral post-carga.',minP:3,maxP:9},
+  {id:'cafe',    e:'☕',lbl:'Café después de 90 min',        blk:'Mañana',freq:'daily',
+   tip:'El cortisol alcanza su pico máximo 30-45 min después de despertar. Si tomas café en ese momento, bloqueas el cortisol natural y desarrollas tolerancia a la cafeína. A los 90 min el cortisol baja y el café es más eficaz.\n📚 Lovallo et al., Psychosomatic Medicine (2005): la cafeína amplifica la respuesta del cortisol cuando se toma en ventanas de estrés basal.'},
+  // DÍA
+  {id:'nueces',  e:'🌰',lbl:'Almendras (15-20 piezas)',      blk:'Día',    freq:'daily',
+   tip:'Las almendras son la fuente más densa de vitamina E entre todos los frutos secos. La vitamina E protege las membranas neuronales del daño oxidativo. Cómelas con piel (los flavonoides están ahí) y remojadas la noche anterior (elimina ácido fítico que bloquea minerales).\n📚 Morris et al., JAMA (2002): alto consumo de vitamina E dietética se asoció con 67% menor riesgo de Alzheimer en seguimiento de 4 años.'},
+  {id:'curcuma', e:'🫚',lbl:'Cúrcuma + pimienta negra',      blk:'Día',    freq:'daily',
+   tip:'La curcumina sola tiene 1% de biodisponibilidad. La piperina de la pimienta NEGRA (no blanca — la blanca no tiene piperina, está en la cáscara) la aumenta 2,000%. Juntas reducen IL-6 y TNF-α, los marcadores clave de neuroinflamación.\n📚 Shoba et al., Planta Medica (1998): 20mg de piperina aumentaron la biodisponibilidad de curcumina 2,000% en humanos.'},
+  {id:'omega3',  e:'🐟',lbl:'Sardinas o atún (comida)',      blk:'Día',    freq:'3x',
+   tip:'El DHA es el ácido graso estructural de las membranas neuronales — el 30% del cerebro es DHA. La sinapsis depende de membranas fluidas. Mejor al mediodía con grasa (aguacate, aceite de oliva) para máxima absorción. Fritas en aceite vegetal → pierden 20-40% del omega-3.\n📚 Yurko-Mauro et al., Alzheimer\'s & Dementia (2010): 900mg DHA/día mejoró memoria en adultos con deterioro cognitivo leve.'},
+  // RETO — Habanero
+  {id:'habanero',e:'🌶️',lbl:'Reto: Habanero en tu comida',  blk:'Día',    freq:'daily',challenge:true,xpBonus:25,
+   tip:'El habanero (100,000-350,000 Scoville) es una de las fuentes más concentradas de capsaicina. Activa receptores TRPV1 en el cerebro, mejora el flujo sanguíneo cerebral y protege la sinapsis LTP. Tómalo con la comida y con grasa para absorción.\n📚 Liu et al., Translational Psychiatry (2020): la capsaicina redujo placas beta-amiloide y rescató deterioro cognitivo. Xu et al., Nutrients (2021): revisión sistemática confirma mejora en memoria espacial y de trabajo.'},
+  // NOCHE
+  {id:'vino',    e:'🚫',lbl:'Sin vino hoy',                  blk:'Noche',  freq:'daily',
+   tip:'El alcohol interrumpe el sueño REM (consolida la memoria) en la segunda mitad de la noche, cuando el cuerpo lo metaboliza. Dos copas diarias reducen el volumen del hipocampo a largo plazo y agotan la serotonina.\n📚 Colrain et al., Handbook of Clinical Neurology (2014): el alcohol suprime el sueño REM y altera la arquitectura del sueño profundo.'},
+  {id:'fruta',   e:'🍌',lbl:'Plátano o kiwi en la noche',   blk:'Noche',  freq:'daily',
+   tip:'El plátano tiene triptófano → serotonina → melatonina (la cadena directa del sueño). El kiwi tiene serotonina preformada. El potasio del plátano relaja la musculatura y reduce despertares nocturnos.\n📚 Lin et al., Asia Pacific Journal of Clinical Nutrition (2011): comer 2 kiwis/hora antes de dormir durante 4 semanas mejoró calidad y duración del sueño.'},
+  {id:'gomitas', e:'🍬',lbl:'Gomitas 45 min antes de dormir',blk:'Noche',  freq:'daily',
+   tip:'L-teanina (ondas alfa cerebrales, relajación sin somnolencia) + Magnesio (relaja el sistema nervioso, activa GABA) + 5-HTP (precursor directo de serotonina → melatonina). Los tres juntos son sinérgicos. SIEMPRE con agua — el magnesio necesita hidratación para absorberse.\n📚 Hidese et al., Nutrients (2019): L-teanina mejoró calidad del sueño y cognición al día siguiente en adultos sanos.'},
+  {id:'frio',    e:'❄️',lbl:'Cuarto fresco al dormir',       blk:'Noche',  freq:'daily',
+   tip:'El cerebro necesita bajar 1-2°C para entrar en sueño profundo. A 18-20°C el cuerpo alcanza esa temperatura más rápido, prolonga el sueño de ondas lentas (restaurador) y aumenta la GH (hormona de crecimiento) que repara neuronas.\n📚 Lack et al., Sleep Medicine Clinics (2012): la temperatura corporal disminuida es necesaria para el inicio y mantenimiento del sueño profundo.'},
+  // ACTIVIDAD
+  {id:'walk5am', e:'🌅',lbl:'Caminata 5am (madrugada)',      blk:'Actividad',freq:'daily',
+   tip:'Caminar en ayunas en la madrugada combina tres efectos: luz natural para fijar el ritmo circadiano, movimiento aeróbico que activa BDNF, y estado de ayuno que aumenta la oxidación de grasas cerebrales. El BDNF generado actúa las siguientes 4-6 horas.\n📚 Erickson et al., PNAS (2011): el ejercicio aeróbico aumenta el volumen del hipocampo 2% y los niveles de BDNF en adultos.'},
+  {id:'pasos',   e:'🚶',lbl:'9,000+ pasos',                  blk:'Actividad',freq:'daily',
+   tip:'9,000 pasos/día equivalen a ~45 min de movimiento moderado. Este umbral activa BDNF (factor neurotrófico cerebral), reduce cortisol crónico y mejora la vascularización cerebral. Ya estás en este nivel — mantenerlo es el objetivo.\n📚 Paluch et al., JAMA Neurology (2022): 9,800 pasos/día se asociaron con 50% menor riesgo de demencia en seguimiento de 7 años.'},
 ];
+
 
 /* ── 30 LEVELS ── */
 const LEVELS=[
@@ -315,6 +378,7 @@ const ACHS=[
   {id:'level20',  i:'💎',n:'Élite',                   desc:'Alcanza el nivel 20',                    secret:false},
   {id:'level25',  i:'🚀',n:'En Órbita',               desc:'Nivel 25 alcanzado',                     secret:true},
   {id:'level30',  i:'👑',n:'Arquitecto Neuronal',     desc:'Nivel máximo alcanzado — 30',            secret:false},
+  {id:'hab30',    i:'🌶️',n:'???',                     desc:'Completa el reto habanero suficientes veces', secret:true},
 ];
 
 /* ── STREAK SCIENCE FACTS ── */
@@ -411,15 +475,23 @@ function hmcls(r){return r===0?'hm0':r<40?'hm1':r<60?'hm2':r<80?'hm3':'hm4'}
 /* ── XP / LEVEL SYSTEM ── */
 function calcXP(){
   let xp=0;
-  Object.values(DB).forEach(d=>{
-    HABITS.forEach(h=>{if(d[h.id])xp+=5;});
+  Object.entries(DB).forEach(([date,d])=>{
+    HABITS.forEach(h=>{
+      if(d[h.id]){
+        xp+=5;
+        if(h.challenge&&h.xpBonus)xp+=h.xpBonus; // challenge bonus
+      }
+    });
     xp+=Math.min(d.agua||0,7)*3;
+    if(d._streakBonus)xp+=d._streakBonus;
     const allH=HABITS.filter(h=>d[h.id]).length;
     const wFull=(d.agua||0)>=6;
     const raw=Math.round((allH+(wFull?6:0))/(HABITS.length+6)*100);
-    if(raw>=100)xp+=20;else if(raw>=80)xp+=10;
+    if(raw>=80&&!d._streakBonus)xp+=10;
   });
-  xp+=Math.floor(calcStreakDays()/7)*50;
+  Object.entries(SETS).forEach(([k,v])=>{
+    if(k.startsWith('chest_')&&typeof v==='number')xp+=v;
+  });
   return xp;
 }
 function calcLvl(xp){
@@ -468,6 +540,112 @@ function perfDayStreak(){
   return c;
 }
 
+/* ── STREAK BONUS TABLE ── */
+const STREAK_BONUS=[
+  {days:1,xp:20,label:'🔥 Día completo'},{days:3,xp:35,label:'🔥 Racha x3'},
+  {days:7,xp:60,label:'🔥🔥 Racha x7'},{days:14,xp:100,label:'🔥🔥 Racha x14'},
+  {days:21,xp:150,label:'🔥🔥🔥 Racha x21'},{days:30,xp:200,label:'💎 Racha x30'},
+  {days:50,xp:300,label:'👑 Racha x50'},
+];
+function streakBonusXP(streak){
+  let bonus=0;
+  for(let i=STREAK_BONUS.length-1;i>=0;i--){if(streak>=STREAK_BONUS[i].days){bonus=STREAK_BONUS[i].xp;break;}}
+  return bonus;
+}
+function streakBonusLabel(streak){
+  let lbl=STREAK_BONUS[0].label;
+  for(let i=STREAK_BONUS.length-1;i>=0;i--){if(streak>=STREAK_BONUS[i].days){lbl=STREAK_BONUS[i].label;break;}}
+  return lbl;
+}
+
+/* ── DAY COMPLETE MESSAGES ── */
+const DC_MSGS=[
+  {e:'🧠',m:'Tu hipocampo acaba de consolidar nuevos recuerdos. La memoria de hoy quedó grabada.'},
+  {e:'⚡',m:'El BDNF que generaste hoy es literalmente el fertilizante de tus neuronas. Están creciendo.'},
+  {e:'🌊',m:'Tu nervio vago está más fuerte que ayer. Menos estrés, más calma por defecto.'},
+  {e:'🔬',m:'Las mitocondrias de tus neuronas son más eficientes hoy. Piensas más rápido con menos energía.'},
+  {e:'🏆',m:'Estás en el top 5% de personas que mantienen un protocolo cognitivo activo. En serio.'},
+  {e:'💧',m:'Cada botella de agua que tomaste hoy mantuvo tu cerebro al 100% de conductividad neuronal.'},
+  {e:'🌙',m:'Esta noche tu sueño profundo va a ser más profundo. Los hábitos de hoy lo garantizan.'},
+  {e:'🧬',m:'La mielina de tus axones se está fortaleciendo. Las señales neuronales viajan más rápido.'},
+  {e:'🔥',m:'La consistencia que estás construyendo activa genes relacionados con la neuroplasticidad.'},
+  {e:'💎',m:'Tu corteza prefrontal tiene más recursos hoy que ayer. Toma mejores decisiones.'},
+  {e:'🌅',m:'Levantarte temprano sincronizó tu ritmo circadiano. Tu cerebro opero en su ventana óptima hoy.'},
+  {e:'🫚',m:'La cúrcuma de hoy redujo la neuroinflamación. Tu cerebro opera con menos "ruido" de fondo.'},
+  {e:'🥚',m:'La colina del huevo ya está activa como acetilcolina en tu hipocampo. Memoria activada.'},
+  {e:'🚀',m:'Cada día completo es una inversión compuesta. Los intereses cognitivos se acumulan sin parar.'},
+  {e:'🌟',m:'Tu sistema nervioso parasimpático está más calibrado. Reaccionas mejor bajo presión.'},
+];
+
+/* ── WEEKLY CHEST ── */
+function weeklyChestXP(avgRate){
+  const ranges=[[60,50,80],[70,80,130],[80,130,200],[90,200,350]];
+  for(let i=ranges.length-1;i>=0;i--){
+    if(avgRate>=ranges[i][0]){
+      return ranges[i][1]+Math.floor(Math.random()*(ranges[i][2]-ranges[i][1]));
+    }
+  }
+  return 0;
+}
+function weeklyChestRank(xp){
+  if(xp>=200)return{t:'💎 Cofre Diamante',c:'#6BFFEA'};
+  if(xp>=130)return{t:'🥇 Cofre de Oro',c:'#FFD700'};
+  if(xp>=80)return{t:'🥈 Cofre de Plata',c:'#C0C0C0'};
+  return{t:'🥉 Cofre de Bronce',c:'#CD7F32'};
+}
+function checkWeekComplete(){
+  const mon=monday(todayStr()),key='chest_'+mon;
+  if(SETS[key])return; // already opened
+  const dates=week7(mon);
+  const allDone=dates.every(s=>dayRate(s)>0);
+  if(!allDone)return;
+  const avg=Math.round(dates.reduce((a,s)=>a+dayRate(s),0)/7);
+  const bonus=weeklyChestXP(avg);
+  if(!bonus)return;
+  SETS[key]=bonus;save();
+  setTimeout(()=>showChest(bonus,avg),800);
+}
+function showChest(bonus,avg){
+  const rank=weeklyChestRank(bonus);
+  document.getElementById('ch-xp').textContent='+'+bonus+' XP';
+  document.getElementById('ch-rank').innerHTML=`<span style="color:${rank.c}">${rank.t}</span>`;
+  // Particles
+  const pc=document.getElementById('particles');pc.innerHTML='';
+  const colors=['#FFD700','#FF6B6B','#6BFFB8','#6BB5FF','#FFB86B','#C06BFF'];
+  for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*2}s;animation-duration:${2+Math.random()*2}s;width:${4+Math.random()*8}px;height:${4+Math.random()*8}px`;pc.appendChild(p);}
+  document.getElementById('chest').classList.add('show');
+}
+function closeChest(){document.getElementById('chest').classList.remove('show');}
+
+/* ── DAY COMPLETE ── */
+function checkDayComplete(){
+  const today=todayStr();
+  if(dayRate(today)<100)return;
+  if(SETS.lastDayComplete===today)return; // already shown
+  SETS.lastDayComplete=today;save();
+  const streak=perfDayStreak();
+  const bonus=streakBonusXP(streak);
+  const label=streakBonusLabel(streak);
+  const msg=DC_MSGS[streak%DC_MSGS.length];
+  // Store bonus in DB for calcXP
+  if(!DB[today])DB[today]={};
+  DB[today]._streakBonus=bonus;save();
+  setTimeout(()=>showDayComplete(streak,bonus,label,msg),500);
+}
+function showDayComplete(streak,bonus,label,msg){
+  document.getElementById('dc-emoji').textContent=msg.e;
+  document.getElementById('dc-xp').textContent='+'+bonus+' XP · '+label;
+  document.getElementById('dc-streak').textContent='🔥 '+streak+' día'+(streak!==1?'s':'')+' de racha al 100%';
+  document.getElementById('dc-msg').textContent=msg.m;
+  document.getElementById('daycomplete').classList.add('show');
+}
+function closeDayComplete(){
+  document.getElementById('daycomplete').classList.remove('show');
+  checkWeekComplete();
+}
+
+function totalHabanero(){return Object.values(DB).filter(d=>d.habanero).length;}
+
 /* ── ACHIEVEMENTS CHECK ── */
 function checkAchievements(){
   const earned=SETS.achievements||{};
@@ -497,6 +675,7 @@ function checkAchievements(){
     else if(id==='level20')met=lvl>=20;
     else if(id==='level25')met=lvl>=25;
     else if(id==='level30')met=lvl>=30;
+    else if(id==='hab30')met=totalHabanero()>=30;
     if(met){earned[a.id]=todayStr();changed=true;setTimeout(()=>showAchUnlock(a),600);}
   });
   if(changed){SETS.achievements=earned;save();}
@@ -575,6 +754,7 @@ function toggle(s,id){
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
   checkUnlock();checkAchievements();
+  if(s===todayStr())checkDayComplete();
 }
 function setWater(s,n){
   const xpB=calcXP(),lvlB=calcLvl(xpB);
@@ -582,6 +762,7 @@ function setWater(s,n){
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
   checkUnlock();checkAchievements();
+  if(s===todayStr())checkDayComplete();
 }
 
 /* ── TOAST ── */
@@ -622,17 +803,20 @@ function vToday(xp,lvl,lc,li){
 
   // Level card
   const pct=xpPct(xp),nxt=lvl<30?LEVEL_XP[lvl]-xp:0;
+  const streakPerf=perfDayStreak(),nextBonus=streakBonusXP(streakPerf+1),nextLabel=streakBonusLabel(streakPerf+1);
+  const streakHint=dayRate(todayStr())<100?`<div style="font-size:11px;color:#C87820;margin-top:6px;font-weight:600">⚡ Completa hoy → +${nextBonus} XP bonus de racha</div>`:'';
   const lvlCard=`<div class="lvlcard">
 <div class="lvl-top">
 <div class="lvl-badge" style="background:${lc}22">${li.i}</div>
 <div class="lvl-info">
 <div class="lvl-num" style="color:${lc}">Nivel ${lvl} de 30</div>
 <div class="lvl-name">${li.n}</div>
-<div class="lvl-xp">${xp.toLocaleString()} XP total</div>
+<div class="lvl-xp">${xp.toLocaleString()} XP total · Racha 100%: ${streakPerf} días</div>
 </div>
 </div>
 <div class="lvl-track"><div class="lvl-fill" style="width:${pct}%;background:${lc}"></div></div>
 <div class="lvl-sub"><span>${pct}% hacia Nv.${Math.min(lvl+1,30)}</span><span>${lvl<30?nxt.toLocaleString()+' XP para subir':'Nivel máximo 🏆'}</span></div>
+${streakHint}
 </div>`;
 
   // Streak science fact
@@ -699,15 +883,20 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
     bh.forEach(h=>{
       const on=!!d[h.id],st=TIP===h.id;
       const o3w=week7(monday(ADATE)).filter(s=>dd(s).omega3).length;
+      const isChallenge=!!h.challenge;
+      const challengeTag=isChallenge?`<span style="font-size:9px;background:#FF6B2B;color:#fff;padding:2px 7px;border-radius:10px;font-weight:800;margin-left:4px">RETO +${h.xpBonus}XP</span>`:'';
+      const tipParts=h.tip.split('\n📚');
+      const tipMain=tipParts[0];
+      const tipSource=tipParts[1]?`<div style="margin-top:7px;padding-top:7px;border-top:1px solid #EED98A;font-size:11px;color:#7A5000"><strong>📚</strong>${tipParts[1]}</div>`:'';
       hab+=`<div class="hcard${on?' on':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
 <div class="hchk">${on?'✓':''}</div>
 <div style="flex:1;min-width:0">
-<div class="hlbl">${h.e} ${h.lbl}</div>
+<div class="hlbl">${h.e} ${h.lbl}${challengeTag}</div>
 ${h.freq==='3x'?`<div class="hsub">Meta 3×/semana · Esta semana: ${o3w}/3</div>`:''}
 ${h.id==='cre20g'?`<div class="hsub" style="color:#C87820;font-weight:600">⚠️ Necesitas 7 botellas de agua hoy</div>`:''}
 </div>
 <button class="tipbtn" data-tip="${h.id}">ℹ️</button>
-</div>${st?`<div class="tipbox">💡 ${h.tip}</div>`:''}`;
+</div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
     });
   });
   return daySel+lvlCard+factHtml+achCard+achMini+info2+hab;
