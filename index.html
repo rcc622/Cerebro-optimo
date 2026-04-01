@@ -1158,8 +1158,17 @@ function vConfig(){
 <div class="card"><div class="ctitle">Notificaciones</div>
 <div class="cfgitem" style="margin-bottom:0"><div class="cfgico">🔔</div><div class="cfginf"><div class="cfglbl">Recordatorio diario</div><div class="cfgsub">${SETS.notifications?'Activadas':'Desactivadas'} · ${SETS.reminderTime}</div></div><button class="toggle ${SETS.notifications?'on':'off'}" id="ntog"></button></div>
 <input type="time" id="rtim" value="${SETS.reminderTime}">
-</div>`;
-}
+</div>
+<div class="card"><div class="ctitle">💾 Respaldo de datos</div>
+<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px">Exporta tu perfil como archivo JSON para guardarlo en Drive o WhatsApp. Si se borra el caché de Chrome, impórtalo para recuperar todo tu progreso.</p>
+<div style="display:flex;gap:10px">
+<button id="btn-export" style="flex:1;padding:12px 8px;border-radius:12px;border:none;background:var(--navy);color:#fff;font-size:13px;font-weight:700;cursor:pointer">📤 Exportar</button>
+<button id="btn-import" style="flex:1;padding:12px 8px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer">📥 Importar</button>
+</div>
+<input type="file" id="file-import" accept=".json" style="display:none">
+<p style="font-size:10px;color:var(--text2);margin-top:10px;text-align:center">Recomendado: exportar cada semana</p>
+</div>`;}
+
 
 /* ── EVENTS ── */
 document.addEventListener('click',e=>{
@@ -1181,8 +1190,44 @@ document.addEventListener('click',e=>{
     else{SETS.notifications=false;save();render();toast('Desactivadas');}return;
   }
   if(e.target.id==='ins-btn'&&PROMPT){PROMPT.prompt();PROMPT.userChoice.then(r=>{if(r.outcome==='accepted')toast('¡App instalada! 🎉');PROMPT=null;render();});}
+  if(e.target.id==='btn-export'){exportProfile();return;}
+  if(e.target.id==='btn-import'){document.getElementById('file-import')?.click();return;}
 });
-document.addEventListener('change',e=>{if(e.target.id==='rtim'){SETS.reminderTime=e.target.value;save();toast('Recordatorio: '+SETS.reminderTime);scheduleR();}});
+document.addEventListener('change',e=>{
+  if(e.target.id==='rtim'){SETS.reminderTime=e.target.value;save();toast('Recordatorio: '+SETS.reminderTime);scheduleR();}
+  if(e.target.id==='file-import'){importProfile(e.target.files[0]);e.target.value='';}
+});
+
+/* ── BACKUP / RESTORE ── */
+function exportProfile(){
+  const data={d:DB,s:SETS,v:6,exported:todayStr()};
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='cerebro-optimo-backup-'+todayStr()+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ Backup exportado · '+todayStr());
+}
+function importProfile(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.d||!data.s){toast('❌ Archivo inválido');return;}
+      // Confirm before overwriting
+      if(!confirm('¿Restaurar backup del '+( data.exported||'?')+' ? Esto reemplazará todos tus datos actuales.')){return;}
+      DB=data.d||{};
+      SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},data.s||{});
+      save();render();
+      toast('✅ Perfil restaurado correctamente');
+    }catch(err){toast('❌ Error al leer el archivo');}
+  };
+  reader.readAsText(file);
+}
 
 /* ── NOTIFICATIONS ── */
 let _rt=null;
