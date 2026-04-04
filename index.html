@@ -278,6 +278,15 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <div class="achup-desc" id="au-desc"></div>
   </div>
 </div>
+<div id="backupprompt" style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9998;display:none;align-items:center;justify-content:center;padding:24px" onclick="closeBackupPrompt()">
+  <div style="background:#fff;border-radius:22px;padding:26px 22px 20px;max-width:310px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)" onclick="event.stopPropagation()">
+    <div style="font-size:52px;margin-bottom:10px">💾</div>
+    <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:7px">¿Hacer backup hoy?</div>
+    <div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px">Arrancaste el día — buen momento para guardar tu progreso. Si el caché de Chrome se borra, perderías todo sin un respaldo.</div>
+    <button id="bp-export-btn" style="width:100%;padding:15px;border-radius:14px;border:none;background:var(--navy);color:#fff;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;letter-spacing:.3px">📤 Exportar Backup</button>
+    <button onclick="closeBackupPrompt()" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Ahora no</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <script>
 'use strict';
@@ -289,15 +298,17 @@ const HABITS=[
   {id:'aguafria',e:'🥶',lbl:'Rostro en agua fría (30-60s)',  blk:'Mañana',freq:'daily',
    tip:'El agua fría activa el reflejo de inmersión: estimula el nervio trigémino → nervio vago → sistema parasimpático. Reduce cortisol en segundos y mejora HRV.\n📚 Khurana & Wu, Clinical Autonomic Research (2006): la bradicardia inicia en promedio 5.6s tras el estímulo frío en el rostro.'},
   {id:'sol',     e:'☀️',lbl:'Luz solar primeros 30 min',     blk:'Mañana',freq:'daily',
-   tip:'La luz solar matutina suprime la melatonina residual y ancla el ritmo circadiano. Mejora la calidad del sueño esa misma noche y regula el eje cortisol-serotonina.\n📚 Czeisler et al., Science (1986): la luz matutina es el zeitgeber más poderoso para el reloj circadiano humano.'},
-  {id:'huevo',   e:'🥚',lbl:'Huevo entero (en ayunas)',      blk:'Mañana',freq:'daily',
-   tip:'La yema tiene ~147mg de colina → acetilcolina, el neurotransmisor de la memoria. Mejor con yema líquida y con grasa (aceite de oliva) para máxima absorción de B12.\n📚 Zeisel & da Costa, Nutrition Reviews (2009): la colina dietética es esencial para la función del hipocampo y la síntesis de acetilcolina.'},
+   tip:'La luz solar matutina activa células retinales ipRGC (con melanopsina) que anclan el reloj circadiano, suprimen melatonina residual y regulan el eje cortisol-serotonina. El vidrio del parabrisas NO bloquea el espectro visible que activa estas células — si manejas al trabajo con el sol del amanecer pegándote en la cara, esos minutos cuentan completamente. El ángulo bajo del sol al amanecer es ideal: la luz entra directamente a la retina en lugar de llegar de arriba hacia abajo.\n📚 Czeisler et al., Science (1986): la luz matutina es el zeitgeber más poderoso para el reloj circadiano humano.'},
+  {id:'huevo',   e:'🥚',lbl:'Huevo tibio (en ayunas)',        blk:'Mañana',freq:'daily',
+   tip:'La yema tiene ~147mg de colina → acetilcolina, el neurotransmisor de la memoria. El punto óptimo es yema líquida (lípidos intactos, colina sin oxidar) con clara cuajada (elimina la avidina que bloquea la biotina). Receta: 6-7 minutos en agua hirviendo, sacar y abrir de inmediato. Con grasa (aceite de oliva) para máxima absorción de vitaminas liposolubles.\n📚 Zeisel & da Costa, Nutrition Reviews (2009): la colina dietética es esencial para la función del hipocampo y la síntesis de acetilcolina.'},
   {id:'cre5g',   e:'🧪',lbl:'Creatina 5g en ayunas (+ 500ml agua)',blk:'Mañana',freq:'daily',
    tip:'En ayunas la creatina se absorbe sin competir con otros alimentos. SIEMPRE con mínimo 500ml de agua.\n📚 Smith et al., Alzheimer\'s & Dementia (2025): 20g/día aumentó creatina cerebral 11% en pacientes con Alzheimer, mejorando memoria de trabajo.',minP:1,maxP:1},
   {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g',  blk:'Mañana',freq:'daily',
    tip:'Divide en 4 tomas: al despertar, mediodía, tarde y noche. CRÍTICO: necesitas 7 botellas de agua hoy.\n📚 Harris et al., Clinical Science (1992): el protocolo de carga de 20g/día es el más eficiente para saturar fosfocreatina muscular y cerebral.',minP:2,maxP:2},
   {id:'cremnt',  e:'🧪',lbl:'Creatina 5g mantenimiento',     blk:'Mañana',freq:'daily',
    tip:'5g/día mantiene la saturación cerebral indefinidamente. El cerebro ya opera con reservas de fosfocreatina óptimas.\n📚 Rawson & Volek, J Strength Cond Res (2003): 5g/día mantiene niveles elevados post-carga.',minP:3,maxP:9},
+  {id:'teverde',  e:'🍵',lbl:'Té verde (45 min antes del café)', blk:'Mañana',freq:'daily',
+   tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
   {id:'cafe',    e:'☕',lbl:'Café después de 90 min',        blk:'Mañana',freq:'daily',
    tip:'El cortisol alcanza su pico 30-45 min tras despertar. A los 90 min baja y el café es más eficaz sin desarrollar tolerancia.\n📚 Lovallo et al., Psychosomatic Medicine (2005): la cafeína amplifica la respuesta del cortisol en ventanas de estrés basal.'},
   // DÍA
@@ -806,11 +817,17 @@ function checkUnlock(){
 /* ── TOGGLE / WATER ── */
 function toggle(s,id){
   const xpB=calcXP(),lvlB=calcLvl(xpB);
-  if(!DB[s])DB[s]={};DB[s][id]=!DB[s][id];save();
+  if(!DB[s])DB[s]={};
+  const wasOn=!!DB[s][id];
+  DB[s][id]=!DB[s][id];save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
   checkUnlock();checkAchievements();
   if(s===todayStr())checkDayComplete();
+  // Sugerir backup al marcar "Agua + sal + limón" por primera vez hoy
+  if(id==='agua'&&!wasOn&&s===todayStr()){
+    setTimeout(()=>showBackupPrompt(),800);
+  }
   render(true);
 }
 function setWater(s,n){
@@ -1243,6 +1260,18 @@ function scheduleR(){
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();PROMPT=e;if(VIEW==='config')render();});
 if('serviceWorker' in navigator){try{const sw=`self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',()=>self.clients.claim());self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response(''))));`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'text/javascript'}))).catch(()=>{});}catch(e){}}
 try{const m={name:'Mi Cerebro Óptimo',short_name:'Cerebro',start_url:'.',display:'standalone',background_color:'#F5F4F0',theme_color:'#0D1B2A',icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1B2A'/><text y='.9em' font-size='72' x='14'>🧠</text></svg>",sizes:'any',type:'image/svg+xml'}]};const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l);}catch(e){}
+
+/* ── BACKUP PROMPT ── */
+function showBackupPrompt(){
+  const el=document.getElementById('backupprompt');
+  if(el)el.style.display='flex';
+  const btn=document.getElementById('bp-export-btn');
+  if(btn)btn.onclick=function(){exportProfile();closeBackupPrompt();};
+}
+function closeBackupPrompt(){
+  const el=document.getElementById('backupprompt');
+  if(el)el.style.display='none';
+}
 
 /* ── INIT ── */
 load();checkAchievements();render();scheduleR();
