@@ -446,7 +446,7 @@ const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic
 
 /* ── STATE ── */
 let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
-let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null;
+let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null;
 
 /* ── DATE ── */
 function todayStr(){const d=new Date();return fmt(d)}
@@ -884,8 +884,21 @@ function render(keepScroll=false){
 
 /* ── TODAY ── */
 function vToday(xp,lvl,lc,li){
-  const today=todayStr(),m=monday(today),dates=week7(m),p=ph(),W=wg(),prog=phaseProgress(),info=PHASES[p];
-  const daySel=`<div class="dsel">${dates.map((s,i)=>{const r=dayRate(s),isA=s===ADATE,isT=s===today;return`<button class="dbtn${isA?' active':''}${isT?' today':''}" data-day="${s}">${DS[i]}<div class="ddot" style="background:${isA?'rgba(255,255,255,.45)':rc(r)}"></div></button>`;}).join('')}</div>`;
+  const today=todayStr(),baseMon=shift(monday(today),EOFF*7),m=baseMon,dates=week7(m),p=ph(),W=wg(),prog=phaseProgress(),info=PHASES[p];
+  const isPastWeek=EOFF<0;
+  // Ensure ADATE is within the visible week
+  const visibleDates=dates;
+  const pastNav=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+<button data-eo="-1" style="border:none;background:#fff;border-radius:9px;padding:6px 12px;font-size:17px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.1)">‹</button>
+<div style="flex:1;text-align:center;font-size:12px;font-weight:700;color:${isPastWeek?'#C87820':'var(--navy)'}">
+${isPastWeek?'📝 Editando: '+weekLabel(m):'Semana actual'}
+</div>
+<button data-eo="1" style="border:none;background:#fff;border-radius:9px;padding:6px 12px;font-size:17px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.1);opacity:${EOFF>=0?.3:1}" ${EOFF>=0?'disabled':''}>›</button>
+</div>`;
+  const pastBanner=isPastWeek?`<div style="background:#FFF8E1;border:1px solid #F0D88A;border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:12px;color:#7A5C00;line-height:1.5">
+✏️ <strong>Modo recuperación</strong> — Marca los hábitos que recuerdes haber hecho esta semana. Toca ‹ › para navegar.
+</div>`:'';
+  const daySel=`${pastNav}${pastBanner}<div class="dsel">${dates.map((s,i)=>{const r=dayRate(s),isA=s===ADATE,isT=s===today;return`<button class="dbtn${isA?' active':''}${isT?' today':''}" data-day="${s}">${DS[i]}<div class="ddot" style="background:${isA?'rgba(255,255,255,.45)':rc(r)}"></div></button>`;}).join('')}</div>`;
 
   // Level card
   const pct=xpPct(xp),nxt=lvl<30?LEVEL_XP[lvl]-xp:0;
@@ -1195,6 +1208,14 @@ document.addEventListener('click',e=>{
   if(cd&&!e.target.closest('[data-tip]')){const[s,id]=cd.dataset.t.split('|');toggle(s,id);return;}
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render(true);return;}
   const wn=e.target.closest('[data-wn]');if(wn){WOFF=Math.min(0,WOFF+parseInt(wn.dataset.wn));render();return;}
+  const eo=e.target.closest('[data-eo]');if(eo){
+    EOFF=Math.min(0,EOFF+parseInt(eo.dataset.eo));
+    // Ajustar ADATE a lunes de la semana visible si cae fuera
+    const newMon=shift(monday(todayStr()),EOFF*7);
+    const newDates=week7(newMon);
+    if(!newDates.includes(ADATE))ADATE=EOFF===0?todayStr():newMon;
+    TIP=null;render();return;
+  }
   const hm=e.target.closest('[data-hm]');if(hm){YSW=YSW===hm.dataset.hm?null:hm.dataset.hm;render();return;}
   const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
   const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
