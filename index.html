@@ -446,7 +446,7 @@ const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic
 
 /* ── STATE ── */
 let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
-let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null;
+let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null;
 
 /* ── DATE ── */
 function todayStr(){const d=new Date();return fmt(d)}
@@ -814,6 +814,7 @@ function checkUnlock(){
 
 /* ── TOGGLE / WATER ── */
 function toggle(s,id){
+  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};
   const wasOn=!!DB[s][id];
@@ -829,6 +830,7 @@ function toggle(s,id){
   render(true);
 }
 function setWater(s,n){
+  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};DB[s].agua=n;save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
@@ -886,18 +888,29 @@ function render(keepScroll=false){
 function vToday(xp,lvl,lc,li){
   const today=todayStr(),baseMon=shift(monday(today),EOFF*7),m=baseMon,dates=week7(m),p=ph(),W=wg(),prog=phaseProgress(),info=PHASES[p];
   const isPastWeek=EOFF<0;
+  const isLocked=isPastWeek&&!EOFF_EDIT;
   // Ensure ADATE is within the visible week
   const visibleDates=dates;
+  const lockBtn=isPastWeek
+    ? `<button data-togglelock="1" style="border:none;background:${isLocked?'#EFEDE8':'#E8F5E9'};border-radius:9px;padding:6px 11px;font-size:16px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.1)">${isLocked?'🔒':'✏️'}</button>`
+    : '';
   const pastNav=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
 <button data-eo="-1" style="border:none;background:#fff;border-radius:9px;padding:6px 12px;font-size:17px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.1)">‹</button>
 <div style="flex:1;text-align:center;font-size:12px;font-weight:700;color:${isPastWeek?'#C87820':'var(--navy)'}">
-${isPastWeek?'📝 Editando: '+weekLabel(m):'Semana actual'}
+${isPastWeek?'Semana '+weekLabel(m):'Semana actual'}
 </div>
+${lockBtn}
 <button data-eo="1" style="border:none;background:#fff;border-radius:9px;padding:6px 12px;font-size:17px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.1);opacity:${EOFF>=0?.3:1}" ${EOFF>=0?'disabled':''}>›</button>
 </div>`;
-  const pastBanner=isPastWeek?`<div style="background:#FFF8E1;border:1px solid #F0D88A;border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:12px;color:#7A5C00;line-height:1.5">
-✏️ <strong>Modo recuperación</strong> — Marca los hábitos que recuerdes haber hecho esta semana. Toca ‹ › para navegar.
-</div>`:'';
+  const pastBanner=isPastWeek
+    ? isLocked
+      ? `<div style="background:#F5F4F0;border:1px solid #D5D0C8;border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:12px;color:#888;line-height:1.5">
+🔒 Semana bloqueada — toca ✏️ para editar y recuperar datos.
+</div>`
+      : `<div style="background:#FFF8E1;border:1px solid #F0D88A;border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:12px;color:#7A5C00;line-height:1.5">
+✏️ <strong>Modo edición</strong> — Marca los hábitos que recuerdes haber hecho. Toca 🔒 para volver a bloquear.
+</div>`
+    : '';
   const daySel=`${pastNav}${pastBanner}<div class="dsel">${dates.map((s,i)=>{const r=dayRate(s),isA=s===ADATE,isT=s===today;return`<button class="dbtn${isA?' active':''}${isT?' today':''}" data-day="${s}">${DS[i]}<div class="ddot" style="background:${isA?'rgba(255,255,255,.45)':rc(r)}"></div></button>`;}).join('')}</div>`;
 
   // Level card
@@ -1210,12 +1223,13 @@ document.addEventListener('click',e=>{
   const wn=e.target.closest('[data-wn]');if(wn){WOFF=Math.min(0,WOFF+parseInt(wn.dataset.wn));render();return;}
   const eo=e.target.closest('[data-eo]');if(eo){
     EOFF=Math.min(0,EOFF+parseInt(eo.dataset.eo));
-    // Ajustar ADATE a lunes de la semana visible si cae fuera
+    EOFF_EDIT=false; // siempre bloquear al cambiar de semana
     const newMon=shift(monday(todayStr()),EOFF*7);
     const newDates=week7(newMon);
     if(!newDates.includes(ADATE))ADATE=EOFF===0?todayStr():newMon;
     TIP=null;render();return;
   }
+  const tl=e.target.closest('[data-togglelock]');if(tl){EOFF_EDIT=!EOFF_EDIT;render();return;}
   const hm=e.target.closest('[data-hm]');if(hm){YSW=YSW===hm.dataset.hm?null:hm.dataset.hm;render();return;}
   const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
   const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
