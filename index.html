@@ -316,6 +316,8 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 /* ── HABITS ── */
 const HABITS=[
   // MAÑANA — en ayunas
+  {id:'nochecont',e:'🌙',lbl:'Anoche dormí continuo (sin despertar antes de las 5am)',blk:'Mañana',freq:'daily',addedOn:'2026-04-13',
+   tip:'Marca este hábito en la mañana si anoche NO te despertaste antes de las 5am (o si despertaste pero fue solo breve, sin bajar escaleras ni prender luces). El objetivo es medir la CONTINUIDAD del sueño, no la duración total. Cada despertar completo cuesta 15-20 min para regresar a sueño profundo — por eso 6h continuas pueden reparar más que 8h fragmentadas.\n📚 Walker, Why We Sleep (2017) y Bonnet & Arand, Sleep Medicine Reviews (2003): la fragmentación del sueño reduce la consolidación de memoria y limpieza glinfática más que la reducción moderada de duración.'},
   {id:'agua',    e:'💧',lbl:'Agua + sal + limón al despertar',blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
    tip:'Tras 7-8h de ayuno el cerebro está deshidratado. La sal repone electrolitos que el café posterior elimina. El limón activa enzimas digestivas.\n📚 Popkin et al., Nutrition Reviews (2010): incluso 1-2% de deshidratación reduce cognición y memoria de trabajo.'},
   {id:'aguafria',e:'🥶',lbl:'Rostro en agua fría (30-60s)',  blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
@@ -326,8 +328,8 @@ const HABITS=[
    tip:'En ayunas la creatina se absorbe sin competir con otros alimentos. SIEMPRE con mínimo 500ml de agua.\n📚 Smith et al., Alzheimer\'s & Dementia (2025): 20g/día aumentó creatina cerebral 11% en pacientes con Alzheimer, mejorando memoria de trabajo.',minP:1,maxP:1},
   {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g',  blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
    tip:'Divide en 4 tomas: al despertar, mediodía, tarde y noche. CRÍTICO: necesitas 7 botellas de agua hoy.\n📚 Harris et al., Clinical Science (1992): el protocolo de carga de 20g/día es el más eficiente para saturar fosfocreatina muscular y cerebral.',minP:2,maxP:2},
-  {id:'cremnt',  e:'🧪',lbl:'Creatina 5g mantenimiento',     blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
-   tip:'5g/día mantiene la saturación cerebral indefinidamente. El cerebro ya opera con reservas de fosfocreatina óptimas.\n📚 Rawson & Volek, J Strength Cond Res (2003): 5g/día mantiene niveles elevados post-carga.',minP:3,maxP:9},
+  {id:'cremnt',  e:'🧪',lbl:'Creatina 10g (2×5g) mantenimiento extendido',blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
+   tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia). Mantén 3L de agua diarios. Reevaluar a las 8 semanas: si tu sueño se consolida a 7h+ continuas, baja a 5g/día.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:9},
   {id:'teverde',  e:'🍵',lbl:'Té verde (45 min antes del café)', blk:'Mañana',freq:'daily',addedOn:'2026-04-04',
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
   {id:'cafe',    e:'☕',lbl:'Café después de 90 min',        blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
@@ -337,6 +339,10 @@ const HABITS=[
    tip:'La vitamina E protege las membranas neuronales del daño oxidativo. Cómelas con piel sobre avena entera remojada la noche anterior en leche sin azúcar — el remojo reduce el ácido fítico de ambas y mejora absorción. Agrega canela: es antiinflamatoria y regula insulina. Siempre después del huevo y creatina en ayunas.\n📚 Morris et al., JAMA (2002): alto consumo de vitamina E se asoció con 67% menor riesgo de Alzheimer.'},
   {id:'curcuma', e:'🫚',lbl:'Cúrcuma + pimienta negra',      blk:'Día',freq:'daily',addedOn:'2020-01-01',
    tip:'La pimienta NEGRA (no blanca) aumenta la biodisponibilidad de la curcumina 2,000%. Juntas reducen IL-6 y TNF-α, marcadores clave de neuroinflamación.\n📚 Shoba et al., Planta Medica (1998): 20mg de piperina aumentaron la biodisponibilidad de curcumina 2,000% en humanos.'},
+  {id:'lectura', e:'📚',lbl:'Lectura 30 min / 10 cuartillas',blk:'Día',freq:'daily',addedOn:'2026-04-13',
+   tip:'Leer 30 min al día (o ~10 cuartillas) construye reserva cognitiva: más densidad sináptica, mayor mielinización en tractos del lenguaje y mejor memoria de trabajo. Lectura profunda y enfocada es lo que cuenta — no scroll de redes ni titulares. Ideal en horario de día (mañana o tarde), no confundir con la lectura nocturna pre-sueño que ya tienes.\n📚 Wilson et al., Neurology (2013): adultos con hábito de lectura sostenida mostraron 32% menor declive cognitivo en seguimiento de 6 años vs sus pares.'},
+  {id:'sincafe', e:'☕',lbl:'Sin cafeína después de la 1pm',blk:'Día',freq:'daily',addedOn:'2026-04-13',
+   tip:'La cafeína tiene vida media de 5-6 horas. Un café a las 4pm sigue teniendo 50% activo a las 9pm y 25% a las 2am — bloqueando los receptores de adenosina exactamente cuando tu cerebro necesita esa señal para entrar en sueño profundo. El efecto es invisible: te duermes igual pero tu sueño profundo cae hasta 40%. Café matutino permitido sin restricción, corte absoluto a las 13:00.\n📚 Drake et al., J Clinical Sleep Medicine (2013): cafeína tomada 6 horas antes de dormir redujo el tiempo total de sueño en 1 hora, sin que los sujetos lo percibieran subjetivamente.'},
   // NOCHE
   {id:'vino',    e:'🚫',lbl:'Sin vino hoy',                  blk:'Noche',freq:'daily',addedOn:'2020-01-01',
    tip:'El alcohol interrumpe el sueño REM en la segunda mitad de la noche. Dos copas diarias reducen el volumen del hipocampo a largo plazo.\n📚 Colrain et al., Handbook of Clinical Neurology (2014): el alcohol suprime el sueño REM y altera la arquitectura del sueño profundo.'},
@@ -348,8 +354,10 @@ const HABITS=[
    tip:'El plátano: triptófano → serotonina → melatonina. El kiwi tiene serotonina preformada. El potasio relaja la musculatura y reduce despertares nocturnos.\n📚 Lin et al., Asia Pacific J Clinical Nutrition (2011): 2 kiwis antes de dormir mejoraron calidad y duración del sueño en 4 semanas.'},
   {id:'gomitas', e:'🍬',lbl:'Gomitas 45 min antes de dormir',blk:'Noche',freq:'daily',addedOn:'2020-01-01',
    tip:'L-teanina (ondas alfa, relajación) + Magnesio (activa GABA) + 5-HTP (→ serotonina → melatonina). Los tres son sinérgicos. SIEMPRE con agua.\n📚 Hidese et al., Nutrients (2019): L-teanina mejoró calidad del sueño y cognición al día siguiente en adultos sanos.'},
-  {id:'frio',    e:'❄️',lbl:'Cuarto fresco al dormir',       blk:'Noche',freq:'daily',addedOn:'2020-01-01',
-   tip:'El cerebro necesita bajar 1-2°C para entrar en sueño profundo. A 18-20°C se prolonga el sueño de ondas lentas y aumenta la GH que repara neuronas.\n📚 Lack et al., Sleep Medicine Clinics (2012): la temperatura corporal reducida es necesaria para el inicio del sueño profundo.'},
+  {id:'frio',    e:'❄️',lbl:'Cuarto fresco al dormir (18-19°C)',blk:'Noche',freq:'daily',addedOn:'2020-01-01',
+   tip:'El cerebro necesita bajar 1-2°C para entrar en sueño profundo. La temperatura ambiente objetivo es 18-19°C — más caliente que eso, tu cuerpo nunca consolida sueño de ondas lentas correctamente. En Monterrey con calor, AC a 18-19°C + cobija gruesa es la combinación ganadora. Cada grado arriba de 20°C recorta minutos de sueño profundo.\n📚 Lack et al., Sleep Medicine Clinics (2012) y Okamoto-Mizuno & Mizuno, J Physiological Anthropology (2012): la temperatura corporal reducida es necesaria para el inicio y mantenimiento del sueño profundo; 18-19°C es el rango óptimo para la mayoría de los adultos.'},
+  {id:'sinliq',  e:'🚱',lbl:'Sin líquidos después de las 7pm',blk:'Noche',freq:'daily',addedOn:'2026-04-13',
+   tip:'Tomar líquidos después de las 7pm es el factor #1 de nocturia en personas sin problemas urológicos. El agua tarda ~90 min en llegar a la vejiga como orina. Corte a las 7pm = última orinada natural alrededor de las 10:30pm = noche continua hasta las 5-6am. Si tienes sed después: sorbos pequeños, no vasos completos. Tus 3L diarios deben distribuirse entre 6am y 7pm (13 horas, más que suficiente).\n📚 Asplund, Clinical Interventions in Aging (2007): la restricción de líquidos nocturnos reduce significativamente los episodios de nocturia y mejora la calidad del sueño en adultos sanos.'},
   // RETOS — opcionales, XP extra, no cuentan para el 100%
   {id:'walk5am', e:'🌅',lbl:'Caminata 5am',                  blk:'Retos',freq:'daily',challenge:true,xpBonus:15,weeklyGoal:5,addedOn:'2020-01-01',
    tip:'Caminar en ayunas combina luz circadiana, BDNF por aeróbico y oxidación de grasas cerebrales. El BDNF generado actúa 4-6 horas después.\n📚 Erickson et al., PNAS (2011): el ejercicio aeróbico aumenta el volumen del hipocampo 2% y los niveles de BDNF en adultos.'},
@@ -443,6 +451,8 @@ const ACHS=[
   {id:'readambar14',i:'📖',n:'Lector Nocturno',       desc:'14 días seguidos leyendo con luz ámbar',           secret:false},
   {id:'readambar30',i:'📖',n:'Bibliófilo Neural',     desc:'30 días seguidos leyendo con luz ámbar',           secret:true},
   {id:'nochex4',    i:'🌙',n:'???',                   desc:'Desbloquea 4 Noches Libres (28 días de disciplina de sueño)',secret:true},
+  {id:'nochecont7', i:'🌙',n:'Noche Continua',        desc:'7 días seguidos sin despertar antes de las 5am',   secret:false},
+  {id:'nochecont21',i:'💤',n:'Sueño Reparado',        desc:'21 días seguidos de sueño continuo',               secret:true},
 ];
 
 /* ── STREAK SCIENCE FACTS ── */
@@ -504,18 +514,47 @@ function curMon(){return shift(monday(todayStr()),WOFF*7)}
 /* ── STORAGE ── */
 function load(){
   try{const r=localStorage.getItem('cog6');if(r){const p=JSON.parse(r);DB=p.d||{};SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},p.s||{});SETS.achievements=SETS.achievements||{};}}catch(e){}
+  // MIGRATION: build phaseHistory from current phase + phaseStart so historical days keep correct phase
+  if(!SETS.phaseHistory||!Array.isArray(SETS.phaseHistory)||SETS.phaseHistory.length===0){
+    const cur=SETS.phase||0;
+    if(cur===0){
+      SETS.phaseHistory=[{phase:0,start:'2020-01-01'}];
+    } else {
+      // Past days were in (cur-1), current phase started at phaseStart
+      SETS.phaseHistory=[
+        {phase:Math.max(0,cur-1),start:'2020-01-01'},
+        {phase:cur,start:SETS.phaseStart||todayStr()}
+      ];
+    }
+    save();
+  }
 }
 function save(){try{localStorage.setItem('cog6',JSON.stringify({d:DB,s:SETS}))}catch(e){}}
 
 /* ── HABIT UTILS ── */
 function ph(){return SETS.phase||0}
-function wg(){return ph()===2?7:6}
+function phOn(date){
+  // Returns the creatine phase active on a given date (historical)
+  if(!date)return ph();
+  const hist=SETS.phaseHistory;
+  if(!hist||hist.length===0)return ph();
+  let result=hist[0].phase;
+  for(const e of hist){
+    if(e.start<=date)result=e.phase;
+    else break;
+  }
+  return result;
+}
+function wg(date){return phOn(date)===2?7:6}
 function wLabel(){return ph()===2?'3.5L · 7 botellas':'3L · 6 botellas'}
-function activeH(date){return HABITS.filter(h=>(h.minP===undefined||(ph()>=h.minP&&ph()<=h.maxP))&&(!h.addedOn||!date||h.addedOn<=date))}
+function activeH(date){
+  const p=phOn(date);
+  return HABITS.filter(h=>(h.minP===undefined||(p>=h.minP&&p<=h.maxP))&&(!h.addedOn||!date||h.addedOn<=date));
+}
 function dailyH(date){return activeH(date).filter(h=>h.freq==='daily'&&!h.challenge)}
 function dd(s){return DB[s]||{}}
 function dayRate(s){
-  const d=dd(s),W=wg(),dl=dailyH(s);
+  const d=dd(s),W=wg(s),dl=dailyH(s);
   const hd=dl.filter(h=>d[h.id]).length;
   const wd=Math.min(d.agua||0,W);
   const tot=dl.length+W;
@@ -524,7 +563,7 @@ function dayRate(s){
 function weekRate(m){
   const dates=week7(m);let tot=0,done=0;
   dates.forEach(s=>{
-    const d=dd(s),W=wg(),dl=dailyH(s);
+    const d=dd(s),W=wg(s),dl=dailyH(s);
     dl.forEach(h=>{tot++;if(d[h.id])done++;});
     tot+=W;done+=Math.min(d.agua||0,W);
   });
@@ -549,9 +588,13 @@ function calcXP(){
     xp+=Math.min(d.agua||0,7)*3;
     if(d._streakBonus)xp+=d._streakBonus;
     if(d._nocheLibreBonus)xp+=d._nocheLibreBonus;
-    const allH=HABITS.filter(h=>d[h.id]).length;
-    const wFull=(d.agua||0)>=6;
-    const raw=Math.round((allH+(wFull?6:0))/(HABITS.length+6)*100);
+    // Date-aware raw % for the +10 bonus
+    const dl=dailyH(date);
+    const W=wg(date);
+    const allH=dl.filter(h=>d[h.id]).length;
+    const wFull=(d.agua||0)>=W;
+    const tot=dl.length+W;
+    const raw=tot?Math.round((allH+(wFull?W:0))/tot*100):0;
     if(raw>=80&&!d._streakBonus)xp+=10;
   });
   Object.entries(SETS).forEach(([k,v])=>{
@@ -595,7 +638,13 @@ function daysAbove(pct,n){
 }
 function morningStreakDays(){
   let c=0,d=todayStr();
-  for(let i=0;i<500;i++){const mh=HABITS.filter(h=>h.blk==='Mañana'&&(!h.addedOn||h.addedOn<=d)&&(h.minP===undefined||(ph()>=h.minP&&ph()<=h.maxP)));const x=dd(d);if(mh.length&&mh.every(h=>x[h.id]))c++;else break;d=shift(d,-1);}
+  for(let i=0;i<500;i++){
+    const p=phOn(d);
+    const mh=HABITS.filter(h=>h.blk==='Mañana'&&(!h.addedOn||h.addedOn<=d)&&(h.minP===undefined||(p>=h.minP&&p<=h.maxP)));
+    const x=dd(d);
+    if(mh.length&&mh.every(h=>x[h.id]))c++;else break;
+    d=shift(d,-1);
+  }
   return c;
 }
 function perfDayStreak(){
@@ -811,6 +860,8 @@ function checkAchievements(){
     else if(id==='readambar14')met=habitConsecDays('readambar')>=14;
     else if(id==='readambar30')met=habitConsecDays('readambar')>=30;
     else if(id==='nochex4')met=nocheLibreCount()>=4;
+    else if(id==='nochecont7')met=habitConsecDays('nochecont')>=7;
+    else if(id==='nochecont21')met=habitConsecDays('nochecont')>=21;
     if(met){earned[a.id]=todayStr();changed=true;setTimeout(()=>showAchUnlock(a),600);}
   });
   if(changed){SETS.achievements=earned;save();}
@@ -877,9 +928,9 @@ function phaseProgress(){
 }
 function checkUnlock(){
   const p=ph();
-  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
-  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
-  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
+  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:1,start:todayStr()});save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
+  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:2,start:todayStr()});save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
+  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:3,start:todayStr()});save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
 }
 
 /* ── TOGGLE / WATER ── */
@@ -1304,7 +1355,7 @@ document.addEventListener('click',e=>{
   const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
   const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
   const sp=e.target.closest('[data-sp]');
-  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
+  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:p2,start:todayStr()});save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
   if(e.target.id==='ntog'){
     if(!SETS.notifications){if('Notification' in window){Notification.requestPermission().then(p3=>{SETS.notifications=p3==='granted';toast(SETS.notifications?'✅ Activadas':'❌ Permiso denegado');save();render();scheduleR();});}else toast('No soportado');}
     else{SETS.notifications=false;save();render();toast('Desactivadas');}return;
