@@ -316,8 +316,6 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 /* ── HABITS ── */
 const HABITS=[
   // MAÑANA — en ayunas
-  {id:'nochecont',e:'🌙',lbl:'Anoche dormí continuo (sin despertar antes de las 5am)',blk:'Mañana',freq:'daily',addedOn:'2026-04-13',
-   tip:'Marca este hábito en la mañana si anoche NO te despertaste antes de las 5am (o si despertaste pero fue solo breve, sin bajar escaleras ni prender luces). El objetivo es medir la CONTINUIDAD del sueño, no la duración total. Cada despertar completo cuesta 15-20 min para regresar a sueño profundo — por eso 6h continuas pueden reparar más que 8h fragmentadas.\n📚 Walker, Why We Sleep (2017) y Bonnet & Arand, Sleep Medicine Reviews (2003): la fragmentación del sueño reduce la consolidación de memoria y limpieza glinfática más que la reducción moderada de duración.'},
   {id:'agua',    e:'💧',lbl:'Agua + sal + limón al despertar',blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
    tip:'Tras 7-8h de ayuno el cerebro está deshidratado. La sal repone electrolitos que el café posterior elimina. El limón activa enzimas digestivas.\n📚 Popkin et al., Nutrition Reviews (2010): incluso 1-2% de deshidratación reduce cognición y memoria de trabajo.'},
   {id:'aguafria',e:'🥶',lbl:'Rostro en agua fría (30-60s)',  blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
@@ -332,8 +330,6 @@ const HABITS=[
    tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia). Mantén 3L de agua diarios. Reevaluar a las 8 semanas: si tu sueño se consolida a 7h+ continuas, baja a 5g/día.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:9},
   {id:'teverde',  e:'🍵',lbl:'Té verde (45 min antes del café)', blk:'Mañana',freq:'daily',addedOn:'2026-04-04',
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
-  {id:'cafe',    e:'☕',lbl:'Café después de 90 min',        blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
-   tip:'El cortisol alcanza su pico 30-45 min tras despertar. A los 90 min baja y el café es más eficaz sin desarrollar tolerancia.\n📚 Lovallo et al., Psychosomatic Medicine (2005): la cafeína amplifica la respuesta del cortisol en ventanas de estrés basal.'},
   // DÍA
   {id:'nueces',  e:'🌰',lbl:'Almendras (15-20 piezas)',      blk:'Día',freq:'daily',addedOn:'2020-01-01',
    tip:'La vitamina E protege las membranas neuronales del daño oxidativo. Cómelas con piel sobre avena entera remojada la noche anterior en leche sin azúcar — el remojo reduce el ácido fítico de ambas y mejora absorción. Agrega canela: es antiinflamatoria y regula insulina. Siempre después del huevo y creatina en ayunas.\n📚 Morris et al., JAMA (2002): alto consumo de vitamina E se asoció con 67% menor riesgo de Alzheimer.'},
@@ -352,30 +348,26 @@ const HABITS=[
    tip:'La lectura baja gradualmente la actividad cortical — es la rampa de salida hacia el sueño profundo. La luz ámbar (>550nm) no suprime la melatonina como la luz blanca o azul. Tu cerebro entra al sueño en un estado limpio, no sobreestimulado.\n📚 Grønli et al., Sleep Medicine (2016): leer un libro impreso antes de dormir mejoró la calidad del sueño comparado con el uso de pantallas electrónicas.'},
   {id:'fruta',   e:'🍌',lbl:'Plátano o kiwi en la noche',   blk:'Noche',freq:'daily',addedOn:'2020-01-01',
    tip:'El plátano: triptófano → serotonina → melatonina. El kiwi tiene serotonina preformada. El potasio relaja la musculatura y reduce despertares nocturnos.\n📚 Lin et al., Asia Pacific J Clinical Nutrition (2011): 2 kiwis antes de dormir mejoraron calidad y duración del sueño en 4 semanas.'},
-  {id:'gomitas', e:'🍬',lbl:'Gomitas 45 min antes de dormir',blk:'Noche',freq:'daily',addedOn:'2020-01-01',
-   tip:'L-teanina (ondas alfa, relajación) + Magnesio (activa GABA) + 5-HTP (→ serotonina → melatonina). Los tres son sinérgicos. SIEMPRE con agua.\n📚 Hidese et al., Nutrients (2019): L-teanina mejoró calidad del sueño y cognición al día siguiente en adultos sanos.'},
-  {id:'frio',    e:'❄️',lbl:'Cuarto fresco al dormir (18-19°C)',blk:'Noche',freq:'daily',addedOn:'2020-01-01',
-   tip:'El cerebro necesita bajar 1-2°C para entrar en sueño profundo. La temperatura ambiente objetivo es 18-19°C — más caliente que eso, tu cuerpo nunca consolida sueño de ondas lentas correctamente. En Monterrey con calor, AC a 18-19°C + cobija gruesa es la combinación ganadora. Cada grado arriba de 20°C recorta minutos de sueño profundo.\n📚 Lack et al., Sleep Medicine Clinics (2012) y Okamoto-Mizuno & Mizuno, J Physiological Anthropology (2012): la temperatura corporal reducida es necesaria para el inicio y mantenimiento del sueño profundo; 18-19°C es el rango óptimo para la mayoría de los adultos.'},
+  {id:'frio',    e:'❄️',lbl:'Prender AC del cuarto antes de las 10pm',blk:'Noche',freq:'daily',addedOn:'2020-01-01',
+   tip:'El cerebro necesita bajar 1-2°C para entrar en sueño profundo. La temperatura ambiente objetivo es 18-19°C — más caliente que eso, tu cuerpo nunca consolida sueño de ondas lentas correctamente. Por eso este hábito es ACCIONABLE: prende el AC antes de las 10pm para que el cuarto ya esté frío cuando te acuestes. En Monterrey con calor, AC a 18-19°C + cobija gruesa es la combinación ganadora. Cada grado arriba de 20°C recorta minutos de sueño profundo.\n📚 Lack et al., Sleep Medicine Clinics (2012) y Okamoto-Mizuno & Mizuno, J Physiological Anthropology (2012): la temperatura corporal reducida es necesaria para el inicio y mantenimiento del sueño profundo; 18-19°C es el rango óptimo para la mayoría de los adultos.'},
   {id:'sinliq',  e:'🚱',lbl:'Sin líquidos después de las 7pm',blk:'Noche',freq:'daily',addedOn:'2026-04-13',
    tip:'Tomar líquidos después de las 7pm es el factor #1 de nocturia en personas sin problemas urológicos. El agua tarda ~90 min en llegar a la vejiga como orina. Corte a las 7pm = última orinada natural alrededor de las 10:30pm = noche continua hasta las 5-6am. Si tienes sed después: sorbos pequeños, no vasos completos. Tus 3L diarios deben distribuirse entre 6am y 7pm (13 horas, más que suficiente).\n📚 Asplund, Clinical Interventions in Aging (2007): la restricción de líquidos nocturnos reduce significativamente los episodios de nocturia y mejora la calidad del sueño en adultos sanos.'},
-  {id:'lado',    e:'🛌',lbl:'Dormir de lado (no boca arriba)',blk:'Noche',freq:'daily',addedOn:'2026-04-13',
-   tip:'CRÍTICO si roncas o tienes sospecha de apnea obstructiva del sueño. Boca arriba, la lengua y el paladar caen hacia atrás por gravedad y obstruyen la vía aérea — duplicando o triplicando los eventos de apnea por hora. Dormir de lado (preferentemente izquierdo) reduce eventos apneicos hasta 50% en apnea posicional. Truco efectivo: cose una pelota de tenis en la espalda de una camiseta vieja para entrenar a tu cuerpo en 1-2 semanas.\n📚 Cartwright, Sleep (1984) y Joosten et al., Sleep Medicine Reviews (2014): la posición lateral reduce significativamente el índice de apnea-hipopnea en pacientes con AOS posicional.'},
   // TRABAJO — performance ejecutivo, sin momento fijo
-  {id:'caminata20',e:'🚶‍♂️',lbl:'20 min caminata sin input (silencio mental)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',
+  {id:'caminata20',e:'🚶‍♂️',lbl:'20 min caminata sin input (silencio mental)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
    tip:'20 minutos caminando SIN audífonos, SIN celular, SIN podcast — solo silencio o sonido ambiente. Esto activa la Default Mode Network del cerebro, la red que conecta puntos entre dominios distintos y produce los momentos "ajá". Los grandes insights creativos NUNCA ocurren mientras trabajas concentrado — ocurren cuando tu mente vaga libre. Para directivos: este es probablemente el hábito de mayor ROI para creatividad y resolución de problemas no obvios. Aburrirte a propósito es exactamente la señal de que está funcionando.\n📚 Beaty et al., NeuroImage (2016): la creatividad alta correlaciona con la capacidad de alternar entre red ejecutiva (foco) y red por defecto (vagar mental). Oppezzo & Schwartz, J Experimental Psychology (2014): caminar aumenta el pensamiento creativo en 60% vs estar sentado.'},
-  {id:'journal', e:'📓',lbl:'Journaling ejecutivo (3 preguntas, 5 min)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',
+  {id:'journal', e:'📓',lbl:'Journaling ejecutivo (3 preguntas, 5 min)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
    tip:'Cinco minutos al final del día laboral, contesta 3 preguntas en libreta o nota del celular:\n1. ¿Qué fue lo más importante que pasó hoy? (1-2 frases)\n2. ¿Qué decisión tomé y por qué? (1-2 decisiones máximo)\n3. ¿Qué patrón estoy notando esta semana? (en gente, problemas, mercado)\nEsto no es diario emocional — es DESCARGA EJECUTIVA. Tu cerebro deja de gastar energía reteniendo info en memoria de trabajo y la consolida en memoria de largo plazo. La pregunta 3 es la que activa pensamiento creativo: te obliga a abstraer patrones, no solo recordar.\n📚 Klein & Boals, J Experimental Psychology (2001): el journaling estructurado mejora memoria de trabajo en adultos bajo estrés laboral; Pennebaker, Behaviour Research and Therapy (2004): la escritura expresiva reduce cortisol y mejora función inmune.'},
-  {id:'ritualjunta',e:'🌬️',lbl:'Ritual de junta (respiración + notas post)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',
+  {id:'ritualjunta',e:'🌬️',lbl:'Ritual de junta (respiración + notas post)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
    tip:'Marca este hábito si en al menos UNA junta importante del día hiciste el ritual completo:\n\n🫁 ANTES (60 seg): Suspiro fisiológico — inhala profundo por nariz, inhala otra vez encima (rellenar el último 10%), exhala largo y lento por boca. Repite 5-6 veces. Esto resetea CO2 y baja activación simpática en segundos. Entras a la junta con corteza prefrontal encendida, no con amígdala dominando.\n\n📝 DESPUÉS (90 seg): Antes de salir de la junta, escribe DE MEMORIA (sin abrir notas previas): decisiones tomadas, acciones acordadas, quién hace qué. Esto fuerza recuperación activa y consolida la junta en memoria episódica. La gente que toma notas durante la junta retiene MENOS porque divide atención.\n📚 Balban et al., Cell Reports Medicine (2023): 5 min de respiración cíclica reduce ansiedad más que meditación de duración igual. Karpicke & Roediger, Science (2008): la recuperación activa después de un evento mejora retención 50% vs releer notas.'},
   // RETOS — opcionales, XP extra, no cuentan para el 100%
-  {id:'walk5am', e:'🌅',lbl:'Caminata 5am',                  blk:'Retos',freq:'daily',challenge:true,xpBonus:15,weeklyGoal:5,addedOn:'2020-01-01',
-   tip:'Caminar en ayunas combina luz circadiana, BDNF por aeróbico y oxidación de grasas cerebrales. El BDNF generado actúa 4-6 horas después.\n📚 Erickson et al., PNAS (2011): el ejercicio aeróbico aumenta el volumen del hipocampo 2% y los niveles de BDNF en adultos.'},
-  {id:'pasos',   e:'🚶',lbl:'9,000+ pasos',                  blk:'Retos',freq:'daily',challenge:true,xpBonus:10,weeklyGoal:5,addedOn:'2020-01-01',
-   tip:'9,000 pasos activan BDNF, reducen cortisol crónico y mejoran la vascularización cerebral. Ya dominas este nivel.\n📚 Paluch et al., JAMA Neurology (2022): 9,800 pasos/día se asociaron con 50% menor riesgo de demencia en 7 años.'},
+  {id:'walk5am', e:'🌅',lbl:'Caminata temprana (antes 8am)',  blk:'Retos',freq:'daily',challenge:true,xpBonus:15,weeklyGoal:3,addedOn:'2020-01-01',
+   tip:'Caminar temprano combina luz circadiana, BDNF por aeróbico y oxidación de grasas cerebrales. El BDNF generado actúa 4-6 horas después. Meta realista: 3 veces por semana, antes de las 8am — flexible para cuando el clima o el sueño no acompañan.\n📚 Erickson et al., PNAS (2011): el ejercicio aeróbico aumenta el volumen del hipocampo 2% y los niveles de BDNF en adultos.'},
+  {id:'pasos',   e:'🚶',lbl:'8,000+ pasos',                  blk:'Retos',freq:'daily',challenge:true,xpBonus:10,weeklyGoal:4,addedOn:'2020-01-01',
+   tip:'8,000 pasos activan BDNF, reducen cortisol crónico y mejoran la vascularización cerebral. Meta realista: 4 veces por semana — alcanzable en días normales sin forzar caminatas extras.\n📚 Paluch et al., JAMA Neurology (2022): 8,000+ pasos/día se asociaron con reducción significativa del riesgo de demencia.'},
   {id:'habanero',e:'🌶️',lbl:'Habanero en tu comida',         blk:'Retos',freq:'daily',challenge:true,xpBonus:25,weeklyGoal:3,addedOn:'2020-01-01',
    tip:'El habanero (100,000-350,000 Scoville) activa receptores TRPV1 en el cerebro, mejora el flujo sanguíneo cerebral y protege la sinapsis LTP. Con grasa para absorción.\n📚 Liu et al., Translational Psychiatry (2020): la capsaicina redujo placas beta-amiloide y rescató deterioro cognitivo en modelos de Alzheimer.'},
-  {id:'omega3',  e:'🐟',lbl:'Sardinas (comida)',              blk:'Retos',freq:'daily',challenge:true,xpBonus:20,weeklyGoal:3,addedOn:'2020-01-01',
-   tip:'El DHA es el ácido graso estructural de las membranas neuronales — el 30% del cerebro es DHA. Al mediodía con grasa para máxima absorción. Fritas en aceite vegetal pierden 20-40% del omega-3.\n📚 Yurko-Mauro et al., Alzheimer\'s & Dementia (2010): 900mg DHA/día mejoró memoria en adultos con deterioro cognitivo leve.'},
+  {id:'omega3',  e:'🐟',lbl:'Sardinas (comida)',              blk:'Retos',freq:'daily',challenge:true,xpBonus:20,weeklyGoal:2,addedOn:'2020-01-01',
+   tip:'El DHA es el ácido graso estructural de las membranas neuronales — el 30% del cerebro es DHA. Al mediodía con grasa para máxima absorción. Fritas en aceite vegetal pierden 20-40% del omega-3. Meta realista: 2 veces por semana.\n📚 Yurko-Mauro et al., Alzheimer\'s & Dementia (2010): 900mg DHA/día mejoró memoria en adultos con deterioro cognitivo leve.'},
 ];
 
 /* ── CHALLENGE WEEK ACHIEVEMENTS ── */
@@ -460,8 +452,6 @@ const ACHS=[
   {id:'readambar14',i:'📖',n:'Lector Nocturno',       desc:'14 días seguidos leyendo con luz ámbar',           secret:false},
   {id:'readambar30',i:'📖',n:'Bibliófilo Neural',     desc:'30 días seguidos leyendo con luz ámbar',           secret:true},
   {id:'nochex4',    i:'🌙',n:'???',                   desc:'Desbloquea 4 Noches Libres (28 días de disciplina de sueño)',secret:true},
-  {id:'nochecont7', i:'🌙',n:'Noche Continua',        desc:'7 días seguidos sin despertar antes de las 5am',   secret:false},
-  {id:'nochecont21',i:'💤',n:'Sueño Reparado',        desc:'21 días seguidos de sueño continuo',               secret:true},
 ];
 
 /* ── STREAK SCIENCE FACTS ── */
@@ -556,11 +546,48 @@ function phOn(date){
 }
 function wg(date){return phOn(date)===2?7:6}
 function wLabel(){return ph()===2?'3.5L · 7 botellas':'3L · 6 botellas'}
+// Feriados oficiales de México (Ley Federal del Trabajo art. 74) — fijos e inamovibles
+// Incluye: 1ene, 5feb(1er lunes), 21mar(3er lunes), 1may, 16sep, 20nov(3er lunes), 25dic
+// Más transmisión de poder ejecutivo (cada 6 años: 2024, 2030...)
+const MX_HOLIDAYS_FIXED=['01-01','05-01','09-16','12-25'];
+function nthMondayOfMonth(year,month,n){
+  const d=new Date(year,month-1,1);
+  const firstMonday=1+((8-d.getDay())%7);
+  return firstMonday+(n-1)*7;
+}
+function isMXHoliday(dateStr){
+  const [y,m,d]=dateStr.split('-').map(Number);
+  const mmdd=dateStr.slice(5);
+  if(MX_HOLIDAYS_FIXED.includes(mmdd))return true;
+  // 1er lunes de febrero (conmemoración 5 feb)
+  if(m===2&&d===nthMondayOfMonth(y,2,1))return true;
+  // 3er lunes de marzo (conmemoración 21 mar)
+  if(m===3&&d===nthMondayOfMonth(y,3,3))return true;
+  // 3er lunes de noviembre (conmemoración 20 nov)
+  if(m===11&&d===nthMondayOfMonth(y,11,3))return true;
+  // Transmisión poder ejecutivo cada 6 años (1 oct): 2024, 2030, 2036...
+  if(m===10&&d===1&&(y-2024)%6===0)return true;
+  return false;
+}
+function isWorkday(dateStr){
+  if(!dateStr)return true;
+  const dt=new Date(dateStr+'T12:00:00');
+  const dow=dt.getDay(); // 0=dom, 6=sab
+  if(dow===0||dow===6)return false;
+  if(isMXHoliday(dateStr))return false;
+  return true;
+}
 function activeH(date){
   const p=phOn(date);
   return HABITS.filter(h=>(h.minP===undefined||(p>=h.minP&&p<=h.maxP))&&(!h.addedOn||!date||h.addedOn<=date));
 }
-function dailyH(date){return activeH(date).filter(h=>h.freq==='daily'&&!h.challenge)}
+function dailyH(date){
+  return activeH(date).filter(h=>{
+    if(h.freq!=='daily'||h.challenge)return false;
+    if(h.workdayOnly&&date&&!isWorkday(date))return false;
+    return true;
+  });
+}
 function dd(s){return DB[s]||{}}
 function dayRate(s){
   const d=dd(s),W=wg(s),dl=dailyH(s);
@@ -851,26 +878,24 @@ function checkAchievements(){
     else if(id==='level30')met=lvl>=30;
     else if(id==='hab30')met=totalHabanero()>=30;
     // Challenge tier achievements
-    else if(id==='walk_b') met=challengeWeekCount('walk5am',5)>=4;
-    else if(id==='walk_s') met=challengeWeekCount('walk5am',5)>=8;
-    else if(id==='walk_g') met=challengeWeekCount('walk5am',5)>=13;
-    else if(id==='pasos_b')met=challengeWeekCount('pasos',5)>=4;
-    else if(id==='pasos_s')met=challengeWeekCount('pasos',5)>=8;
-    else if(id==='pasos_g')met=challengeWeekCount('pasos',5)>=13;
+    else if(id==='walk_b') met=challengeWeekCount('walk5am',3)>=4;
+    else if(id==='walk_s') met=challengeWeekCount('walk5am',3)>=8;
+    else if(id==='walk_g') met=challengeWeekCount('walk5am',3)>=13;
+    else if(id==='pasos_b')met=challengeWeekCount('pasos',4)>=4;
+    else if(id==='pasos_s')met=challengeWeekCount('pasos',4)>=8;
+    else if(id==='pasos_g')met=challengeWeekCount('pasos',4)>=13;
     else if(id==='hab_b')  met=challengeWeekCount('habanero',3)>=4;
     else if(id==='hab_s')  met=challengeWeekCount('habanero',3)>=8;
     else if(id==='hab_g')  met=challengeWeekCount('habanero',3)>=13;
-    else if(id==='omega3_b')met=challengeWeekCount('omega3',3)>=4;
-    else if(id==='omega3_s')met=challengeWeekCount('omega3',3)>=8;
-    else if(id==='omega3_g')met=challengeWeekCount('omega3',3)>=13;
+    else if(id==='omega3_b')met=challengeWeekCount('omega3',2)>=4;
+    else if(id==='omega3_s')met=challengeWeekCount('omega3',2)>=8;
+    else if(id==='omega3_g')met=challengeWeekCount('omega3',2)>=13;
     // Sleep habit achievements
     else if(id==='noscreen7')met=habitConsecDays('noscreen')>=7;
     else if(id==='noscreen21')met=habitConsecDays('noscreen')>=21;
     else if(id==='readambar14')met=habitConsecDays('readambar')>=14;
     else if(id==='readambar30')met=habitConsecDays('readambar')>=30;
     else if(id==='nochex4')met=nocheLibreCount()>=4;
-    else if(id==='nochecont7')met=habitConsecDays('nochecont')>=7;
-    else if(id==='nochecont21')met=habitConsecDays('nochecont')>=21;
     if(met){earned[a.id]=todayStr();changed=true;setTimeout(()=>showAchUnlock(a),600);}
   });
   if(changed){SETS.achievements=earned;save();}
@@ -983,7 +1008,7 @@ function render(keepScroll=false){
   const xpNext=lvl<30?LEVEL_XP[lvl]-xp:0;
   const hdr=`<div class="hdr" id="hdr">
 <div class="hdr-eyebrow">Protocolo Cognitivo · ${new Date().getFullYear()}</div>
-<div class="hdr-title">Mi Cerebro Óptimo 🧠 <span style="font-size:11px;opacity:.45;font-weight:400;letter-spacing:1px">v3.1</span></div>
+<div class="hdr-title">Mi Cerebro Óptimo 🧠 <span style="font-size:11px;opacity:.45;font-weight:400;letter-spacing:1px">v4.0</span></div>
 <div class="hdr-cards">
 <div class="hdr-card"><div class="hdr-lbl">Hoy</div><div class="hdr-val">${dr}<span>%</span></div><div class="hdr-bar"><div class="hdr-fill ${dc}" style="width:${dr}%"></div></div></div>
 <div class="hdr-card"><div class="hdr-lbl">Esta semana</div><div class="hdr-val">${wr}<span>%</span></div><div class="hdr-bar"><div class="hdr-fill ${wc}" style="width:${wr}%"></div></div></div>
@@ -1108,7 +1133,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
 
   let hab='';
   BLOCKS.forEach(blk=>{
-    const bh=activeH(ADATE).filter(h=>h.blk===blk);
+    const bh=activeH(ADATE).filter(h=>h.blk===blk&&!(h.workdayOnly&&!isWorkday(ADATE)));
     if(!bh.length&&blk!=='Día')return;
     const {c}=BC[blk];
     const isRetos=blk==='Retos';
