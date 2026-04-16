@@ -68,6 +68,7 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 .wpills{display:flex;gap:7px;flex-wrap:wrap}
 .wpill{width:38px;height:38px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#C0C0C0;transition:all .18s;flex-shrink:0;user-select:none;-webkit-user-select:none}
 .wpill.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.wpill.cre{background:#D4A843;border-color:#D4A843;color:#fff}
 /* ACHIEVEMENT CARD */
 .ach{border-radius:14px;padding:15px;margin-bottom:11px;position:relative;overflow:hidden}
 .ach-eye{font-size:9px;letter-spacing:2px;color:#A8B8C8;text-transform:uppercase;margin-bottom:3px}
@@ -976,47 +977,78 @@ function checkUnlock(){
 }
 
 /* ── TOGGLE / WATER ── */
+function adjustDose(s,h,cur,next){
+  const diff=next-cur;
+  DB[s][h.id]=next;
+  const ac=DB[s].aguaCre||0;
+  const Wmax=wg(s);
+  if(diff>0){
+    const addW=Math.min(diff,Wmax-(DB[s].agua||0));
+    DB[s].agua=(DB[s].agua||0)+addW;
+    DB[s].aguaCre=ac+addW;
+  }else if(diff<0){
+    const removeW=Math.min(Math.abs(diff),ac);
+    DB[s].agua=Math.max(0,(DB[s].agua||0)-removeW);
+    DB[s].aguaCre=Math.max(0,ac-removeW);
+  }
+}
 function toggle(s,id){
   if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};
   const h=HABITS.find(x=>x.id===id);
   const wasOn=!!DB[s][id];
-  let doseMsg=null;
   if(h&&h.doseCount){
-    // Dosed habit: cycle 0 → 1 → 2 → ... → doseCount → 0
-    let cur=DB[s][id];
-    if(cur===true)cur=h.doseCount; // migrate legacy boolean
-    cur=cur||0;
+    // Card-body tap: increment by 1 (cycle 0→1→…→max→0)
+    let cur=DB[s][id];if(cur===true)cur=h.doseCount;cur=cur||0;
     const next=cur>=h.doseCount?0:cur+1;
-    DB[s][id]=next;
-    // Auto-link: each new dose also adds +1 water bottle (capped)
-    if(next>cur){
-      const Wmax=wg(s);
-      const curWater=DB[s].agua||0;
-      if(curWater<Wmax){DB[s].agua=curWater+1;doseMsg=`💧 +1 botella de agua`;}
-    }
-    if(next===h.doseCount)doseMsg=`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`;
-    else if(next>0&&next<h.doseCount)doseMsg=doseMsg||`${h.e} Toma ${next}/${h.doseCount} registrada`;
-  }else{
-    DB[s][id]=!DB[s][id];
+    adjustDose(s,h,cur,next);
+    save();
+    const xpA=calcXP(),lvlA=calcLvl(xpA);
+    if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+    checkUnlock();checkAchievements();
+    if(s===todayStr()){checkDayComplete();checkNocheLibre();}
+    if(next===0)toast(`↩️ ${h.e} Reiniciado a 0`);
+    else if(next>=h.doseCount)toast(`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`);
+    else toast(`${h.e} Toma ${next}/${h.doseCount} +💧`);
+    render(true);return;
   }
+  DB[s][id]=!DB[s][id];
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
   checkUnlock();checkAchievements();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
-  if(doseMsg)toast(doseMsg);
-  // Sugerir backup al marcar "Agua + sal + limón" por primera vez hoy
   if(id==='agua'&&!wasOn&&s===todayStr()){
     setTimeout(()=>showBackupPrompt(),800);
   }
   render(true);
 }
+function setDose(s,id,target){
+  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
+  const h=HABITS.find(x=>x.id===id);if(!h||!h.doseCount)return;
+  const xpB=calcXP(),lvlB=calcLvl(xpB);
+  if(!DB[s])DB[s]={};
+  let cur=DB[s][id];if(cur===true)cur=h.doseCount;cur=cur||0;
+  const next=target<cur?target:target+1;
+  adjustDose(s,h,cur,next);
+  save();
+  const xpA=calcXP(),lvlA=calcLvl(xpA);
+  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  checkUnlock();checkAchievements();
+  if(s===todayStr()){checkDayComplete();checkNocheLibre();}
+  if(next>=h.doseCount)toast(`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`);
+  else if(next>0)toast(`${h.e} ${next}/${h.doseCount} tomas`);
+  else toast(`↩️ ${h.e} Creatina desmarcada`);
+  render(true);
+}
 function setWater(s,n){
   if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
   const xpB=calcXP(),lvlB=calcLvl(xpB);
-  if(!DB[s])DB[s]={};DB[s].agua=n;save();
+  if(!DB[s])DB[s]={};DB[s].agua=n;
+  // Keep aguaCre consistent: can't have more cre-water than total water
+  if((DB[s].aguaCre||0)>n)DB[s].aguaCre=n;
+  save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
   checkUnlock();checkAchievements();
@@ -1170,11 +1202,16 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
     if(isRetos)hab+=`<p style="font-size:11px;color:var(--text2);margin-bottom:8px">Opcionales — no cuentan para el 100%. Solo suman XP bonus.</p>`;
     if(blk==='Día'){
       const wc2=d.agua||0;
-      const pills=Array.from({length:W},(_,i)=>`<div class="wpill${i<wc2?' on':''}" data-wp="${ADATE}|${i}">${i<wc2?'✓':'·'}</div>`).join('');
+      const ac=d.aguaCre||0;
+      const pills=Array.from({length:W},(_,i)=>{
+        const filled=i<wc2;
+        const isCre=filled&&i<ac;
+        return`<div class="wpill${filled?(isCre?' cre':' on'):''}" data-wp="${ADATE}|${i}">${filled?(isCre?'🧪':'✓'):'·'}</div>`;
+      }).join('');
       hab+=`<div class="wcard${wc2>=W?' done':''}">
 <div class="wcard-top">
 <div style="width:22px;height:22px;border-radius:50%;border:2px solid ${wc2>=W?'var(--teal)':'#D5D0C8'};background:${wc2>=W?'var(--teal)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0">${wc2>=W?'✓':''}</div>
-<div style="flex:1"><div class="hlbl">💧 Hidratación · ${wLabel()}</div><div class="hsub">${wc2} de ${W} botellas · ${wc2*500}ml</div></div>
+<div style="flex:1"><div class="hlbl">💧 Hidratación · ${wLabel()}</div><div class="hsub">${wc2} de ${W} botellas · ${wc2*500}ml${ac>0?` (${ac} 🧪 creatina + ${wc2-ac} 💧 agua)`:''}</div></div>
 <button class="tipbtn" data-tip="__agua">ℹ️</button>
 </div><div class="wpills">${pills}</div>
 </div>${TIP==='__agua'?`<div class="tipbox">💡 Cada burbuja = 1 botella de 500ml. Meta: ${W} botellas = ${W/2}L.${p===2?' Fase 20g: 3.5L para proteger riñones.':''}</div>`:''}`;
@@ -1200,8 +1237,8 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
       }
       let dosedInfo='';
       if(isDosed){
-        const pills=Array.from({length:h.doseCount},(_,i)=>`<div class="wpill${i<doseVal?' on':''}" style="pointer-events:none">${i<doseVal?'✓':'·'}</div>`).join('');
-        dosedInfo=`<div class="hsub" style="color:${on?'#3D8B5E':'#C87820'};font-weight:600">${doseVal}/${h.doseCount} tomas · cada toma suma 1 botella 💧</div><div class="wpills" style="margin-top:6px">${pills}</div>`;
+        const pills=Array.from({length:h.doseCount},(_,i)=>`<div class="wpill${i<doseVal?' cre':''}" data-dose="${ADATE}|${h.id}|${i}" style="width:42px;height:42px;font-size:13px">${i<doseVal?'🧪':'·'}</div>`).join('');
+        dosedInfo=`<div class="hsub" style="color:${on?'#3D8B5E':'#C87820'};font-weight:600">${doseVal}/${h.doseCount} tomas · cada toma suma 1 botella 💧</div><div class="wpills" style="margin-top:6px">${pills}</div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tap tarjeta = sumar · Tap burbuja = ajustar</div>`;
       }
       hab+=`<div class="hcard${on?' on':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
 <div class="hchk">${on?'✓':isDosed&&doseVal>0?doseVal:''}</div>
@@ -1412,6 +1449,8 @@ document.addEventListener('click',e=>{
   const dy=e.target.closest('[data-day]');if(dy){ADATE=dy.dataset.day;TIP=null;render();return;}
   const wp=e.target.closest('[data-wp]');
   if(wp){const[s,idx]=wp.dataset.wp.split('|');const i=parseInt(idx);const cur=dd(s).agua||0;setWater(s,i<cur?i:i+1);return;}
+  const dp=e.target.closest('[data-dose]');
+  if(dp){const[s,id,idx]=dp.dataset.dose.split('|');const i=parseInt(idx);setDose(s,id,i);return;}
   const cd=e.target.closest('[data-t]');
   if(cd&&!e.target.closest('[data-tip]')){const[s,id]=cd.dataset.t.split('|');toggle(s,id);return;}
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render(true);return;}
