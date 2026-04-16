@@ -324,10 +324,10 @@ const HABITS=[
    tip:'La yema tiene ~147mg de colina → acetilcolina, el neurotransmisor de la memoria. El punto óptimo es yema líquida (lípidos intactos, colina sin oxidar) con clara cuajada (elimina la avidina que bloquea la biotina). Receta: 6-7 minutos en agua hirviendo, sacar y abrir de inmediato. Con grasa (aceite de oliva) para máxima absorción de vitaminas liposolubles.\n📚 Zeisel & da Costa, Nutrition Reviews (2009): la colina dietética es esencial para la función del hipocampo y la síntesis de acetilcolina.'},
   {id:'cre5g',   e:'🧪',lbl:'Creatina 5g en ayunas (+ 500ml agua)',blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
    tip:'En ayunas la creatina se absorbe sin competir con otros alimentos. SIEMPRE con mínimo 500ml de agua.\n📚 Smith et al., Alzheimer\'s & Dementia (2025): 20g/día aumentó creatina cerebral 11% en pacientes con Alzheimer, mejorando memoria de trabajo.',minP:1,maxP:1},
-  {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g',  blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
-   tip:'Divide en 4 tomas: al despertar, mediodía, tarde y noche. CRÍTICO: necesitas 7 botellas de agua hoy.\n📚 Harris et al., Clinical Science (1992): el protocolo de carga de 20g/día es el más eficiente para saturar fosfocreatina muscular y cerebral.',minP:2,maxP:2},
-  {id:'cremnt',  e:'🧪',lbl:'Creatina 10g (2×5g) mantenimiento extendido',blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
-   tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia). Mantén 3L de agua diarios. Reevaluar a las 8 semanas: si tu sueño se consolida a 7h+ continuas, baja a 5g/día.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:9},
+  {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g',  blk:'Día',freq:'daily',addedOn:'2020-01-01',doseCount:4,
+   tip:'Divide en 4 tomas de 5g a lo largo del día: al despertar, mediodía, tarde y noche.\n\n💧 AUTO-LINK: cada toma que marques suma automáticamente +1 botella de agua (porque la creatina se mezcla con ~500ml de líquido). En fase 20g necesitas 7 botellas: 4 vienen con cada toma de creatina + 3 independientes.\n📚 Harris et al., Clinical Science (1992): el protocolo de carga de 20g/día es el más eficiente para saturar fosfocreatina muscular y cerebral.',minP:2,maxP:2},
+  {id:'cremnt',  e:'🧪',lbl:'Creatina 10g · 2 tomas × 5g',blk:'Día',freq:'daily',addedOn:'2020-01-01',doseCount:2,
+   tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia).\n\n💧 AUTO-LINK: cada toma suma +1 botella de agua automáticamente. Mantén 3L de agua diarios (6 botellas). Reevaluar a las 8 semanas: si tu sueño se consolida a 7h+ continuas, baja a 5g/día.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:9},
   {id:'teverde',  e:'🍵',lbl:'Té verde (45 min antes del café)', blk:'Mañana',freq:'daily',addedOn:'2026-04-04',
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
   {id:'listo7am', e:'⏰',lbl:'Listo a las 7:00am (vestido, lonches, todo)',blk:'Mañana',freq:'daily',addedOn:'2026-04-14',workdayOnly:true,
@@ -595,9 +595,10 @@ function dailyH(date){
   });
 }
 function dd(s){return DB[s]||{}}
+function isDone(d,h){if(!h.doseCount)return !!d[h.id];const v=d[h.id];if(v===true)return true;return (v||0)>=h.doseCount;}
 function dayRate(s){
   const d=dd(s),W=wg(s),dl=dailyH(s);
-  const hd=dl.filter(h=>d[h.id]).length;
+  const hd=dl.filter(h=>isDone(d,h)).length;
   const wd=Math.min(d.agua||0,W);
   const tot=dl.length+W;
   return tot?Math.round((hd+wd)/tot*100):0;
@@ -606,7 +607,7 @@ function weekRate(m){
   const dates=week7(m);let tot=0,done=0;
   dates.forEach(s=>{
     const d=dd(s),W=wg(s),dl=dailyH(s);
-    dl.forEach(h=>{tot++;if(d[h.id])done++;});
+    dl.forEach(h=>{tot++;if(isDone(d,h))done++;});
     tot+=W;done+=Math.min(d.agua||0,W);
   });
   const o3=dates.filter(s=>dd(s).omega3).length;
@@ -622,7 +623,7 @@ function calcXP(){
   let xp=0;
   Object.entries(DB).forEach(([date,d])=>{
     HABITS.forEach(h=>{
-      if(d[h.id]){
+      if(isDone(d,h)){
         xp+=5;
         if(h.challenge&&h.xpBonus)xp+=h.xpBonus; // challenge bonus
       }
@@ -633,7 +634,7 @@ function calcXP(){
     // Date-aware raw % for the +10 bonus
     const dl=dailyH(date);
     const W=wg(date);
-    const allH=dl.filter(h=>d[h.id]).length;
+    const allH=dl.filter(h=>isDone(d,h)).length;
     const wFull=(d.agua||0)>=W;
     const tot=dl.length+W;
     const raw=tot?Math.round((allH+(wFull?W:0))/tot*100):0;
@@ -668,8 +669,9 @@ function calcStreakDays(){
   return c;
 }
 function habitConsecDays(id){
+  const h=HABITS.find(x=>x.id===id);
   let c=0,d=todayStr();
-  for(let i=0;i<500;i++){if(dd(d)[id])c++;else break;d=shift(d,-1);}
+  for(let i=0;i<500;i++){if(h&&isDone(dd(d),h))c++;else if(!h&&dd(d)[id])c++;else break;d=shift(d,-1);}
   return c;
 }
 function totalBottles(){return Object.values(DB).reduce((s,d)=>s+(d.agua||0),0)}
@@ -978,12 +980,33 @@ function toggle(s,id){
   if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};
+  const h=HABITS.find(x=>x.id===id);
   const wasOn=!!DB[s][id];
-  DB[s][id]=!DB[s][id];save();
+  let doseMsg=null;
+  if(h&&h.doseCount){
+    // Dosed habit: cycle 0 → 1 → 2 → ... → doseCount → 0
+    let cur=DB[s][id];
+    if(cur===true)cur=h.doseCount; // migrate legacy boolean
+    cur=cur||0;
+    const next=cur>=h.doseCount?0:cur+1;
+    DB[s][id]=next;
+    // Auto-link: each new dose also adds +1 water bottle (capped)
+    if(next>cur){
+      const Wmax=wg(s);
+      const curWater=DB[s].agua||0;
+      if(curWater<Wmax){DB[s].agua=curWater+1;doseMsg=`💧 +1 botella de agua`;}
+    }
+    if(next===h.doseCount)doseMsg=`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`;
+    else if(next>0&&next<h.doseCount)doseMsg=doseMsg||`${h.e} Toma ${next}/${h.doseCount} registrada`;
+  }else{
+    DB[s][id]=!DB[s][id];
+  }
+  save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
   checkUnlock();checkAchievements();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
+  if(doseMsg)toast(doseMsg);
   // Sugerir backup al marcar "Agua + sal + limón" por primera vez hoy
   if(id==='agua'&&!wasOn&&s===todayStr()){
     setTimeout(()=>showBackupPrompt(),800);
@@ -1134,7 +1157,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
 
   const d=dd(ADATE),dl=dailyH(ADATE);
   const dobj=new Date(ADATE+'T12:00:00');
-  const done=dl.filter(h=>d[h.id]).length+Math.min(d.agua||0,W);
+  const done=dl.filter(h=>isDone(d,h)).length+Math.min(d.agua||0,W);
   const info2=`<p class="sinf">${DL[dow(ADATE)]}, ${dobj.getDate()} ${MS[dobj.getMonth()]} · <strong>${done}/${dl.length+W}</strong> puntos</p>`;
 
   let hab='';
@@ -1157,7 +1180,12 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
 </div>${TIP==='__agua'?`<div class="tipbox">💡 Cada burbuja = 1 botella de 500ml. Meta: ${W} botellas = ${W/2}L.${p===2?' Fase 20g: 3.5L para proteger riñones.':''}</div>`:''}`;
     }
     bh.forEach(h=>{
-      const on=!!d[h.id],st=TIP===h.id;
+      const isDosed=!!h.doseCount;
+      let rawVal=d[h.id];
+      if(isDosed&&rawVal===true)rawVal=h.doseCount;
+      const doseVal=isDosed?(rawVal||0):0;
+      const on=isDosed?(doseVal>=h.doseCount):!!d[h.id];
+      const st=TIP===h.id;
       const isChallenge=!!h.challenge;
       const tipParts=h.tip.split('\n📚');
       const tipMain=tipParts[0];
@@ -1170,12 +1198,17 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
         const medal=weeksEarned>=13?'🥇':weeksEarned>=8?'🥈':weeksEarned>=4?'🥉':'';
         challengeInfo=`<div class="hsub" style="color:#E05A2B;font-weight:600">+${h.xpBonus} XP · ${thisWeek}/${goal} esta semana ${medal}</div>`;
       }
+      let dosedInfo='';
+      if(isDosed){
+        const pills=Array.from({length:h.doseCount},(_,i)=>`<div class="wpill${i<doseVal?' on':''}" style="pointer-events:none">${i<doseVal?'✓':'·'}</div>`).join('');
+        dosedInfo=`<div class="hsub" style="color:${on?'#3D8B5E':'#C87820'};font-weight:600">${doseVal}/${h.doseCount} tomas · cada toma suma 1 botella 💧</div><div class="wpills" style="margin-top:6px">${pills}</div>`;
+      }
       hab+=`<div class="hcard${on?' on':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
-<div class="hchk">${on?'✓':''}</div>
+<div class="hchk">${on?'✓':isDosed&&doseVal>0?doseVal:''}</div>
 <div style="flex:1;min-width:0">
 <div class="hlbl">${h.e} ${h.lbl}</div>
 ${challengeInfo}
-${h.id==='cre20g'?`<div class="hsub" style="color:#C87820;font-weight:600">⚠️ Necesitas 7 botellas de agua hoy</div>`:''}
+${dosedInfo}
 </div>
 <button class="tipbtn" data-tip="${h.id}">ℹ️</button>
 </div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
@@ -1195,7 +1228,7 @@ function vWeek(m){
   const W=wg(),allH=activeH(dates[6]);
   const gh=`<div class="grow"><div class="gname"></div>${dates.map((s,i)=>{const isT=s===today;return`<div class="gcell" style="background:none;color:${isT?'var(--navy)':'#AAA'};font-weight:${isT?700:400};font-size:11px">${DS[i]}</div>`;}).join('')}<div class="gtotal"></div></div>`;
   const wr=`<div class="grow"><div class="gname">💧 Agua (${W/2}L)</div>${dates.map(s=>{const c=Math.min(dd(s).agua||0,W),pp=Math.round(c/W*100);const bg=pp>=100?'var(--teal)':pp>=50?'#6BBBD0':'#EFEDE8';return`<div class="gcell" style="background:${bg};color:${pp>=50?'#fff':'#999'}">${pp>=100?'✓':c||''}</div>`;}).join('')}<div class="gtotal">${dates.filter(s=>(dd(s).agua||0)>=W).length}/7</div></div>`;
-  const gr=allH.map(h=>{const {c}=BC[h.blk];const tot=dates.filter(s=>dd(s)[h.id]).length;return`<div class="grow"><div class="gname">${h.e} ${h.lbl.substring(0,18)}</div>${dates.map(s=>{const on=!!dd(s)[h.id];return`<div class="gcell" style="background:${on?c:'#EFEDE8'}">${on?'✓':''}</div>`;}).join('')}<div class="gtotal">${tot}/7</div></div>`;}).join('');
+  const gr=allH.map(h=>{const {c}=BC[h.blk];const tot=dates.filter(s=>isDone(dd(s),h)).length;return`<div class="grow"><div class="gname">${h.e} ${h.lbl.substring(0,18)}</div>${dates.map(s=>{const on=isDone(dd(s),h);return`<div class="gcell" style="background:${on?c:'#EFEDE8'}">${on?'✓':''}</div>`;}).join('')}<div class="gtotal">${tot}/7</div></div>`;}).join('');
   const grid=`<div class="card"><div class="ctitle">Grid de hábitos</div>${gh}${wr}${gr}</div>`;
   const wr2=weekRate(m);
   const sum=`<div class="sumbox" style="background:${rbg(wr2)}"><div class="sumtitle">${wr2>=80?'🏆':wr2>=60?'💪':wr2>=40?'📈':'🌱'} ${wr2}% esta semana</div><div class="sumtext">${wr2>=80?'Semana excelente.':wr2>=60?'Buen progreso. Agua y sin vino son la clave.':wr2>=40?'En construcción. Empieza por los hábitos de mañana.':'Empezando. Solo agua y luz solar para arrancar.'}</div></div>`;
@@ -1232,7 +1265,7 @@ ${golds.map(h=>`<div class="gold-item"><div class="gold-coin">🪙</div><div><di
   let det='<p style="font-size:12px;color:var(--text2);text-align:center;margin-bottom:11px;padding:14px;background:#fff;border-radius:12px">Toca una semana para ver el detalle ☝️</p>';
   if(YSW){
     const r=weekRate(YSW),wd=week7(YSW);
-    det=`<div class="card"><div class="ctitle">Semana ${weekLabel(YSW)}</div><div style="text-align:center;margin-bottom:12px"><span style="font-size:34px;font-weight:800;color:${rc(r)}">${r}%</span></div>${activeH(wd[6]).map(h=>{const{c}=BC[h.blk],dn=wd.filter(s=>dd(s)[h.id]).length;return`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span style="width:20px">${h.e}</span><span style="flex:1;font-size:12px">${h.lbl.substring(0,24)}</span><div style="display:flex;gap:2px">${Array.from({length:7},(_,i)=>`<span class="sel-dot" style="background:${dn>i?c:'#EFEDE8'}"></span>`).join('')}</div><span style="font-size:10px;color:var(--text2);width:22px;text-align:right">${dn}/7</span></div>`;}).join('')}</div>`;
+    det=`<div class="card"><div class="ctitle">Semana ${weekLabel(YSW)}</div><div style="text-align:center;margin-bottom:12px"><span style="font-size:34px;font-weight:800;color:${rc(r)}">${r}%</span></div>${activeH(wd[6]).map(h=>{const{c}=BC[h.blk],dn=wd.filter(s=>isDone(dd(s),h)).length;return`<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px"><span style="width:20px">${h.e}</span><span style="flex:1;font-size:12px">${h.lbl.substring(0,24)}</span><div style="display:flex;gap:2px">${Array.from({length:7},(_,i)=>`<span class="sel-dot" style="background:${dn>i?c:'#EFEDE8'}"></span>`).join('')}</div><span style="font-size:10px;color:var(--text2);width:22px;text-align:right">${dn}/7</span></div>`;}).join('')}</div>`;
   }
   return stats+goldPanel+mBars+hm+det;
 }
@@ -1241,13 +1274,14 @@ ${golds.map(h=>`<div class="gold-item"><div class="gold-coin">🪙</div><div><di
 function yearMondays2(){return yearMondays(new Date().getFullYear());}
 // Count weeks where habit was marked every single day (Mon-Sun)
 function habitMasteryWeeks(hid){
+  const h=HABITS.find(x=>x.id===hid);
   const allW=yearMondays2();
   let count=0;
   allW.forEach(mon=>{
     const days=week7(mon);
     // Only count completed weeks (all 7 days done OR week is in the past)
     const today=todayStr();
-    const weekDone=days.every(s=>s>today?false:!!dd(s)[hid]);
+    const weekDone=days.every(s=>s>today?false:(h?isDone(dd(s),h):!!dd(s)[hid]));
     if(weekDone)count++;
   });
   return Math.min(count,13);
