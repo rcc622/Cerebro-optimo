@@ -331,6 +331,8 @@ const HABITS=[
    tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia).\n\n💧 AUTO-LINK: cada toma suma +1 botella de agua automáticamente. Mantén 3L de agua diarios (6 botellas). Reevaluar a las 8 semanas: si tu sueño se consolida a 7h+ continuas, baja a 5g/día.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:9},
   {id:'teverde',  e:'🍵',lbl:'Té verde (45 min antes del café)', blk:'Mañana',freq:'daily',addedOn:'2026-04-04',
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
+  {id:'gratitud', e:'🙏',lbl:'Anota 1 cosa específica de gratitud',blk:'Mañana',freq:'daily',addedOn:'2026-04-18',
+   tip:'Escribe en tu nota del celular o libreta UNA cosa específica por la que estás agradecido hoy. Específica importa: no "mi familia", sino "que Diana me preparó café antes de la junta". La especificidad es la que activa la corteza prefrontal medial izquierda, no la abstracción genérica. Tarda 30 segundos. La práctica sostenida reconfigura el sesgo atencional del cerebro hacia lo positivo (no es magia, es plasticidad neural por repetición).\n📚 Emmons & McCullough, J Personality and Social Psychology (2003): la gratitud específica diaria por 10 semanas elevó bienestar subjetivo 25% y mejoró calidad de sueño; Wood et al., Clinical Psychology Review (2010): el efecto se mantiene a los 6 meses solo si la práctica continúa.'},
   {id:'listo7am', e:'⏰',lbl:'Listo a las 7:00am (vestido, lonches, todo)',blk:'Mañana',freq:'daily',addedOn:'2026-04-14',workdayOnly:true,
    tip:'Este es un hábito LLAVE (keystone). Un solo check que contiene 10 cosas: ritual matutino hecho, lonches listos, vestido, arreglado, llaves en mano, niños atendidos. Si estás listo a las 7:00am en punto, por definición todo lo demás salió bien.\n\n🎯 Por qué funciona: el reloj mismo es el gatillo. No depende de motivación ni de decisiones — a las 7:00am o estás listo o no. Binario. Limpio. Sin auto-engaño.\n\n🛠️ Protocolo híbrido sugerido (no obligatorio, descúbrelo tú mismo):\n• Noche (5-8 min post-cena): lavar fruta, sacar loncheras, pre-cortar lo que no se ponga feo, juntar fixings en un estante del refri. NO armar, solo dejar listo para ensamblar.\n• Mañana: aprovecha los huecos muertos de tu ritual (los 15-20 min entre creatina y huevo) para ensamblar lonches en paralelo. No agregas tiempo, usas tiempo que ya existía.\n\n📚 Duhigg, The Power of Habit (2012): los hábitos llave reorganizan conductas aguas arriba sin que tengas que decidir conscientemente cada paso. Un solo ancla temporal fuerte arrastra todo un sistema detrás.'},
   // DÍA
@@ -356,7 +358,9 @@ const HABITS=[
   // TRABAJO — performance ejecutivo, sin momento fijo
   {id:'caminata20',e:'🚶‍♂️',lbl:'20 min caminata sin input (silencio mental)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
    tip:'20 minutos caminando SIN audífonos, SIN celular, SIN podcast — solo silencio o sonido ambiente. Esto activa la Default Mode Network del cerebro, la red que conecta puntos entre dominios distintos y produce los momentos "ajá". Los grandes insights creativos NUNCA ocurren mientras trabajas concentrado — ocurren cuando tu mente vaga libre. Para directivos: este es probablemente el hábito de mayor ROI para creatividad y resolución de problemas no obvios. Aburrirte a propósito es exactamente la señal de que está funcionando.\n📚 Beaty et al., NeuroImage (2016): la creatividad alta correlaciona con la capacidad de alternar entre red ejecutiva (foco) y red por defecto (vagar mental). Oppezzo & Schwartz, J Experimental Psychology (2014): caminar aumenta el pensamiento creativo en 60% vs estar sentado.'},
-  {id:'journal', e:'📓',lbl:'Journaling ejecutivo (3 preguntas, 5 min)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
+  {id:'mit', e:'🐸',lbl:'MIT del día (antes del correo)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-18',workdayOnly:true,
+   tip:'Tu MIT (Most Important Task) es la tarea de mayor impacto del día — la que si solo logras esa, el día valió. Definirla ANTES de abrir correo o Slack es lo que la separa de un to-do reactivo. Toma 60 segundos: ¿cuál es la 1 cosa que si la completo hoy mueve más la aguja? Escríbela donde la veas (post-it, header de notas, lo que sea). Ejecútala antes de meterte a la bandeja de entrada. Encadena con tu caminata20: ahí tu cerebro ya procesó qué es lo importante, aquí solo lo escribes y lo ejecutas.\n📚 Newport, Deep Work (2016) y Drucker, The Effective Executive (1967): los ejecutivos de alto desempeño protegen una ventana de trabajo profundo antes de cualquier reactividad; el costo de cambio de contexto entre correo y trabajo cognitivo profundo puede consumir hasta 40% de la energía cognitiva diaria.'},
+  {id:'journal', e:'📓',lbl:'Bitácora HL',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
    tip:'Cinco minutos al final del día laboral, contesta 3 preguntas en libreta o nota del celular:\n1. ¿Qué fue lo más importante que pasó hoy? (1-2 frases)\n2. ¿Qué decisión tomé y por qué? (1-2 decisiones máximo)\n3. ¿Qué patrón estoy notando esta semana? (en gente, problemas, mercado)\nEsto no es diario emocional — es DESCARGA EJECUTIVA. Tu cerebro deja de gastar energía reteniendo info en memoria de trabajo y la consolida en memoria de largo plazo. La pregunta 3 es la que activa pensamiento creativo: te obliga a abstraer patrones, no solo recordar.\n📚 Klein & Boals, J Experimental Psychology (2001): el journaling estructurado mejora memoria de trabajo en adultos bajo estrés laboral; Pennebaker, Behaviour Research and Therapy (2004): la escritura expresiva reduce cortisol y mejora función inmune.'},
   {id:'notasjunta',e:'📝',lbl:'Notas de memoria post-junta',blk:'Trabajo',freq:'daily',addedOn:'2026-04-14',workdayOnly:true,
    tip:'Marca este hábito si en al menos UNA junta importante del día hiciste el ritual de notas de memoria:\n\n📝 Antes de salir de la junta (90 seg): escribe DE MEMORIA, sin abrir notas previas, lo siguiente:\n1. Decisiones tomadas\n2. Acciones acordadas\n3. Quién hace qué\n\nEsto fuerza recuperación activa y consolida la junta en memoria episódica. La gente que toma notas DURANTE la junta retiene MENOS porque divide atención entre escuchar y escribir. La recuperación activa después es lo que construye memoria de largo plazo.\n📚 Karpicke & Roediger, Science (2008): la recuperación activa después de un evento mejora retención 50% vs releer notas. Roediger & Butler, Trends in Cognitive Sciences (2011): el testing effect es uno de los hallazgos más robustos en ciencia de memoria.'},
@@ -544,22 +548,12 @@ function phOn(date){
   if(!date)return ph();
   const hist=SETS.phaseHistory;
   if(!hist||hist.length===0)return ph();
-  // Sort defensivo para tolerar historiales desordenados o corruptos
-  const sorted=[...hist].sort((a,b)=>a.start<b.start?-1:a.start>b.start?1:0);
-  let result=sorted[0].phase;
-  for(const e of sorted){
+  let result=hist[0].phase;
+  for(const e of hist){
     if(e.start<=date)result=e.phase;
     else break;
   }
   return result;
-}
-function addPhaseEntry(phase){
-  const today=todayStr();
-  const hist=SETS.phaseHistory=SETS.phaseHistory||[];
-  // Elimina entradas con start>=hoy antes de añadir (evita duplicados al togglear el mismo día)
-  for(let i=hist.length-1;i>=0;i--){if(hist[i].start>=today)hist.splice(i,1);}
-  hist.push({phase,start:today});
-  hist.sort((a,b)=>a.start<b.start?-1:a.start>b.start?1:0);
 }
 function wg(date){return phOn(date)===2?7:6}
 function wLabel(){return ph()===2?'3.5L · 7 botellas':'3L · 6 botellas'}
@@ -621,6 +615,8 @@ function weekRate(m){
     dl.forEach(h=>{tot++;if(isDone(d,h))done++;});
     tot+=W;done+=Math.min(d.agua||0,W);
   });
+  const o3=dates.filter(s=>dd(s).omega3).length;
+  tot+=3;done+=Math.min(o3,3);
   return tot?Math.round(done/tot*100):0;
 }
 function rc(r){return r>=80?'#3D8B5E':r>=50?'#C87820':r>0?'#C04040':'#BDBDB0'}
@@ -650,8 +646,7 @@ function calcXP(){
     if(raw>=80&&!d._streakBonus)xp+=10;
   });
   Object.entries(SETS).forEach(([k,v])=>{
-    // Valida chest_*: entero finito entre 0 y 500 (rango máximo de weeklyChestXP)
-    if(k.startsWith('chest_')&&typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=500)xp+=v;
+    if(k.startsWith('chest_')&&typeof v==='number')xp+=v;
   });
   return xp;
 }
@@ -822,9 +817,7 @@ function sleepHabitsStreak(){
 function nocheLibreCount(){return SETS.nocheLibreCount||0;}
 function checkNocheLibre(){
   const streak=sleepHabitsStreak();
-  let lastAwarded=SETS.nocheLibreLastStreak||0;
-  // Si la racha se rompió, realinear al múltiplo de 7 actual para no quedar bloqueado
-  if(streak<lastAwarded){lastAwarded=Math.floor(streak/7)*7;SETS.nocheLibreLastStreak=lastAwarded;save();}
+  const lastAwarded=SETS.nocheLibreLastStreak||0;
   // Award a new Noche Libre every 7 consecutive days
   if(streak>=7&&streak>=lastAwarded+7){
     const newCount=(SETS.nocheLibreCount||0)+1;
@@ -982,9 +975,9 @@ function phaseProgress(){
 }
 function checkUnlock(){
   const p=ph();
-  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();addPhaseEntry(1);save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
-  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();addPhaseEntry(2);save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
-  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();addPhaseEntry(3);save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
+  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:1,start:todayStr()});save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
+  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:2,start:todayStr()});save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
+  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:3,start:todayStr()});save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
 }
 
 /* ── TOGGLE / WATER ── */
@@ -1479,7 +1472,7 @@ document.addEventListener('click',e=>{
   const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
   const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
   const sp=e.target.closest('[data-sp]');
-  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;addPhaseEntry(p2);save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
+  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:p2,start:todayStr()});save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
   if(e.target.id==='ntog'){
     if(!SETS.notifications){if('Notification' in window){Notification.requestPermission().then(p3=>{SETS.notifications=p3==='granted';toast(SETS.notifications?'✅ Activadas':'❌ Permiso denegado');save();render();scheduleR();});}else toast('No soportado');}
     else{SETS.notifications=false;save();render();toast('Desactivadas');}return;
@@ -1512,19 +1505,12 @@ function importProfile(file){
   reader.onload=e=>{
     try{
       const data=JSON.parse(e.target.result);
-      if(!data||typeof data!=='object'||!data.d||!data.s||typeof data.d!=='object'||typeof data.s!=='object'){toast('❌ Archivo inválido');return;}
-      if(!confirm('¿Restaurar backup del '+(data.exported||'?')+' ? Esto reemplazará todos tus datos actuales.'))return;
-      DB=data.d;
-      SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},data.s);
-      SETS.achievements=SETS.achievements&&typeof SETS.achievements==='object'?SETS.achievements:{};
-      // Re-corre la migración de phaseHistory si el backup es previo a v6
-      if(!SETS.phaseHistory||!Array.isArray(SETS.phaseHistory)||SETS.phaseHistory.length===0){
-        const cur=SETS.phase||0;
-        SETS.phaseHistory=cur===0
-          ?[{phase:0,start:'2020-01-01'}]
-          :[{phase:Math.max(0,cur-1),start:'2020-01-01'},{phase:cur,start:SETS.phaseStart||todayStr()}];
-      }
-      save();checkAchievements();render();
+      if(!data.d||!data.s){toast('❌ Archivo inválido');return;}
+      // Confirm before overwriting
+      if(!confirm('¿Restaurar backup del '+( data.exported||'?')+' ? Esto reemplazará todos tus datos actuales.')){return;}
+      DB=data.d||{};
+      SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},data.s||{});
+      save();render();
       toast('✅ Perfil restaurado correctamente');
     }catch(err){toast('❌ Error al leer el archivo');}
   };
