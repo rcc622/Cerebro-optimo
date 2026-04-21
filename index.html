@@ -544,6 +544,8 @@ const ACHS=[
   {id:'pelota_b',  i:'🎾',n:'???',desc:'Pelota anti-ronquido · 4 semanas cumpliendo la meta',   secret:true},
   {id:'pelota_s',  i:'🎾',n:'???',desc:'Pelota anti-ronquido · 8 semanas cumpliendo la meta',   secret:true},
   {id:'pelota_g',  i:'🎾',n:'???',desc:'Pelota anti-ronquido · 13 semanas cumpliendo la meta',  secret:true},
+  {id:'comeback30',i:'🔄',n:'???',desc:'Rompiste una racha de 30+ días y la reconstruiste',     secret:true},
+  {id:'comeback50',i:'🔄',n:'???',desc:'Rompiste una racha de 50+ días y la reconstruiste',     secret:true},
   // Sleep habits achievements
   {id:'noscreen7',  i:'🔇',n:'Modo Avión',           desc:'7 días seguidos sin teléfono antes de dormir',     secret:false},
   {id:'noscreen21', i:'🔇',n:'Desintoxicado Digital', desc:'21 días seguidos sin teléfono antes de dormir',    secret:true},
@@ -604,6 +606,15 @@ const HABIT_DOM={
 /* Keystone habits (Duhigg) — mayor leverage downstream, se marcan con ⭐ */
 const CORE_HABITS={agua:1, aguafria:1, huevo:1, p7am:1, vino:1, noscreen:1};
 function habDom(hid){return HABIT_DOM[hid]||'fundamentos';}
+/* ── DÍA DE LA SUERTE (Hooked · Hunt) ── */
+// Multiplicador determinista por fecha: 88% x1.0, 10% x1.5, 2% x2.0 (~7% boost promedio)
+function dateHash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=(h*16777619)>>>0;}return h;}
+function luckMultiplier(dateStr){
+  const r=dateHash(dateStr)%100;
+  if(r<2)return 2.0;
+  if(r<12)return 1.5;
+  return 1.0;
+}
 const DS=['L','M','X','J','V','S','D'];
 const DL=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -769,15 +780,19 @@ function hmcls(r){return r===0?'hm0':r<40?'hm1':r<60?'hm2':r<80?'hm3':'hm4'}
 function calcXP(){
   let xp=0;
   Object.entries(DB).forEach(([date,d])=>{
+    const mult=luckMultiplier(date);
+    let dayXp=0;
     HABITS.forEach(h=>{
       if(h.subSteps){
-        xp+=subDoneCount(d,h); // 1 XP por sub-paso (total 5 XP si completo, igual que un hábito normal)
+        dayXp+=subDoneCount(d,h); // 1 XP por sub-paso (total 5 XP si completo, igual que un hábito normal)
       } else if(isDone(d,h)){
-        xp+=5;
-        if(h.challenge&&h.xpBonus)xp+=h.xpBonus; // challenge bonus
+        dayXp+=5;
+        if(h.challenge&&h.xpBonus)dayXp+=h.xpBonus; // challenge bonus
       }
     });
-    xp+=Math.min(d.agua||0,7)*3;
+    dayXp+=Math.min(d.agua||0,7)*3;
+    xp+=Math.round(dayXp*mult); // Multiplicador de Día de la Suerte aplicado al XP diario de hábitos
+    // Bonuses eventuales (chest/noche libre/misión/racha) NO se multiplican
     if(d._streakBonus)xp+=d._streakBonus;
     if(d._nocheLibreBonus)xp+=d._nocheLibreBonus;
     if(d._missionBonus)xp+=d._missionBonus;
@@ -1071,6 +1086,8 @@ function checkAchievements(){
     else if(id==='pelota_b')met=challengeWeekCount('pelotatenis',5)>=4;
     else if(id==='pelota_s')met=challengeWeekCount('pelotatenis',5)>=8;
     else if(id==='pelota_g')met=challengeWeekCount('pelotatenis',5)>=13;
+    else if(id==='comeback30')met=(SETS.comebackFrom||0)>=30&&str>=30;
+    else if(id==='comeback50')met=(SETS.comebackFrom||0)>=50&&str>=50;
     // Sleep habit achievements
     else if(id==='noscreen7')met=habitConsecDays('noscreen')>=7;
     else if(id==='noscreen21')met=habitConsecDays('noscreen')>=21;
@@ -1080,6 +1097,59 @@ function checkAchievements(){
     if(met){earned[a.id]=todayStr();changed=true;setTimeout(()=>showAchUnlock(a),600);}
   });
   if(changed){SETS.achievements=earned;save();}
+  checkMasteryUnlocks();
+  checkPRs();
+}
+
+/* ── MASTERY CELEBRATION (Hooked · Self reward) ── */
+function tierIndex(lvlM){return lvlM>=13?3:lvlM>=8?2:lvlM>=4?1:0;}
+function tierInfo(idx){return[{n:'',e:'',c:''},{n:'BRONCE',e:'🥉',c:'#CD7F32'},{n:'PLATA',e:'🥈',c:'#A8A9AD'},{n:'ORO',e:'🥇',c:'#FFD700'}][idx];}
+function checkMasteryUnlocks(){
+  const aw=SETS.masteryAwarded=SETS.masteryAwarded||{};
+  const unlocked=[];
+  HABITS.forEach(h=>{
+    if(h.retiredOn)return;
+    const weeks=habitMasteryWeeks(h.id);
+    const idx=tierIndex(masteryLevel(weeks));
+    const last=aw[h.id]||0;
+    if(idx>last){aw[h.id]=idx;unlocked.push({h,idx,weeks});}
+  });
+  const ww=waterMasteryWeeks();
+  const widx=tierIndex(masteryLevel(ww));
+  const lastW=aw['__agua']||0;
+  if(widx>lastW){aw['__agua']=widx;unlocked.push({h:{id:'__agua',e:'💧',lbl:'Hidratación 3L'},idx:widx,weeks:ww});}
+  if(unlocked.length){
+    save();
+    unlocked.forEach((u,i)=>setTimeout(()=>showMasteryUnlock(u),900+i*3800));
+  }
+}
+function showMasteryUnlock({h,idx,weeks}){
+  const t=tierInfo(idx);
+  const el=document.getElementById('achup');
+  document.getElementById('au-ico').textContent=t.e;
+  document.getElementById('au-name').textContent=`${t.n} · ${h.e} ${h.lbl}`;
+  document.getElementById('au-desc').textContent=`${weeks} semanas al 100% · Mastery desbloqueada`;
+  el.classList.add('show');
+  clearTimeout(_at);_at=setTimeout(()=>el.classList.remove('show'),4500);
+}
+
+/* ── PERSONAL RECORDS + COMEBACK (Hooked · Self) ── */
+function checkPRs(){
+  SETS.pr=SETS.pr||{};
+  const s=calcStreakDays();
+  const prev=SETS.pr.streak||0;
+  if(s>prev){
+    SETS.pr.streak=s;SETS.pr.streakDate=todayStr();save();
+    if(s>=7){
+      const el=document.getElementById('achup');
+      document.getElementById('au-ico').textContent='🏆';
+      document.getElementById('au-name').textContent='NUEVO RÉCORD PERSONAL';
+      document.getElementById('au-desc').textContent=`Racha más larga: ${s} días consecutivos`;
+      el.classList.add('show');clearTimeout(_at);_at=setTimeout(()=>el.classList.remove('show'),4500);
+    }
+  }
+  // Detectar caída grande para habilitar logro Comeback
+  if(prev>=30&&s<prev-10&&!SETS.comebackFrom){SETS.comebackFrom=prev;save();}
 }
 
 /* ── LEVEL UP OVERLAY ── */
@@ -1253,9 +1323,11 @@ function render(keepScroll=false){
   const wc=wr>=80?'c-good':wr>=50?'c-mid':'c-low';
   const xpNext=lvl<30?LEVEL_XP[lvl]-xp:0;
   const whyLine=SETS.whyStatement?`<div class="why-line" data-whyedit="1"><span class="why-ico">🎯</span><span>Quiero ser en 2027: <em>${escH(SETS.whyStatement)}</em></span></div>`:'';
+  const lucky=luckMultiplier(todayStr());
+  const luckBadge=lucky>1?`<span style="margin-left:8px;padding:2px 9px;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#1A0E00;border-radius:10px;font-size:10px;font-weight:800;letter-spacing:.5px;vertical-align:middle">${lucky>=2?'💎 x2':'🍀 x1.5'}</span>`:'';
   const hdr=`<div class="hdr" id="hdr">
 <div class="hdr-eyebrow">Protocolo Cognitivo · ${new Date().getFullYear()}</div>
-<div class="hdr-title">Mi Cerebro Óptimo 🧠 <span style="font-size:11px;opacity:.45;font-weight:400;letter-spacing:1px">v4.0</span></div>
+<div class="hdr-title">Mi Cerebro Óptimo 🧠 <span style="font-size:11px;opacity:.45;font-weight:400;letter-spacing:1px">v4.0</span>${luckBadge}</div>
 ${whyLine}
 <div class="hdr-cards">
 <div class="hdr-card"><div class="hdr-lbl">Hoy</div><div class="hdr-val">${dr}<span>%</span></div><div class="hdr-bar"><div class="hdr-fill ${dc}" style="width:${dr}%"></div></div></div>
@@ -1992,6 +2064,15 @@ function closeBackupPrompt(){
 load();checkAchievements();render();scheduleR();
 // Primer uso: lanzar prompt de Mi Por Qué si aún no se ha definido ni pospuesto
 if(SETS.whyStatement===undefined)setTimeout(showWhyPrompt,700);
+// Día de la suerte: toast una sola vez al día
+(function(){
+  const today=todayStr();
+  const m=luckMultiplier(today);
+  if(m>1&&SETS.luckyShown!==today){
+    SETS.luckyShown=today;save();
+    setTimeout(()=>toast(m>=2?'💎 ¡JACKPOT! Hoy todo tu XP cuenta x2':'🍀 ¡Día de la suerte! Todo tu XP hoy cuenta x1.5'),1400);
+  }
+})();
 </script>
 </body>
 </html>
