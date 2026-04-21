@@ -250,6 +250,21 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .gold-coin{font-size:22px;flex-shrink:0}
 .gold-lbl{font-size:13px;font-weight:700}
 .gold-sub{font-size:11px;opacity:.65;margin-top:1px}
+/* PROTOCOLO 7AM · tarjeta multi-check */
+.p7card{background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:6px;overflow:hidden;transition:all .18s}
+.p7card.on{border-color:var(--hc)}
+.p7top{display:flex;align-items:center;gap:11px;padding:12px 13px}
+.p7bar{height:4px;background:#EFEDE8;border-radius:2px;overflow:hidden;margin-top:6px}
+.p7fill{height:100%;border-radius:2px;transition:width .5s ease}
+.p7steps{border-top:1px solid var(--border);background:#FAFAF7}
+.p7step{display:flex;align-items:center;gap:10px;padding:10px 15px;cursor:pointer;border-bottom:1px solid #EDEBE3;transition:background .12s}
+.p7step:last-child{border-bottom:none}
+.p7step:active{background:#F0EDE3}
+.p7step.on{background:#FAFFFC}
+.p7step.on .p7lbl{color:#2A6F46;font-weight:600}
+.p7chk{width:22px;height:22px;border-radius:50%;border:2px solid #D5D0C8;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;transition:all .18s}
+.p7lbl{font-size:12px;line-height:1.35;color:var(--text)}
+.p7time{font-size:10px;color:var(--text2);margin-left:auto;font-weight:700;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -333,8 +348,17 @@ const HABITS=[
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
   {id:'gratitud', e:'🙏',lbl:'Anota 1 cosa específica de gratitud',blk:'Mañana',freq:'daily',addedOn:'2026-04-18',
    tip:'Escribe en tu nota del celular o libreta UNA cosa específica por la que estás agradecido hoy. Específica importa: no "mi familia", sino "que Diana me preparó café antes de la junta". La especificidad es la que activa la corteza prefrontal medial izquierda, no la abstracción genérica. Tarda 30 segundos. La práctica sostenida reconfigura el sesgo atencional del cerebro hacia lo positivo (no es magia, es plasticidad neural por repetición).\n📚 Emmons & McCullough, J Personality and Social Psychology (2003): la gratitud específica diaria por 10 semanas elevó bienestar subjetivo 25% y mejoró calidad de sueño; Wood et al., Clinical Psychology Review (2010): el efecto se mantiene a los 6 meses solo si la práctica continúa.'},
-  {id:'listo7am', e:'⏰',lbl:'Listo a las 7:00am (vestido, lonches, todo)',blk:'Mañana',freq:'daily',addedOn:'2026-04-14',workdayOnly:true,
-   tip:'Este es un hábito LLAVE (keystone). Un solo check que contiene 10 cosas: ritual matutino hecho, lonches listos, vestido, arreglado, llaves en mano, niños atendidos. Si estás listo a las 7:00am en punto, por definición todo lo demás salió bien.\n\n🎯 Por qué funciona: el reloj mismo es el gatillo. No depende de motivación ni de decisiones — a las 7:00am o estás listo o no. Binario. Limpio. Sin auto-engaño.\n\n🛠️ Protocolo híbrido sugerido (no obligatorio, descúbrelo tú mismo):\n• Noche (5-8 min post-cena): lavar fruta, sacar loncheras, pre-cortar lo que no se ponga feo, juntar fixings en un estante del refri. NO armar, solo dejar listo para ensamblar.\n• Mañana: aprovecha los huecos muertos de tu ritual (los 15-20 min entre creatina y huevo) para ensamblar lonches en paralelo. No agregas tiempo, usas tiempo que ya existía.\n\n📚 Duhigg, The Power of Habit (2012): los hábitos llave reorganizan conductas aguas arriba sin que tengas que decidir conscientemente cada paso. Un solo ancla temporal fuerte arrastra todo un sistema detrás.'},
+  {id:'listo7am', e:'⏰',lbl:'Listo a las 7:00am (vestido, lonches, todo)',blk:'Mañana',freq:'daily',addedOn:'2026-04-14',retiredOn:'2026-04-21',workdayOnly:true,
+   tip:'Hábito jubilado — reemplazado por el Protocolo Pre-7am (versión desglosada en 5 pasos concretos). Tus checks históricos siguen contando en XP e historial. La nueva tarjeta te ayuda a diagnosticar qué paso falla cuando no llegas a las 7am.'},
+  {id:'p7am', e:'⏰',lbl:'Protocolo Pre-7am',blk:'Mañana',freq:'daily',addedOn:'2026-04-21',workdayOnly:true,
+   subSteps:[
+     {k:'fixings',   e:'🥪',lbl:'Fixings de lonches listos (anoche)',t:'PM'},
+     {k:'ropa',      e:'👕',lbl:'Ropa + mochila en la silla (anoche)',t:'PM'},
+     {k:'wake530',   e:'🛏️',lbl:'Despierto antes de 5:30am',t:'5:30'},
+     {k:'ritual630', e:'☕',lbl:'Ritual matutino terminado',t:'6:30'},
+     {k:'listo7',    e:'🚪',lbl:'Listo en la puerta',t:'7:00'}
+   ],
+   tip:'Keystone desglosado — 5 micro-pasos concretos en vez de un solo binario opaco. El éxito de las 7am se construye la NOCHE anterior (2 pasos) y se ejecuta en 3 gates temporales en la mañana.\n\n🎯 Por qué funciona (Covey · Cuadrante II): los 2 checks de anoche son pura prevención — importante pero no urgente. Si los saltas, la mañana se vuelve reactiva (Cuadrante I: urgente + importante = caos). El desglose convierte una meta opaca en una cadena causal diagnosticable: cuando no llegas, sabes exactamente qué eslabón se rompió.\n\n💡 Progreso parcial cuenta: marcar 3/5 vale 60% — no es todo-o-nada. Pero la meta es los 5.\n\n📚 Duhigg, The Power of Habit (2012): los hábitos llave reorganizan conductas aguas arriba. Covey, 7 Hábitos (1989): "lo que importa es que lo importante siga siendo lo importante" — Cuadrante II es donde se construyen los resultados sostenibles.'},
   // DÍA
   {id:'nueces',  e:'🌰',lbl:'Almendras (15-20 piezas)',      blk:'Día',freq:'daily',addedOn:'2020-01-01',
    tip:'La vitamina E protege las membranas neuronales del daño oxidativo. Cómelas con piel sobre avena entera remojada la noche anterior en leche sin azúcar — el remojo reduce el ácido fítico de ambas y mejora absorción. Agrega canela: es antiinflamatoria y regula insulina. Siempre después del huevo y creatina en ayunas.\n📚 Morris et al., JAMA (2002): alto consumo de vitamina E se asoció con 67% menor riesgo de Alzheimer.'},
@@ -600,8 +624,19 @@ function isWorkday(dateStr){
 }
 function activeH(date){
   const p=phOn(date);
-  return HABITS.filter(h=>(h.minP===undefined||(p>=h.minP&&p<=h.maxP))&&(!h.addedOn||!date||h.addedOn<=date));
+  return HABITS.filter(h=>
+    (h.minP===undefined||(p>=h.minP&&p<=h.maxP))
+    &&(!h.addedOn||!date||h.addedOn<=date)
+    &&(!h.retiredOn||!date||h.retiredOn>date)
+  );
 }
+function subStepVal(d,h,k){return !!(d[h.id]&&d[h.id][k]);}
+function subDoneCount(d,h){
+  if(!h.subSteps)return 0;
+  const v=d[h.id]||{};
+  return h.subSteps.filter(s=>!!v[s.k]).length;
+}
+function subRatio(d,h){return h.subSteps?subDoneCount(d,h)/h.subSteps.length:0;}
 function dailyH(date){
   return activeH(date).filter(h=>{
     if(h.freq!=='daily'||h.challenge)return false;
@@ -610,10 +645,18 @@ function dailyH(date){
   });
 }
 function dd(s){return DB[s]||{}}
-function isDone(d,h){if(!h.doseCount)return !!d[h.id];const v=d[h.id];if(v===true)return true;return (v||0)>=h.doseCount;}
+function isDone(d,h){
+  if(h.subSteps){const v=d[h.id]||{};return h.subSteps.every(s=>!!v[s.k]);}
+  if(!h.doseCount)return !!d[h.id];
+  const v=d[h.id];if(v===true)return true;return (v||0)>=h.doseCount;
+}
 function dayRate(s){
   const d=dd(s),W=wg(s),dl=dailyH(s);
-  const hd=dl.filter(h=>isDone(d,h)).length;
+  let hd=0;
+  dl.forEach(h=>{
+    if(h.subSteps)hd+=subRatio(d,h); // crédito parcial 0.0-1.0
+    else if(isDone(d,h))hd++;
+  });
   const wd=Math.min(d.agua||0,W);
   const tot=dl.length+W;
   return tot?Math.round((hd+wd)/tot*100):0;
@@ -622,7 +665,11 @@ function weekRate(m){
   const dates=week7(m);let tot=0,done=0;
   dates.forEach(s=>{
     const d=dd(s),W=wg(s),dl=dailyH(s);
-    dl.forEach(h=>{tot++;if(isDone(d,h))done++;});
+    dl.forEach(h=>{
+      tot++;
+      if(h.subSteps)done+=subRatio(d,h);
+      else if(isDone(d,h))done++;
+    });
     tot+=W;done+=Math.min(d.agua||0,W);
   });
   return tot?Math.round(done/tot*100):0;
@@ -636,7 +683,9 @@ function calcXP(){
   let xp=0;
   Object.entries(DB).forEach(([date,d])=>{
     HABITS.forEach(h=>{
-      if(isDone(d,h)){
+      if(h.subSteps){
+        xp+=subDoneCount(d,h); // 1 XP por sub-paso (total 5 XP si completo, igual que un hábito normal)
+      } else if(isDone(d,h)){
         xp+=5;
         if(h.challenge&&h.xpBonus)xp+=h.xpBonus; // challenge bonus
       }
@@ -644,10 +693,14 @@ function calcXP(){
     xp+=Math.min(d.agua||0,7)*3;
     if(d._streakBonus)xp+=d._streakBonus;
     if(d._nocheLibreBonus)xp+=d._nocheLibreBonus;
-    // Date-aware raw % for the +10 bonus
+    // Date-aware raw % for the +10 bonus (consistente con dayRate: crédito parcial)
     const dl=dailyH(date);
     const W=wg(date);
-    const allH=dl.filter(h=>isDone(d,h)).length;
+    let allH=0;
+    dl.forEach(h=>{
+      if(h.subSteps)allH+=subRatio(d,h);
+      else if(isDone(d,h))allH++;
+    });
     const wFull=(d.agua||0)>=W;
     const tot=dl.length+W;
     const raw=tot?Math.round((allH+(wFull?W:0))/tot*100):0;
@@ -700,7 +753,7 @@ function morningStreakDays(){
     const p=phOn(d);
     const mh=HABITS.filter(h=>h.blk==='Mañana'&&(!h.addedOn||h.addedOn<=d)&&(h.minP===undefined||(p>=h.minP&&p<=h.maxP)));
     const x=dd(d);
-    if(mh.length&&mh.every(h=>x[h.id]))c++;else break;
+    if(mh.length&&mh.every(h=>isDone(x,h)))c++;else break;
     d=shift(d,-1);
   }
   return c;
@@ -1007,6 +1060,19 @@ function adjustDose(s,h,cur,next){
     DB[s].aguaCre=Math.max(0,ac-removeW);
   }
 }
+function toggleSub(s,hid,k){
+  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
+  const xpB=calcXP(),lvlB=calcLvl(xpB);
+  if(!DB[s])DB[s]={};
+  if(!DB[s][hid]||typeof DB[s][hid]!=='object')DB[s][hid]={};
+  DB[s][hid][k]=!DB[s][hid][k];
+  save();
+  const xpA=calcXP(),lvlA=calcLvl(xpA);
+  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  checkUnlock();checkAchievements();
+  if(s===todayStr()){checkDayComplete();checkNocheLibre();}
+  render(true);
+}
 function toggle(s,id){
   if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
   const xpB=calcXP(),lvlB=calcLvl(xpB);
@@ -1233,15 +1299,42 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
     }
     bh.forEach(h=>{
       const isDosed=!!h.doseCount;
+      const hasSubs=!!h.subSteps;
       let rawVal=d[h.id];
       if(isDosed&&rawVal===true)rawVal=h.doseCount;
       const doseVal=isDosed?(rawVal||0):0;
-      const on=isDosed?(doseVal>=h.doseCount):!!d[h.id];
+      const on=hasSubs?isDone(d,h):(isDosed?(doseVal>=h.doseCount):!!d[h.id]);
       const st=TIP===h.id;
       const isChallenge=!!h.challenge;
       const tipParts=h.tip.split('\n📚');
       const tipMain=tipParts[0];
       const tipSource=tipParts[1]?`<div style="margin-top:7px;padding-top:7px;border-top:1px solid #EED98A;font-size:11px;color:#7A5000"><strong>📚</strong>${tipParts[1]}</div>`:'';
+      // Tarjeta multi-check (subSteps)
+      if(hasSubs){
+        const count=subDoneCount(d,h);
+        const pct=Math.round(count/h.subSteps.length*100);
+        const subsHtml=h.subSteps.map(s=>{
+          const sv=subStepVal(d,h,s.k);
+          return`<div class="p7step${sv?' on':''}" data-sub="${ADATE}|${h.id}|${s.k}">
+<div class="p7chk" style="${sv?`background:${c};border-color:${c}`:''}">${sv?'✓':''}</div>
+<div class="p7lbl">${s.e} ${s.lbl}</div>
+<div class="p7time">${s.t||''}</div>
+</div>`;
+        }).join('');
+        hab+=`<div class="p7card${on?' on':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}">
+<div class="p7top">
+<div class="hchk" style="${on?`background:${c};border-color:${c}`:count>0?`background:#fff;border-color:${c};color:${c}`:''}">${on?'✓':count>0?count:''}</div>
+<div style="flex:1;min-width:0">
+<div class="hlbl">${h.e} ${h.lbl}</div>
+<div class="hsub" style="color:${on?'#2A6F46':'var(--text2)'};font-weight:${on?700:500}">${count}/${h.subSteps.length} pasos · ${pct}%</div>
+<div class="p7bar"><div class="p7fill" style="width:${pct}%;background:${c}"></div></div>
+</div>
+<button class="tipbtn" data-tip="${h.id}">ℹ️</button>
+</div>
+<div class="p7steps">${subsHtml}</div>
+</div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
+        return;
+      }
       let challengeInfo='';
       if(isChallenge){
         const thisWeek=challengeWeekThisWeek(h.id);
@@ -1328,12 +1421,14 @@ function yearMondays2(){return yearMondays(new Date().getFullYear());}
 function habitMasteryWeeks(hid){
   const h=HABITS.find(x=>x.id===hid);
   const allW=yearMondays2();
+  const today=todayStr();
   let count=0;
   allW.forEach(mon=>{
     const days=week7(mon);
-    // Only count completed weeks (all 7 days done OR week is in the past)
-    const today=todayStr();
-    const weekDone=days.every(s=>s>today?false:(h?isDone(dd(s),h):!!dd(s)[hid]));
+    // Para hábitos workdayOnly, solo cuentan días laborales; si la semana no tiene laborales, se salta
+    const relevant=h&&h.workdayOnly?days.filter(isWorkday):days;
+    if(relevant.length===0)return;
+    const weekDone=relevant.every(s=>s>today?false:(h?isDone(dd(s),h):!!dd(s)[hid]));
     if(weekDone)count++;
   });
   return Math.min(count,13);
@@ -1357,6 +1452,7 @@ function masteryMedalName(lvl){return lvl>=13?'Oro':lvl>=8?'Plata':lvl>=4?'Bronc
 function goldHabits(){
   const golds=[];
   HABITS.forEach(h=>{
+    if(h.retiredOn)return; // no mostrar jubilados
     const w=habitMasteryWeeks(h.id);
     if(masteryLevel(w)>=13)golds.push({...h,weeks:w});
   });
@@ -1370,8 +1466,8 @@ function vLogros(){
   const earned=SETS.achievements||{};
   const xp=calcXP(),lvl=calcLvl(xp),lc=lvlColor(lvl);
 
-  // Section 1: Maestría por hábito
-  const maestriaHabits=[...HABITS,{id:'__agua',e:'💧',lbl:'Hidratación 3L',blk:'Día',freq:'daily',tip:''}];
+  // Section 1: Maestría por hábito (excluye jubilados)
+  const maestriaHabits=[...HABITS.filter(h=>!h.retiredOn),{id:'__agua',e:'💧',lbl:'Hidratación 3L',blk:'Día',freq:'daily',tip:''}];
   const maestriaRows=maestriaHabits.map(h=>{
     const weeks=h.id==='__agua'?waterMasteryWeeks():habitMasteryWeeks(h.id);
     const lvlM=masteryLevel(weeks);
@@ -1468,6 +1564,8 @@ document.addEventListener('click',e=>{
   if(wp){const[s,idx]=wp.dataset.wp.split('|');const i=parseInt(idx);const cur=dd(s).agua||0;setWater(s,i<cur?i:i+1);return;}
   const dp=e.target.closest('[data-dose]');
   if(dp){const[s,id,idx]=dp.dataset.dose.split('|');const i=parseInt(idx);setDose(s,id,i);return;}
+  const sub=e.target.closest('[data-sub]');
+  if(sub){const[s,id,k]=sub.dataset.sub.split('|');toggleSub(s,id,k);return;}
   const cd=e.target.closest('[data-t]');
   if(cd&&!e.target.closest('[data-tip]')){const[s,id]=cd.dataset.t.split('|');toggle(s,id);return;}
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render(true);return;}
