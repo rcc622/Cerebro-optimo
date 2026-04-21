@@ -296,6 +296,22 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .core-star{font-size:10px;margin-left:5px;opacity:.85}
 .hcard.core{border-left:3px solid var(--hc)}
 .p7card.core{border-left:3px solid var(--hc)}
+/* MISIONES SEMANALES */
+.mission-card{background:linear-gradient(135deg,#111927,#1A2A3F);border-radius:14px;padding:14px 15px;margin-bottom:11px;color:#fff}
+.mission-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.mission-hdr-title{font-size:11px;font-weight:800;letter-spacing:2px;opacity:.75;text-transform:uppercase}
+.mission-hdr-wk{font-size:10px;opacity:.55}
+.mission-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.08)}
+.mission-row:first-of-type{border-top:none;padding-top:2px}
+.mission-row.done{opacity:.6}
+.m-type{font-size:9px;font-weight:800;letter-spacing:1.5px;padding:3px 7px;border-radius:12px;flex-shrink:0}
+.m-body{flex:1;min-width:0}
+.m-title{font-size:12.5px;font-weight:600;line-height:1.25;margin-bottom:2px}
+.m-sub{font-size:10px;opacity:.6;margin-bottom:5px}
+.m-bar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.m-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.m-prog{font-size:10px;opacity:.75;margin-top:3px;font-weight:700}
+.m-done-ico{font-size:18px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -758,6 +774,7 @@ function calcXP(){
     xp+=Math.min(d.agua||0,7)*3;
     if(d._streakBonus)xp+=d._streakBonus;
     if(d._nocheLibreBonus)xp+=d._nocheLibreBonus;
+    if(d._missionBonus)xp+=d._missionBonus;
     // Date-aware raw % for the +10 bonus (consistente con dayRate: crédito parcial)
     const dl=dailyH(date);
     const W=wg(date);
@@ -1134,7 +1151,7 @@ function toggleSub(s,hid,k){
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-  checkUnlock();checkAchievements();
+  checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   render(true);
 }
@@ -1152,7 +1169,7 @@ function toggle(s,id){
     save();
     const xpA=calcXP(),lvlA=calcLvl(xpA);
     if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-    checkUnlock();checkAchievements();
+    checkUnlock();checkAchievements();checkMissions();
     if(s===todayStr()){checkDayComplete();checkNocheLibre();}
     if(next===0)toast(`↩️ ${h.e} Reiniciado a 0`);
     else if(next>=h.doseCount)toast(`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`);
@@ -1163,7 +1180,7 @@ function toggle(s,id){
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-  checkUnlock();checkAchievements();
+  checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   if(id==='agua'&&!wasOn&&s===todayStr()){
     setTimeout(()=>showBackupPrompt(),800);
@@ -1181,7 +1198,7 @@ function setDose(s,id,target){
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-  checkUnlock();checkAchievements();
+  checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   if(next>=h.doseCount)toast(`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`);
   else if(next>0)toast(`${h.e} ${next}/${h.doseCount} tomas`);
@@ -1197,7 +1214,7 @@ function setWater(s,n){
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-  checkUnlock();checkAchievements();
+  checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr())checkDayComplete();
   render(true);
 }
@@ -1295,6 +1312,34 @@ ${lockBtn}
 ${streakHint}
 </div>`;
 
+  // Misiones semanales
+  const curMon=monday(todayStr());
+  generateMissions(curMon);
+  const mi=SETS.missions&&SETS.missions[curMon];
+  let missionsHtml='';
+  if(mi&&mi.candidates&&mi.candidates.length){
+    const rows=mi.candidates.map(mm=>{
+      const prg=missionProgress(mm);
+      const pct=Math.min(100,Math.round(prg.c/mm.goal*100));
+      const completed=mi.completedIds.includes(mm.id);
+      const h=HABITS.find(x=>x.id===mm.hid);
+      const dc=DOMAINS[mm.dom].c;
+      const typeColor=mm.type==='CONQUISTAR'?'#FFB84D':mm.type==='DEFENDER'?'#7BC97A':'#6BB5FF';
+      return`<div class="mission-row${completed?' done':''}">
+<div class="m-type" style="background:${typeColor}22;color:${typeColor}">${mm.type}</div>
+<div class="m-body">
+<div class="m-title">${h?h.e:'·'} ${h?h.lbl:'—'}</div>
+<div class="m-sub">${mm.goal} ${h&&h.workdayOnly?'días laborales':'días'} · +${mm.xp} XP</div>
+${completed?'':`<div class="m-bar"><div class="m-fill" style="width:${pct}%;background:${dc}"></div></div><div class="m-prog">${prg.c}/${mm.goal}</div>`}
+</div>
+${completed?'<div class="m-done-ico">✅</div>':''}
+</div>`;
+    }).join('');
+    missionsHtml=`<div class="mission-card">
+<div class="mission-hdr"><span class="mission-hdr-title">🎯 Misiones · semana</span><span class="mission-hdr-wk">${weekLabel(curMon)}</span></div>
+${rows}
+</div>`;
+  }
   // Streak science fact
   const str=calcStreakDays();
   const factHtml=str>=3?`<div class="sfact">
@@ -1428,7 +1473,7 @@ ${dosedInfo}
 </div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
     });
   });
-  return daySel+lvlCard+factHtml+achCard+achMini+info2+hab;
+  return daySel+lvlCard+missionsHtml+factHtml+achCard+achMini+info2+hab;
 }
 
 /* ── WEEK ── */
@@ -1809,6 +1854,72 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();PROMPT=e;if
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 try{const m={name:'Mi Cerebro Óptimo',short_name:'Cerebro',start_url:'.',display:'standalone',background_color:'#F5F4F0',theme_color:'#0D1B2A',icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1B2A'/><text y='.9em' font-size='72' x='14'>🧠</text></svg>",sizes:'any',type:'image/svg+xml'}]};const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l);}catch(e){}
 
+/* ── MISIONES SEMANALES (Hooked loop · Covey H3 planificación semanal) ── */
+function generateMissions(monKey){
+  if(!SETS.missions)SETS.missions={};
+  if(SETS.missions[monKey])return; // ya generadas esta semana
+  const result=[];
+  // PRNG simple determinista por semana para que no cambien entre renders
+  let seed=0;for(const ch of monKey)seed=(seed*31+ch.charCodeAt(0))>>>0;
+  const rnd=()=>{seed=(seed*1103515245+12345)>>>0;return seed/4294967296;};
+  DOM_ORDER.forEach((k,i)=>{
+    const hs=HABITS.filter(h=>!h.retiredOn&&habDom(h.id)===k);
+    if(!hs.length)return;
+    let type,pick,xp,goal;
+    if(k==='retos'){
+      // CONQUISTAR: reto menos tocado históricamente
+      const counts=hs.map(h=>({h,c:Object.values(DB).filter(d=>d[h.id]).length}));
+      counts.sort((a,b)=>a.c-b.c);
+      pick=counts[0].h;
+      goal=pick.weeklyGoal||3;
+      type='CONQUISTAR';xp=150;
+    }else{
+      const wm=hs.map(h=>({h,w:habitMasteryWeeks(h.id)}));
+      const bronzePlus=wm.filter(x=>x.w>=4);
+      if(bronzePlus.length&&rnd()<0.35){
+        // DEFENDER: hábito con mayor mastery — no perderla esta semana
+        bronzePlus.sort((a,b)=>b.w-a.w);
+        pick=bronzePlus[0].h;type='DEFENDER';xp=50;
+      }else{
+        // DOMINAR: hábito con menor mastery — subir de nivel
+        wm.sort((a,b)=>a.w-b.w);
+        pick=wm[0].h;type='DOMINAR';xp=100;
+      }
+      goal=pick.workdayOnly?5:7;
+    }
+    result.push({id:`m_${monKey}_${i}`,type,hid:pick.id,dom:k,goal,xp,weekMon:monKey});
+  });
+  SETS.missions[monKey]={candidates:result,completedIds:[]};
+  save();
+}
+function missionProgress(m){
+  const h=HABITS.find(x=>x.id===m.hid);
+  if(!h)return{c:0,g:m.goal};
+  const days=week7(m.weekMon).filter(s=>s<=todayStr());
+  let c=0;
+  days.forEach(s=>{
+    if(h.workdayOnly&&!isWorkday(s))return; // no cuentan fines de semana para workdayOnly
+    if(isDone(dd(s),h))c++;
+  });
+  return{c,g:m.goal};
+}
+function checkMissions(){
+  const mon=monday(todayStr());
+  if(!SETS.missions||!SETS.missions[mon])return;
+  const mi=SETS.missions[mon];
+  mi.candidates.forEach(m=>{
+    if(mi.completedIds.includes(m.id))return;
+    const p=missionProgress(m);
+    if(p.c>=m.goal){
+      mi.completedIds.push(m.id);
+      const today=todayStr();
+      if(!DB[today])DB[today]={};
+      DB[today]._missionBonus=(DB[today]._missionBonus||0)+m.xp;
+      save();
+      setTimeout(()=>toast(`🎯 ¡Misión ${m.type} completa! +${m.xp} XP`),400);
+    }
+  });
+}
 /* ── MI POR QUÉ (Covey H2) ── */
 function escH(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function showWhyPrompt(){
