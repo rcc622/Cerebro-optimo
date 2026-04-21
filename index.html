@@ -250,6 +250,68 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .gold-coin{font-size:22px;flex-shrink:0}
 .gold-lbl{font-size:13px;font-weight:700}
 .gold-sub{font-size:11px;opacity:.65;margin-top:1px}
+/* PROTOCOLO 7AM · tarjeta multi-check */
+.p7card{background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:6px;overflow:hidden;transition:all .18s}
+.p7card.on{border-color:var(--hc)}
+.p7top{display:flex;align-items:center;gap:11px;padding:12px 13px}
+.p7bar{height:4px;background:#EFEDE8;border-radius:2px;overflow:hidden;margin-top:6px}
+.p7fill{height:100%;border-radius:2px;transition:width .5s ease}
+.p7steps{border-top:1px solid var(--border);background:#FAFAF7}
+.p7step{display:flex;align-items:center;gap:10px;padding:10px 15px;cursor:pointer;border-bottom:1px solid #EDEBE3;transition:background .12s}
+.p7step:last-child{border-bottom:none}
+.p7step:active{background:#F0EDE3}
+.p7step.on{background:#FAFFFC}
+.p7step.on .p7lbl{color:#2A6F46;font-weight:600}
+.p7chk{width:22px;height:22px;border-radius:50%;border:2px solid #D5D0C8;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;transition:all .18s}
+.p7lbl{font-size:12px;line-height:1.35;color:var(--text)}
+.p7time{font-size:10px;color:var(--text2);margin-left:auto;font-weight:700;flex-shrink:0}
+/* MI POR QUÉ */
+.why-line{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:9px 13px;margin-bottom:10px;font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.82);cursor:pointer;display:flex;align-items:center;gap:8px}
+.why-line .why-ico{font-size:14px;flex-shrink:0;opacity:.85}
+.why-line em{font-style:italic;color:#fff;font-weight:500}
+#whyprompt{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px}
+.why-inner{background:#fff;border-radius:22px;padding:26px 22px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.why-emoji{font-size:44px;margin-bottom:10px}
+.why-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.3}
+.why-sub{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:16px}
+#why-input{width:100%;min-height:84px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;color:var(--text);background:var(--bg);outline:none;resize:vertical;font-family:inherit;line-height:1.45;margin-bottom:14px;box-sizing:border-box}
+#why-input:focus{border-color:var(--navy);background:#fff}
+.why-btn-p{width:100%;padding:13px;border-radius:12px;border:none;background:var(--navy);color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;letter-spacing:.3px}
+.why-btn-s{width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer}
+.why-card-quote{font-size:13px;color:var(--navy);line-height:1.6;font-style:italic;margin-bottom:14px;padding:11px 13px;background:#FAFAF7;border-left:3px solid var(--navy);border-radius:6px}
+/* DOMINIOS */
+.dom-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;margin-bottom:8px;color:#fff}
+.dom-hdr-ico{font-size:22px;flex-shrink:0}
+.dom-hdr-inf{flex:1;min-width:0}
+.dom-hdr-name{font-size:14px;font-weight:800;letter-spacing:.3px}
+.dom-hdr-sub{font-size:10.5px;opacity:.82;line-height:1.3;margin-top:1px}
+.dom-hdr-stat{font-size:11px;font-weight:700;opacity:.92;text-align:right;flex-shrink:0}
+.dom-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.dom-sumcard{background:#fff;border-radius:11px;padding:10px 11px;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;align-items:center;gap:9px}
+.dom-sum-ico{font-size:18px;flex-shrink:0;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.dom-sum-inf{flex:1;min-width:0}
+.dom-sum-name{font-size:11px;font-weight:800;letter-spacing:.2px;line-height:1.1}
+.dom-sum-sub{font-size:9.5px;color:var(--text2);margin-top:2px;line-height:1.2}
+/* CORE / KEYSTONE badge */
+.core-star{font-size:10px;margin-left:5px;opacity:.85}
+.hcard.core{border-left:3px solid var(--hc)}
+.p7card.core{border-left:3px solid var(--hc)}
+/* MISIONES SEMANALES */
+.mission-card{background:linear-gradient(135deg,#111927,#1A2A3F);border-radius:14px;padding:14px 15px;margin-bottom:11px;color:#fff}
+.mission-hdr{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
+.mission-hdr-title{font-size:11px;font-weight:800;letter-spacing:2px;opacity:.75;text-transform:uppercase}
+.mission-hdr-wk{font-size:10px;opacity:.55}
+.mission-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.08)}
+.mission-row:first-of-type{border-top:none;padding-top:2px}
+.mission-row.done{opacity:.6}
+.m-type{font-size:9px;font-weight:800;letter-spacing:1.5px;padding:3px 7px;border-radius:12px;flex-shrink:0}
+.m-body{flex:1;min-width:0}
+.m-title{font-size:12.5px;font-weight:600;line-height:1.25;margin-bottom:2px}
+.m-sub{font-size:10px;opacity:.6;margin-bottom:5px}
+.m-bar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.m-fill{height:100%;border-radius:2px;transition:width .4s ease}
+.m-prog{font-size:10px;opacity:.75;margin-top:3px;font-weight:700}
+.m-done-ico{font-size:18px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -311,6 +373,16 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <button onclick="closeBackupPrompt()" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Ahora no</button>
   </div>
 </div>
+<div id="whyprompt" onclick="closeWhyPrompt()">
+  <div class="why-inner" onclick="event.stopPropagation()">
+    <div class="why-emoji">🎯</div>
+    <div class="why-title">¿Quién quieres ser para 2027?</div>
+    <div class="why-sub">Tu constitución personal. Todo lo que marcas cada día se mide contra esto.<br><span style="color:var(--navy);font-weight:600">Una frase. Específica. Tuya.</span></div>
+    <textarea id="why-input" placeholder="Ej: Un padre presente, un líder claro, con energía estable..." maxlength="200" rows="3"></textarea>
+    <button class="why-btn-p" id="why-save">Guardar mi norte</button>
+    <button class="why-btn-s" id="why-skip">Ahora no</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <script>
 'use strict';
@@ -333,8 +405,17 @@ const HABITS=[
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
   {id:'gratitud', e:'🙏',lbl:'Anota 1 cosa específica de gratitud',blk:'Mañana',freq:'daily',addedOn:'2026-04-18',
    tip:'Escribe en tu nota del celular o libreta UNA cosa específica por la que estás agradecido hoy. Específica importa: no "mi familia", sino "que Diana me preparó café antes de la junta". La especificidad es la que activa la corteza prefrontal medial izquierda, no la abstracción genérica. Tarda 30 segundos. La práctica sostenida reconfigura el sesgo atencional del cerebro hacia lo positivo (no es magia, es plasticidad neural por repetición).\n📚 Emmons & McCullough, J Personality and Social Psychology (2003): la gratitud específica diaria por 10 semanas elevó bienestar subjetivo 25% y mejoró calidad de sueño; Wood et al., Clinical Psychology Review (2010): el efecto se mantiene a los 6 meses solo si la práctica continúa.'},
-  {id:'listo7am', e:'⏰',lbl:'Listo a las 7:00am (vestido, lonches, todo)',blk:'Mañana',freq:'daily',addedOn:'2026-04-14',workdayOnly:true,
-   tip:'Este es un hábito LLAVE (keystone). Un solo check que contiene 10 cosas: ritual matutino hecho, lonches listos, vestido, arreglado, llaves en mano, niños atendidos. Si estás listo a las 7:00am en punto, por definición todo lo demás salió bien.\n\n🎯 Por qué funciona: el reloj mismo es el gatillo. No depende de motivación ni de decisiones — a las 7:00am o estás listo o no. Binario. Limpio. Sin auto-engaño.\n\n🛠️ Protocolo híbrido sugerido (no obligatorio, descúbrelo tú mismo):\n• Noche (5-8 min post-cena): lavar fruta, sacar loncheras, pre-cortar lo que no se ponga feo, juntar fixings en un estante del refri. NO armar, solo dejar listo para ensamblar.\n• Mañana: aprovecha los huecos muertos de tu ritual (los 15-20 min entre creatina y huevo) para ensamblar lonches en paralelo. No agregas tiempo, usas tiempo que ya existía.\n\n📚 Duhigg, The Power of Habit (2012): los hábitos llave reorganizan conductas aguas arriba sin que tengas que decidir conscientemente cada paso. Un solo ancla temporal fuerte arrastra todo un sistema detrás.'},
+  {id:'listo7am', e:'⏰',lbl:'Listo a las 7:00am (vestido, lonches, todo)',blk:'Mañana',freq:'daily',addedOn:'2026-04-14',retiredOn:'2026-04-21',workdayOnly:true,
+   tip:'Hábito jubilado — reemplazado por el Protocolo Pre-7am (versión desglosada en 5 pasos concretos). Tus checks históricos siguen contando en XP e historial. La nueva tarjeta te ayuda a diagnosticar qué paso falla cuando no llegas a las 7am.'},
+  {id:'p7am', e:'⏰',lbl:'Protocolo Pre-7am',blk:'Mañana',freq:'daily',addedOn:'2026-04-21',workdayOnly:true,
+   subSteps:[
+     {k:'fixings',   e:'🥪',lbl:'Fixings de lonches listos (anoche)',t:'PM'},
+     {k:'ropa',      e:'👕',lbl:'Ropa + mochila en la silla (anoche)',t:'PM'},
+     {k:'wake530',   e:'🛏️',lbl:'Despierto antes de 5:30am',t:'5:30'},
+     {k:'ritual630', e:'☕',lbl:'Ritual matutino terminado',t:'6:30'},
+     {k:'listo7',    e:'🚪',lbl:'Listo en la puerta',t:'7:00'}
+   ],
+   tip:'Keystone desglosado — 5 micro-pasos concretos en vez de un solo binario opaco. El éxito de las 7am se construye la NOCHE anterior (2 pasos) y se ejecuta en 3 gates temporales en la mañana.\n\n🎯 Por qué funciona (Covey · Cuadrante II): los 2 checks de anoche son pura prevención — importante pero no urgente. Si los saltas, la mañana se vuelve reactiva (Cuadrante I: urgente + importante = caos). El desglose convierte una meta opaca en una cadena causal diagnosticable: cuando no llegas, sabes exactamente qué eslabón se rompió.\n\n💡 Progreso parcial cuenta: marcar 3/5 vale 60% — no es todo-o-nada. Pero la meta es los 5.\n\n📚 Duhigg, The Power of Habit (2012): los hábitos llave reorganizan conductas aguas arriba. Covey, 7 Hábitos (1989): "lo que importa es que lo importante siga siendo lo importante" — Cuadrante II es donde se construyen los resultados sostenibles.'},
   // DÍA
   {id:'nueces',  e:'🌰',lbl:'Almendras (15-20 piezas)',      blk:'Día',freq:'daily',addedOn:'2020-01-01',
    tip:'La vitamina E protege las membranas neuronales del daño oxidativo. Cómelas con piel sobre avena entera remojada la noche anterior en leche sin azúcar — el remojo reduce el ácido fítico de ambas y mejora absorción. Agrega canela: es antiinflamatoria y regula insulina. Siempre después del huevo y creatina en ayunas.\n📚 Morris et al., JAMA (2002): alto consumo de vitamina E se asoció con 67% menor riesgo de Alzheimer.'},
@@ -493,6 +574,30 @@ const PHASES=[
 ];
 const BLOCKS=['Mañana','Día','Trabajo','Noche','Retos'];
 const BC={'Mañana':{c:'#D4853A',l:'#FDF3E7'},'Día':{c:'#3D8B5E',l:'#EAF5EE'},'Trabajo':{c:'#1F5C8B',l:'#E6F0F8'},'Noche':{c:'#5A5A9E',l:'#EFEFFA'},'Retos':{c:'#E05A2B',l:'#FEF0EB'}};
+/* DOMINIOS (Covey · Roles/Continuo de madurez) — eje de progreso, no afecta el orden diario */
+const DOMAINS={
+  fundamentos:{n:'Fundamentos',e:'🧠',sub:'Cuerpo y mente base · Victoria Privada',c:'#3D8B5E'},
+  restauracion:{n:'Restauración',e:'🌙',sub:'Sueño · Afilar la Sierra',c:'#5A5A9E'},
+  performance:{n:'Performance',e:'💼',sub:'Trabajo ejecutivo · Mente proactiva',c:'#1F5C8B'},
+  retos:{n:'Retos',e:'⚔️',sub:'Stretch opcional · XP extra',c:'#E05A2B'}
+};
+const DOM_ORDER=['fundamentos','restauracion','performance','retos'];
+/* Mapa hábito → dominio (fuente de verdad) */
+const HABIT_DOM={
+  agua:'fundamentos', aguafria:'fundamentos', huevo:'fundamentos',
+  cre5g:'fundamentos', cre20g:'fundamentos', cremnt:'fundamentos',
+  teverde:'fundamentos', gratitud:'fundamentos', p7am:'fundamentos', listo7am:'fundamentos',
+  nueces:'fundamentos', curcuma:'fundamentos',
+  vino:'restauracion', noscreen:'restauracion', readambar:'restauracion',
+  fruta:'restauracion', sinliq:'restauracion', sincafe:'restauracion',
+  lectura:'performance', caminata20:'performance', mit:'performance',
+  journal:'performance', notasjunta:'performance',
+  walk5am:'retos', pasos:'retos', habanero:'retos', omega3:'retos',
+  respjunta:'retos', pelotatenis:'retos'
+};
+/* Keystone habits (Duhigg) — mayor leverage downstream, se marcan con ⭐ */
+const CORE_HABITS={agua:1, aguafria:1, huevo:1, p7am:1, vino:1, noscreen:1};
+function habDom(hid){return HABIT_DOM[hid]||'fundamentos';}
 const DS=['L','M','X','J','V','S','D'];
 const DL=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -600,8 +705,19 @@ function isWorkday(dateStr){
 }
 function activeH(date){
   const p=phOn(date);
-  return HABITS.filter(h=>(h.minP===undefined||(p>=h.minP&&p<=h.maxP))&&(!h.addedOn||!date||h.addedOn<=date));
+  return HABITS.filter(h=>
+    (h.minP===undefined||(p>=h.minP&&p<=h.maxP))
+    &&(!h.addedOn||!date||h.addedOn<=date)
+    &&(!h.retiredOn||!date||h.retiredOn>date)
+  );
 }
+function subStepVal(d,h,k){return !!(d[h.id]&&d[h.id][k]);}
+function subDoneCount(d,h){
+  if(!h.subSteps)return 0;
+  const v=d[h.id]||{};
+  return h.subSteps.filter(s=>!!v[s.k]).length;
+}
+function subRatio(d,h){return h.subSteps?subDoneCount(d,h)/h.subSteps.length:0;}
 function dailyH(date){
   return activeH(date).filter(h=>{
     if(h.freq!=='daily'||h.challenge)return false;
@@ -610,10 +726,18 @@ function dailyH(date){
   });
 }
 function dd(s){return DB[s]||{}}
-function isDone(d,h){if(!h.doseCount)return !!d[h.id];const v=d[h.id];if(v===true)return true;return (v||0)>=h.doseCount;}
+function isDone(d,h){
+  if(h.subSteps){const v=d[h.id]||{};return h.subSteps.every(s=>!!v[s.k]);}
+  if(!h.doseCount)return !!d[h.id];
+  const v=d[h.id];if(v===true)return true;return (v||0)>=h.doseCount;
+}
 function dayRate(s){
   const d=dd(s),W=wg(s),dl=dailyH(s);
-  const hd=dl.filter(h=>isDone(d,h)).length;
+  let hd=0;
+  dl.forEach(h=>{
+    if(h.subSteps)hd+=subRatio(d,h); // crédito parcial 0.0-1.0
+    else if(isDone(d,h))hd++;
+  });
   const wd=Math.min(d.agua||0,W);
   const tot=dl.length+W;
   return tot?Math.round((hd+wd)/tot*100):0;
@@ -622,7 +746,11 @@ function weekRate(m){
   const dates=week7(m);let tot=0,done=0;
   dates.forEach(s=>{
     const d=dd(s),W=wg(s),dl=dailyH(s);
-    dl.forEach(h=>{tot++;if(isDone(d,h))done++;});
+    dl.forEach(h=>{
+      tot++;
+      if(h.subSteps)done+=subRatio(d,h);
+      else if(isDone(d,h))done++;
+    });
     tot+=W;done+=Math.min(d.agua||0,W);
   });
   return tot?Math.round(done/tot*100):0;
@@ -636,7 +764,9 @@ function calcXP(){
   let xp=0;
   Object.entries(DB).forEach(([date,d])=>{
     HABITS.forEach(h=>{
-      if(isDone(d,h)){
+      if(h.subSteps){
+        xp+=subDoneCount(d,h); // 1 XP por sub-paso (total 5 XP si completo, igual que un hábito normal)
+      } else if(isDone(d,h)){
         xp+=5;
         if(h.challenge&&h.xpBonus)xp+=h.xpBonus; // challenge bonus
       }
@@ -644,10 +774,15 @@ function calcXP(){
     xp+=Math.min(d.agua||0,7)*3;
     if(d._streakBonus)xp+=d._streakBonus;
     if(d._nocheLibreBonus)xp+=d._nocheLibreBonus;
-    // Date-aware raw % for the +10 bonus
+    if(d._missionBonus)xp+=d._missionBonus;
+    // Date-aware raw % for the +10 bonus (consistente con dayRate: crédito parcial)
     const dl=dailyH(date);
     const W=wg(date);
-    const allH=dl.filter(h=>isDone(d,h)).length;
+    let allH=0;
+    dl.forEach(h=>{
+      if(h.subSteps)allH+=subRatio(d,h);
+      else if(isDone(d,h))allH++;
+    });
     const wFull=(d.agua||0)>=W;
     const tot=dl.length+W;
     const raw=tot?Math.round((allH+(wFull?W:0))/tot*100):0;
@@ -700,7 +835,7 @@ function morningStreakDays(){
     const p=phOn(d);
     const mh=HABITS.filter(h=>h.blk==='Mañana'&&(!h.addedOn||h.addedOn<=d)&&(h.minP===undefined||(p>=h.minP&&p<=h.maxP)));
     const x=dd(d);
-    if(mh.length&&mh.every(h=>x[h.id]))c++;else break;
+    if(mh.length&&mh.every(h=>isDone(x,h)))c++;else break;
     d=shift(d,-1);
   }
   return c;
@@ -1007,6 +1142,19 @@ function adjustDose(s,h,cur,next){
     DB[s].aguaCre=Math.max(0,ac-removeW);
   }
 }
+function toggleSub(s,hid,k){
+  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
+  const xpB=calcXP(),lvlB=calcLvl(xpB);
+  if(!DB[s])DB[s]={};
+  if(!DB[s][hid]||typeof DB[s][hid]!=='object')DB[s][hid]={};
+  DB[s][hid][k]=!DB[s][hid][k];
+  save();
+  const xpA=calcXP(),lvlA=calcLvl(xpA);
+  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  checkUnlock();checkAchievements();checkMissions();
+  if(s===todayStr()){checkDayComplete();checkNocheLibre();}
+  render(true);
+}
 function toggle(s,id){
   if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
   const xpB=calcXP(),lvlB=calcLvl(xpB);
@@ -1021,7 +1169,7 @@ function toggle(s,id){
     save();
     const xpA=calcXP(),lvlA=calcLvl(xpA);
     if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-    checkUnlock();checkAchievements();
+    checkUnlock();checkAchievements();checkMissions();
     if(s===todayStr()){checkDayComplete();checkNocheLibre();}
     if(next===0)toast(`↩️ ${h.e} Reiniciado a 0`);
     else if(next>=h.doseCount)toast(`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`);
@@ -1032,7 +1180,7 @@ function toggle(s,id){
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-  checkUnlock();checkAchievements();
+  checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   if(id==='agua'&&!wasOn&&s===todayStr()){
     setTimeout(()=>showBackupPrompt(),800);
@@ -1050,7 +1198,7 @@ function setDose(s,id,target){
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-  checkUnlock();checkAchievements();
+  checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   if(next>=h.doseCount)toast(`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`);
   else if(next>0)toast(`${h.e} ${next}/${h.doseCount} tomas`);
@@ -1066,7 +1214,7 @@ function setWater(s,n){
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
-  checkUnlock();checkAchievements();
+  checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr())checkDayComplete();
   render(true);
 }
@@ -1082,9 +1230,11 @@ function render(keepScroll=false){
   const dc=dr>=80?'c-good':dr>=50?'c-mid':'c-low';
   const wc=wr>=80?'c-good':wr>=50?'c-mid':'c-low';
   const xpNext=lvl<30?LEVEL_XP[lvl]-xp:0;
+  const whyLine=SETS.whyStatement?`<div class="why-line" data-whyedit="1"><span class="why-ico">🎯</span><span>Quiero ser en 2027: <em>${escH(SETS.whyStatement)}</em></span></div>`:'';
   const hdr=`<div class="hdr" id="hdr">
 <div class="hdr-eyebrow">Protocolo Cognitivo · ${new Date().getFullYear()}</div>
 <div class="hdr-title">Mi Cerebro Óptimo 🧠 <span style="font-size:11px;opacity:.45;font-weight:400;letter-spacing:1px">v4.0</span></div>
+${whyLine}
 <div class="hdr-cards">
 <div class="hdr-card"><div class="hdr-lbl">Hoy</div><div class="hdr-val">${dr}<span>%</span></div><div class="hdr-bar"><div class="hdr-fill ${dc}" style="width:${dr}%"></div></div></div>
 <div class="hdr-card"><div class="hdr-lbl">Esta semana</div><div class="hdr-val">${wr}<span>%</span></div><div class="hdr-bar"><div class="hdr-fill ${wc}" style="width:${wr}%"></div></div></div>
@@ -1162,6 +1312,34 @@ ${lockBtn}
 ${streakHint}
 </div>`;
 
+  // Misiones semanales
+  const curMon=monday(todayStr());
+  generateMissions(curMon);
+  const mi=SETS.missions&&SETS.missions[curMon];
+  let missionsHtml='';
+  if(mi&&mi.candidates&&mi.candidates.length){
+    const rows=mi.candidates.map(mm=>{
+      const prg=missionProgress(mm);
+      const pct=Math.min(100,Math.round(prg.c/mm.goal*100));
+      const completed=mi.completedIds.includes(mm.id);
+      const h=HABITS.find(x=>x.id===mm.hid);
+      const dc=DOMAINS[mm.dom].c;
+      const typeColor=mm.type==='CONQUISTAR'?'#FFB84D':mm.type==='DEFENDER'?'#7BC97A':'#6BB5FF';
+      return`<div class="mission-row${completed?' done':''}">
+<div class="m-type" style="background:${typeColor}22;color:${typeColor}">${mm.type}</div>
+<div class="m-body">
+<div class="m-title">${h?h.e:'·'} ${h?h.lbl:'—'}</div>
+<div class="m-sub">${mm.goal} ${h&&h.workdayOnly?'días laborales':'días'} · +${mm.xp} XP</div>
+${completed?'':`<div class="m-bar"><div class="m-fill" style="width:${pct}%;background:${dc}"></div></div><div class="m-prog">${prg.c}/${mm.goal}</div>`}
+</div>
+${completed?'<div class="m-done-ico">✅</div>':''}
+</div>`;
+    }).join('');
+    missionsHtml=`<div class="mission-card">
+<div class="mission-hdr"><span class="mission-hdr-title">🎯 Misiones · semana</span><span class="mission-hdr-wk">${weekLabel(curMon)}</span></div>
+${rows}
+</div>`;
+  }
   // Streak science fact
   const str=calcStreakDays();
   const factHtml=str>=3?`<div class="sfact">
@@ -1233,15 +1411,43 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
     }
     bh.forEach(h=>{
       const isDosed=!!h.doseCount;
+      const hasSubs=!!h.subSteps;
       let rawVal=d[h.id];
       if(isDosed&&rawVal===true)rawVal=h.doseCount;
       const doseVal=isDosed?(rawVal||0):0;
-      const on=isDosed?(doseVal>=h.doseCount):!!d[h.id];
+      const on=hasSubs?isDone(d,h):(isDosed?(doseVal>=h.doseCount):!!d[h.id]);
       const st=TIP===h.id;
       const isChallenge=!!h.challenge;
       const tipParts=h.tip.split('\n📚');
       const tipMain=tipParts[0];
       const tipSource=tipParts[1]?`<div style="margin-top:7px;padding-top:7px;border-top:1px solid #EED98A;font-size:11px;color:#7A5000"><strong>📚</strong>${tipParts[1]}</div>`:'';
+      // Tarjeta multi-check (subSteps)
+      if(hasSubs){
+        const count=subDoneCount(d,h);
+        const pct=Math.round(count/h.subSteps.length*100);
+        const subsHtml=h.subSteps.map(s=>{
+          const sv=subStepVal(d,h,s.k);
+          return`<div class="p7step${sv?' on':''}" data-sub="${ADATE}|${h.id}|${s.k}">
+<div class="p7chk" style="${sv?`background:${c};border-color:${c}`:''}">${sv?'✓':''}</div>
+<div class="p7lbl">${s.e} ${s.lbl}</div>
+<div class="p7time">${s.t||''}</div>
+</div>`;
+        }).join('');
+        const p7Core=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
+        hab+=`<div class="p7card${on?' on':''}${CORE_HABITS[h.id]?' core':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}">
+<div class="p7top">
+<div class="hchk" style="${on?`background:${c};border-color:${c}`:count>0?`background:#fff;border-color:${c};color:${c}`:''}">${on?'✓':count>0?count:''}</div>
+<div style="flex:1;min-width:0">
+<div class="hlbl">${h.e} ${h.lbl}${p7Core}</div>
+<div class="hsub" style="color:${on?'#2A6F46':'var(--text2)'};font-weight:${on?700:500}">${count}/${h.subSteps.length} pasos · ${pct}%</div>
+<div class="p7bar"><div class="p7fill" style="width:${pct}%;background:${c}"></div></div>
+</div>
+<button class="tipbtn" data-tip="${h.id}">ℹ️</button>
+</div>
+<div class="p7steps">${subsHtml}</div>
+</div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
+        return;
+      }
       let challengeInfo='';
       if(isChallenge){
         const thisWeek=challengeWeekThisWeek(h.id);
@@ -1255,10 +1461,11 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
         const pills=Array.from({length:h.doseCount},(_,i)=>`<div class="wpill${i<doseVal?' cre':''}" data-dose="${ADATE}|${h.id}|${i}" style="width:42px;height:42px;font-size:13px">${i<doseVal?'🧪':'·'}</div>`).join('');
         dosedInfo=`<div class="hsub" style="color:${on?'#3D8B5E':'#C87820'};font-weight:600">${doseVal}/${h.doseCount} tomas · cada toma suma 1 botella 💧</div><div class="wpills" style="margin-top:6px">${pills}</div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tap tarjeta = sumar · Tap burbuja = ajustar</div>`;
       }
-      hab+=`<div class="hcard${on?' on':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
+      const coreStar=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
+      hab+=`<div class="hcard${on?' on':''}${CORE_HABITS[h.id]?' core':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
 <div class="hchk">${on?'✓':isDosed&&doseVal>0?doseVal:''}</div>
 <div style="flex:1;min-width:0">
-<div class="hlbl">${h.e} ${h.lbl}</div>
+<div class="hlbl">${h.e} ${h.lbl}${coreStar}</div>
 ${challengeInfo}
 ${dosedInfo}
 </div>
@@ -1266,7 +1473,7 @@ ${dosedInfo}
 </div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
     });
   });
-  return daySel+lvlCard+factHtml+achCard+achMini+info2+hab;
+  return daySel+lvlCard+missionsHtml+factHtml+achCard+achMini+info2+hab;
 }
 
 /* ── WEEK ── */
@@ -1328,12 +1535,14 @@ function yearMondays2(){return yearMondays(new Date().getFullYear());}
 function habitMasteryWeeks(hid){
   const h=HABITS.find(x=>x.id===hid);
   const allW=yearMondays2();
+  const today=todayStr();
   let count=0;
   allW.forEach(mon=>{
     const days=week7(mon);
-    // Only count completed weeks (all 7 days done OR week is in the past)
-    const today=todayStr();
-    const weekDone=days.every(s=>s>today?false:(h?isDone(dd(s),h):!!dd(s)[hid]));
+    // Para hábitos workdayOnly, solo cuentan días laborales; si la semana no tiene laborales, se salta
+    const relevant=h&&h.workdayOnly?days.filter(isWorkday):days;
+    if(relevant.length===0)return;
+    const weekDone=relevant.every(s=>s>today?false:(h?isDone(dd(s),h):!!dd(s)[hid]));
     if(weekDone)count++;
   });
   return Math.min(count,13);
@@ -1353,10 +1562,19 @@ function masteryLevel(weeks){return Math.min(13,Math.floor(weeks));}
 function masteryMedal(lvl){return lvl>=13?'🥇':lvl>=8?'🥈':lvl>=4?'🥉':null;}
 function masteryMedalName(lvl){return lvl>=13?'Oro':lvl>=8?'Plata':lvl>=4?'Bronce':null;}
 
+// Progreso agregado por dominio — cuenta hábitos con mastery ≥ bronce/plata/oro
+function domainProgress(domKey){
+  const hs=HABITS.filter(h=>!h.retiredOn&&habDom(h.id)===domKey);
+  let bronze=0,silver=0,gold=0;
+  hs.forEach(h=>{const w=habitMasteryWeeks(h.id),lvl=masteryLevel(w);
+    if(lvl>=13)gold++;else if(lvl>=8)silver++;else if(lvl>=4)bronze++;});
+  return{total:hs.length,bronze,silver,gold,anyMedal:bronze+silver+gold};
+}
 // Get all HABITS that have reached gold (for Año panel)
 function goldHabits(){
   const golds=[];
   HABITS.forEach(h=>{
+    if(h.retiredOn)return; // no mostrar jubilados
     const w=habitMasteryWeeks(h.id);
     if(masteryLevel(w)>=13)golds.push({...h,weeks:w});
   });
@@ -1370,47 +1588,69 @@ function vLogros(){
   const earned=SETS.achievements||{};
   const xp=calcXP(),lvl=calcLvl(xp),lc=lvlColor(lvl);
 
-  // Section 1: Maestría por hábito
-  const maestriaHabits=[...HABITS,{id:'__agua',e:'💧',lbl:'Hidratación 3L',blk:'Día',freq:'daily',tip:''}];
-  const maestriaRows=maestriaHabits.map(h=>{
+  // SECCIÓN 1 — Mastery agrupada por Dominio (Covey Roles)
+  function renderMCard(h){
     const weeks=h.id==='__agua'?waterMasteryWeeks():habitMasteryWeeks(h.id);
     const lvlM=masteryLevel(weeks);
     const medal=masteryMedal(lvlM);
-    const medalName=masteryMedalName(lvlM);
-
-    // Build 13 checkboxes split in groups of 4 (with divider every 4)
     let cells='';
     for(let i=1;i<=13;i++){
-      // Add divider every 4
-      if(i===5||i===9||i===13){cells+=`<div class="mchk divider"></div>`;}
+      if(i===5||i===9||i===13)cells+=`<div class="mchk divider"></div>`;
       const filled=i<=weeks;
       let cls='empty';
-      if(filled){
-        if(i<=4)cls='bronze';
-        else if(i<=8)cls='silver';
-        else cls='gold';
-      }
+      if(filled){if(i<=4)cls='bronze';else if(i<=8)cls='silver';else cls='gold';}
       cells+=`<div class="mchk ${cls}">${filled?'✓':''}</div>`;
     }
-
     const nextMilestone=lvlM<4?`🥉 en ${4-weeks} sem`:lvlM<8?`🥈 en ${8-weeks} sem`:lvlM<13?`🥇 en ${13-weeks} sem`:'';
-
+    const core=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
     return`<div class="mcard">
 <div class="mcard-hdr">
 <div class="mcard-ico">${h.e}</div>
 <div class="mcard-inf">
-<div class="mcard-name">${h.lbl}</div>
+<div class="mcard-name">${h.lbl}${core}</div>
 <div class="mcard-sub">Nivel ${lvlM}/13 · ${weeks} sem completas${nextMilestone?' · '+nextMilestone:''}</div>
 </div>
 <div class="mcard-medal">${medal||'⬜'}</div>
 </div>
 <div class="mtrack-wrap">${cells}</div>
 </div>`;
+  }
+  // Agrupar hábitos por dominio (hidratación va en Fundamentos)
+  const habsPorDom={};DOM_ORDER.forEach(k=>habsPorDom[k]=[]);
+  HABITS.filter(h=>!h.retiredOn).forEach(h=>{habsPorDom[habDom(h.id)].push(h);});
+  habsPorDom.fundamentos.push({id:'__agua',e:'💧',lbl:'Hidratación 3L',blk:'Día',freq:'daily',tip:''});
+  // Resumen de 4 dominios (2x2)
+  const sumCards=DOM_ORDER.map(k=>{
+    const dm=DOMAINS[k],p=domainProgress(k);
+    const totMed=p.bronze+p.silver+p.gold;
+    return`<div class="dom-sumcard">
+<div class="dom-sum-ico" style="background:${dm.c}22;color:${dm.c}">${dm.e}</div>
+<div class="dom-sum-inf">
+<div class="dom-sum-name" style="color:${dm.c}">${dm.n}</div>
+<div class="dom-sum-sub">${totMed}/${p.total} con medalla${p.gold>0?' · 🥇'+p.gold:''}</div>
+</div>
+</div>`;
   }).join('');
-
-  const maestriaSection=`<div class="card"><div class="ctitle">🏅 Maestría por hábito</div>
-<div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.5">Cada ✅ = 1 semana al 100% en ese hábito · Cada 4 semanas sube un nivel<br><span style="color:#CD7F32">🥉 Nivel 4</span> · <span style="color:#888">🥈 Nivel 8</span> · <span style="color:#B8860B">🥇 Nivel 13</span></div>
-${maestriaRows}</div>`;
+  const domSummary=`<div class="card"><div class="ctitle">🗺️ Tus 4 dominios</div>
+<div class="dom-summary">${sumCards}</div>
+<p style="font-size:10px;color:var(--text2);line-height:1.55;margin-top:4px">Cada dominio es un rol de tu vida. Los progresos se acumulan. ⭐ marca hábitos keystone (mayor leverage).</p>
+</div>`;
+  // Una tarjeta por dominio con sus hábitos
+  const maestriaSection=DOM_ORDER.map(k=>{
+    const dm=DOMAINS[k],hs=habsPorDom[k];
+    if(!hs.length)return '';
+    const p=domainProgress(k);
+    const rows=hs.map(renderMCard).join('');
+    return`<div class="card"><div class="dom-hdr" style="background:linear-gradient(135deg,${dm.c},${dm.c}DD)">
+<div class="dom-hdr-ico">${dm.e}</div>
+<div class="dom-hdr-inf">
+<div class="dom-hdr-name">${dm.n}</div>
+<div class="dom-hdr-sub">${dm.sub}</div>
+</div>
+<div class="dom-hdr-stat">🥇${p.gold} 🥈${p.silver} 🥉${p.bronze}</div>
+</div>
+${rows}</div>`;
+  }).join('');
 
   // Section 2: Logros por consistencia
   const earnedList=ACHS.filter(a=>earned[a.id]);
@@ -1429,7 +1669,7 @@ ${earnedList.length===0?'<p style="font-size:12px;color:var(--text2);text-align:
 ${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${ACHS.find(a=>a.id===ACH_TIP)?.n}</strong><br>${ACHS.find(a=>a.id===ACH_TIP)?.desc}${earned[ACH_TIP]?' · Desbloqueado el '+earned[ACH_TIP]:''}</div>`:''}
 </div>`;
 
-  return maestriaSection+logroSection;
+  return domSummary+maestriaSection+logroSection;
 }
 
 /* ── CONFIG ── */
@@ -1442,7 +1682,11 @@ function vConfig(){
 <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Fase actual: <strong style="color:var(--text)">${info.i} ${info.n}</strong><br>Progreso: ${prog.c}/${prog.g===999?'∞':prog.g} ${info.unit}</div>
 <div style="display:flex;gap:7px;flex-wrap:wrap">${PHASES.map((ph,i)=>`<button data-sp="${i}" style="padding:7px 11px;border-radius:9px;border:1.5px solid ${p===i?'var(--navy)':'var(--border)'};background:${p===i?'var(--navy)':'#fff'};color:${p===i?'#fff':'var(--text2)'};font-size:12px;font-weight:${p===i?700:400};cursor:pointer">${ph.i} ${ph.n.replace('🏆 ','')}</button>`).join('')}</div>
 <p style="font-size:11px;color:var(--text2);margin-top:10px">Ajusta manualmente si necesitas</p></div>`;
-  return ins+phCtrl+lvlList+`
+  const whyCard=`<div class="card"><div class="ctitle">🎯 Mi Por Qué · norte 2027</div>
+${SETS.whyStatement?`<p class="why-card-quote">"${escH(SETS.whyStatement)}"</p>`:`<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px">Aún no has definido tu norte para 2027. Una frase clara orienta cada día.</p>`}
+<button id="why-edit-btn" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer">${SETS.whyStatement?'✏️ Editar':'🎯 Definir'}</button>
+</div>`;
+  return ins+whyCard+phCtrl+lvlList+`
 <div class="card"><div class="ctitle">Notificaciones</div>
 <div class="cfgitem" style="margin-bottom:0"><div class="cfgico">🔔</div><div class="cfginf"><div class="cfglbl">Recordatorio diario</div><div class="cfgsub">${SETS.notifications?'Activadas':'Desactivadas'} · ${SETS.reminderTime}</div></div><button class="toggle ${SETS.notifications?'on':'off'}" id="ntog"></button></div>
 <input type="time" id="rtim" value="${SETS.reminderTime}">
@@ -1468,6 +1712,8 @@ document.addEventListener('click',e=>{
   if(wp){const[s,idx]=wp.dataset.wp.split('|');const i=parseInt(idx);const cur=dd(s).agua||0;setWater(s,i<cur?i:i+1);return;}
   const dp=e.target.closest('[data-dose]');
   if(dp){const[s,id,idx]=dp.dataset.dose.split('|');const i=parseInt(idx);setDose(s,id,i);return;}
+  const sub=e.target.closest('[data-sub]');
+  if(sub){const[s,id,k]=sub.dataset.sub.split('|');toggleSub(s,id,k);return;}
   const cd=e.target.closest('[data-t]');
   if(cd&&!e.target.closest('[data-tip]')){const[s,id]=cd.dataset.t.split('|');toggle(s,id);return;}
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render(true);return;}
@@ -1504,6 +1750,10 @@ document.addEventListener('click',e=>{
     return;
   }
   if(e.target.id==='ntest'){testNotif();return;}
+  if(e.target.id==='why-save'){const v=document.getElementById('why-input').value;saveWhy(v);return;}
+  if(e.target.id==='why-skip'){saveWhy('');return;}
+  if(e.target.id==='why-edit-btn'){showWhyPrompt();return;}
+  const we=e.target.closest('[data-whyedit]');if(we){showWhyPrompt();return;}
   if(e.target.id==='ins-btn'&&PROMPT){PROMPT.prompt();PROMPT.userChoice.then(r=>{if(r.outcome==='accepted')toast('¡App instalada! 🎉');PROMPT=null;render();});}
   if(e.target.id==='btn-export'){exportProfile();return;}
   if(e.target.id==='btn-import'){document.getElementById('file-import')?.click();return;}
@@ -1604,6 +1854,93 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();PROMPT=e;if
 if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 try{const m={name:'Mi Cerebro Óptimo',short_name:'Cerebro',start_url:'.',display:'standalone',background_color:'#F5F4F0',theme_color:'#0D1B2A',icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1B2A'/><text y='.9em' font-size='72' x='14'>🧠</text></svg>",sizes:'any',type:'image/svg+xml'}]};const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l);}catch(e){}
 
+/* ── MISIONES SEMANALES (Hooked loop · Covey H3 planificación semanal) ── */
+function generateMissions(monKey){
+  if(!SETS.missions)SETS.missions={};
+  if(SETS.missions[monKey])return; // ya generadas esta semana
+  const result=[];
+  // PRNG simple determinista por semana para que no cambien entre renders
+  let seed=0;for(const ch of monKey)seed=(seed*31+ch.charCodeAt(0))>>>0;
+  const rnd=()=>{seed=(seed*1103515245+12345)>>>0;return seed/4294967296;};
+  DOM_ORDER.forEach((k,i)=>{
+    const hs=HABITS.filter(h=>!h.retiredOn&&habDom(h.id)===k);
+    if(!hs.length)return;
+    let type,pick,xp,goal;
+    if(k==='retos'){
+      // CONQUISTAR: reto menos tocado históricamente
+      const counts=hs.map(h=>({h,c:Object.values(DB).filter(d=>d[h.id]).length}));
+      counts.sort((a,b)=>a.c-b.c);
+      pick=counts[0].h;
+      goal=pick.weeklyGoal||3;
+      type='CONQUISTAR';xp=150;
+    }else{
+      const wm=hs.map(h=>({h,w:habitMasteryWeeks(h.id)}));
+      const bronzePlus=wm.filter(x=>x.w>=4);
+      if(bronzePlus.length&&rnd()<0.35){
+        // DEFENDER: hábito con mayor mastery — no perderla esta semana
+        bronzePlus.sort((a,b)=>b.w-a.w);
+        pick=bronzePlus[0].h;type='DEFENDER';xp=50;
+      }else{
+        // DOMINAR: hábito con menor mastery — subir de nivel
+        wm.sort((a,b)=>a.w-b.w);
+        pick=wm[0].h;type='DOMINAR';xp=100;
+      }
+      goal=pick.workdayOnly?5:7;
+    }
+    result.push({id:`m_${monKey}_${i}`,type,hid:pick.id,dom:k,goal,xp,weekMon:monKey});
+  });
+  SETS.missions[monKey]={candidates:result,completedIds:[]};
+  save();
+}
+function missionProgress(m){
+  const h=HABITS.find(x=>x.id===m.hid);
+  if(!h)return{c:0,g:m.goal};
+  const days=week7(m.weekMon).filter(s=>s<=todayStr());
+  let c=0;
+  days.forEach(s=>{
+    if(h.workdayOnly&&!isWorkday(s))return; // no cuentan fines de semana para workdayOnly
+    if(isDone(dd(s),h))c++;
+  });
+  return{c,g:m.goal};
+}
+function checkMissions(){
+  const mon=monday(todayStr());
+  if(!SETS.missions||!SETS.missions[mon])return;
+  const mi=SETS.missions[mon];
+  mi.candidates.forEach(m=>{
+    if(mi.completedIds.includes(m.id))return;
+    const p=missionProgress(m);
+    if(p.c>=m.goal){
+      mi.completedIds.push(m.id);
+      const today=todayStr();
+      if(!DB[today])DB[today]={};
+      DB[today]._missionBonus=(DB[today]._missionBonus||0)+m.xp;
+      save();
+      setTimeout(()=>toast(`🎯 ¡Misión ${m.type} completa! +${m.xp} XP`),400);
+    }
+  });
+}
+/* ── MI POR QUÉ (Covey H2) ── */
+function escH(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function showWhyPrompt(){
+  const el=document.getElementById('whyprompt');
+  const input=document.getElementById('why-input');
+  if(!el||!input)return;
+  input.value=SETS.whyStatement||'';
+  el.style.display='flex';
+  setTimeout(()=>{try{input.focus();}catch(e){}},250);
+}
+function closeWhyPrompt(){
+  const el=document.getElementById('whyprompt');
+  if(el)el.style.display='none';
+}
+function saveWhy(text){
+  const trimmed=(text||'').replace(/\s+/g,' ').trim().slice(0,200);
+  SETS.whyStatement=trimmed;
+  save();closeWhyPrompt();render();
+  if(trimmed)toast('🎯 Guardado · tu norte en 2027');
+  else toast('Pospuesto — lo puedes definir después en Config');
+}
 /* ── BACKUP PROMPT ── */
 function showBackupPrompt(){
   const el=document.getElementById('backupprompt');
@@ -1618,6 +1955,8 @@ function closeBackupPrompt(){
 
 /* ── INIT ── */
 load();checkAchievements();render();scheduleR();
+// Primer uso: lanzar prompt de Mi Por Qué si aún no se ha definido ni pospuesto
+if(SETS.whyStatement===undefined)setTimeout(showWhyPrompt,700);
 </script>
 </body>
 </html>
