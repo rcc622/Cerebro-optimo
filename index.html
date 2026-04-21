@@ -389,8 +389,8 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <button onclick="closeBackupPrompt()" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Ahora no</button>
   </div>
 </div>
-<div id="jprompt" onclick="closeJPrompt()">
-  <div class="j-inner" onclick="event.stopPropagation()">
+<div id="jprompt" onclick="if(event.target===this)closeJPrompt()">
+  <div class="j-inner">
     <div class="j-head"><span class="j-emoji" id="j-ico"></span><div class="j-title" id="j-lbl"></div></div>
     <div class="j-prompt" id="j-prompt"></div>
     <textarea id="j-input" maxlength="500" rows="4" placeholder="Escribe aquí..."></textarea>
@@ -400,14 +400,14 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     </div>
   </div>
 </div>
-<div id="whyprompt" onclick="closeWhyPrompt()">
-  <div class="why-inner" onclick="event.stopPropagation()">
+<div id="whyprompt" onclick="if(event.target===this)closeWhyPrompt()">
+  <div class="why-inner">
     <div class="why-emoji">🎯</div>
     <div class="why-title">¿Quién quieres ser para 2027?</div>
-    <div class="why-sub">Tu constitución personal. Todo lo que marcas cada día se mide contra esto.<br><span style="color:var(--navy);font-weight:600">Una frase. Específica. Tuya.</span></div>
+    <div class="why-sub">En 365 días vas a voltear atrás. Cada hábito que marcas te construye hacia ese tú — o te aleja.<br><span style="color:var(--navy);font-weight:700">Una frase clara. Específica. Tuya.</span></div>
     <textarea id="why-input" placeholder="Ej: Un padre presente, un líder claro, con energía estable..." maxlength="200" rows="3"></textarea>
-    <button class="why-btn-p" id="why-save">Guardar mi norte</button>
-    <button class="why-btn-s" id="why-skip">Ahora no</button>
+    <button class="why-btn-p" id="why-save">🎯 Sellar mi compromiso</button>
+    <button class="why-btn-s" id="why-skip">Lo pienso después</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
