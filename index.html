@@ -279,6 +279,23 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .why-btn-p{width:100%;padding:13px;border-radius:12px;border:none;background:var(--navy);color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;letter-spacing:.3px}
 .why-btn-s{width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer}
 .why-card-quote{font-size:13px;color:var(--navy);line-height:1.6;font-style:italic;margin-bottom:14px;padding:11px 13px;background:#FAFAF7;border-left:3px solid var(--navy);border-radius:6px}
+/* DOMINIOS */
+.dom-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;margin-bottom:8px;color:#fff}
+.dom-hdr-ico{font-size:22px;flex-shrink:0}
+.dom-hdr-inf{flex:1;min-width:0}
+.dom-hdr-name{font-size:14px;font-weight:800;letter-spacing:.3px}
+.dom-hdr-sub{font-size:10.5px;opacity:.82;line-height:1.3;margin-top:1px}
+.dom-hdr-stat{font-size:11px;font-weight:700;opacity:.92;text-align:right;flex-shrink:0}
+.dom-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.dom-sumcard{background:#fff;border-radius:11px;padding:10px 11px;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;align-items:center;gap:9px}
+.dom-sum-ico{font-size:18px;flex-shrink:0;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+.dom-sum-inf{flex:1;min-width:0}
+.dom-sum-name{font-size:11px;font-weight:800;letter-spacing:.2px;line-height:1.1}
+.dom-sum-sub{font-size:9.5px;color:var(--text2);margin-top:2px;line-height:1.2}
+/* CORE / KEYSTONE badge */
+.core-star{font-size:10px;margin-left:5px;opacity:.85}
+.hcard.core{border-left:3px solid var(--hc)}
+.p7card.core{border-left:3px solid var(--hc)}
 </style>
 </head>
 <body>
@@ -541,6 +558,30 @@ const PHASES=[
 ];
 const BLOCKS=['Mañana','Día','Trabajo','Noche','Retos'];
 const BC={'Mañana':{c:'#D4853A',l:'#FDF3E7'},'Día':{c:'#3D8B5E',l:'#EAF5EE'},'Trabajo':{c:'#1F5C8B',l:'#E6F0F8'},'Noche':{c:'#5A5A9E',l:'#EFEFFA'},'Retos':{c:'#E05A2B',l:'#FEF0EB'}};
+/* DOMINIOS (Covey · Roles/Continuo de madurez) — eje de progreso, no afecta el orden diario */
+const DOMAINS={
+  fundamentos:{n:'Fundamentos',e:'🧠',sub:'Cuerpo y mente base · Victoria Privada',c:'#3D8B5E'},
+  restauracion:{n:'Restauración',e:'🌙',sub:'Sueño · Afilar la Sierra',c:'#5A5A9E'},
+  performance:{n:'Performance',e:'💼',sub:'Trabajo ejecutivo · Mente proactiva',c:'#1F5C8B'},
+  retos:{n:'Retos',e:'⚔️',sub:'Stretch opcional · XP extra',c:'#E05A2B'}
+};
+const DOM_ORDER=['fundamentos','restauracion','performance','retos'];
+/* Mapa hábito → dominio (fuente de verdad) */
+const HABIT_DOM={
+  agua:'fundamentos', aguafria:'fundamentos', huevo:'fundamentos',
+  cre5g:'fundamentos', cre20g:'fundamentos', cremnt:'fundamentos',
+  teverde:'fundamentos', gratitud:'fundamentos', p7am:'fundamentos', listo7am:'fundamentos',
+  nueces:'fundamentos', curcuma:'fundamentos',
+  vino:'restauracion', noscreen:'restauracion', readambar:'restauracion',
+  fruta:'restauracion', sinliq:'restauracion', sincafe:'restauracion',
+  lectura:'performance', caminata20:'performance', mit:'performance',
+  journal:'performance', notasjunta:'performance',
+  walk5am:'retos', pasos:'retos', habanero:'retos', omega3:'retos',
+  respjunta:'retos', pelotatenis:'retos'
+};
+/* Keystone habits (Duhigg) — mayor leverage downstream, se marcan con ⭐ */
+const CORE_HABITS={agua:1, aguafria:1, huevo:1, p7am:1, vino:1, noscreen:1};
+function habDom(hid){return HABIT_DOM[hid]||'fundamentos';}
 const DS=['L','M','X','J','V','S','D'];
 const DL=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -1347,11 +1388,12 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
 <div class="p7time">${s.t||''}</div>
 </div>`;
         }).join('');
-        hab+=`<div class="p7card${on?' on':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}">
+        const p7Core=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
+        hab+=`<div class="p7card${on?' on':''}${CORE_HABITS[h.id]?' core':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}">
 <div class="p7top">
 <div class="hchk" style="${on?`background:${c};border-color:${c}`:count>0?`background:#fff;border-color:${c};color:${c}`:''}">${on?'✓':count>0?count:''}</div>
 <div style="flex:1;min-width:0">
-<div class="hlbl">${h.e} ${h.lbl}</div>
+<div class="hlbl">${h.e} ${h.lbl}${p7Core}</div>
 <div class="hsub" style="color:${on?'#2A6F46':'var(--text2)'};font-weight:${on?700:500}">${count}/${h.subSteps.length} pasos · ${pct}%</div>
 <div class="p7bar"><div class="p7fill" style="width:${pct}%;background:${c}"></div></div>
 </div>
@@ -1374,10 +1416,11 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
         const pills=Array.from({length:h.doseCount},(_,i)=>`<div class="wpill${i<doseVal?' cre':''}" data-dose="${ADATE}|${h.id}|${i}" style="width:42px;height:42px;font-size:13px">${i<doseVal?'🧪':'·'}</div>`).join('');
         dosedInfo=`<div class="hsub" style="color:${on?'#3D8B5E':'#C87820'};font-weight:600">${doseVal}/${h.doseCount} tomas · cada toma suma 1 botella 💧</div><div class="wpills" style="margin-top:6px">${pills}</div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tap tarjeta = sumar · Tap burbuja = ajustar</div>`;
       }
-      hab+=`<div class="hcard${on?' on':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
+      const coreStar=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
+      hab+=`<div class="hcard${on?' on':''}${CORE_HABITS[h.id]?' core':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
 <div class="hchk">${on?'✓':isDosed&&doseVal>0?doseVal:''}</div>
 <div style="flex:1;min-width:0">
-<div class="hlbl">${h.e} ${h.lbl}</div>
+<div class="hlbl">${h.e} ${h.lbl}${coreStar}</div>
 ${challengeInfo}
 ${dosedInfo}
 </div>
@@ -1474,6 +1517,14 @@ function masteryLevel(weeks){return Math.min(13,Math.floor(weeks));}
 function masteryMedal(lvl){return lvl>=13?'🥇':lvl>=8?'🥈':lvl>=4?'🥉':null;}
 function masteryMedalName(lvl){return lvl>=13?'Oro':lvl>=8?'Plata':lvl>=4?'Bronce':null;}
 
+// Progreso agregado por dominio — cuenta hábitos con mastery ≥ bronce/plata/oro
+function domainProgress(domKey){
+  const hs=HABITS.filter(h=>!h.retiredOn&&habDom(h.id)===domKey);
+  let bronze=0,silver=0,gold=0;
+  hs.forEach(h=>{const w=habitMasteryWeeks(h.id),lvl=masteryLevel(w);
+    if(lvl>=13)gold++;else if(lvl>=8)silver++;else if(lvl>=4)bronze++;});
+  return{total:hs.length,bronze,silver,gold,anyMedal:bronze+silver+gold};
+}
 // Get all HABITS that have reached gold (for Año panel)
 function goldHabits(){
   const golds=[];
@@ -1492,47 +1543,69 @@ function vLogros(){
   const earned=SETS.achievements||{};
   const xp=calcXP(),lvl=calcLvl(xp),lc=lvlColor(lvl);
 
-  // Section 1: Maestría por hábito (excluye jubilados)
-  const maestriaHabits=[...HABITS.filter(h=>!h.retiredOn),{id:'__agua',e:'💧',lbl:'Hidratación 3L',blk:'Día',freq:'daily',tip:''}];
-  const maestriaRows=maestriaHabits.map(h=>{
+  // SECCIÓN 1 — Mastery agrupada por Dominio (Covey Roles)
+  function renderMCard(h){
     const weeks=h.id==='__agua'?waterMasteryWeeks():habitMasteryWeeks(h.id);
     const lvlM=masteryLevel(weeks);
     const medal=masteryMedal(lvlM);
-    const medalName=masteryMedalName(lvlM);
-
-    // Build 13 checkboxes split in groups of 4 (with divider every 4)
     let cells='';
     for(let i=1;i<=13;i++){
-      // Add divider every 4
-      if(i===5||i===9||i===13){cells+=`<div class="mchk divider"></div>`;}
+      if(i===5||i===9||i===13)cells+=`<div class="mchk divider"></div>`;
       const filled=i<=weeks;
       let cls='empty';
-      if(filled){
-        if(i<=4)cls='bronze';
-        else if(i<=8)cls='silver';
-        else cls='gold';
-      }
+      if(filled){if(i<=4)cls='bronze';else if(i<=8)cls='silver';else cls='gold';}
       cells+=`<div class="mchk ${cls}">${filled?'✓':''}</div>`;
     }
-
     const nextMilestone=lvlM<4?`🥉 en ${4-weeks} sem`:lvlM<8?`🥈 en ${8-weeks} sem`:lvlM<13?`🥇 en ${13-weeks} sem`:'';
-
+    const core=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
     return`<div class="mcard">
 <div class="mcard-hdr">
 <div class="mcard-ico">${h.e}</div>
 <div class="mcard-inf">
-<div class="mcard-name">${h.lbl}</div>
+<div class="mcard-name">${h.lbl}${core}</div>
 <div class="mcard-sub">Nivel ${lvlM}/13 · ${weeks} sem completas${nextMilestone?' · '+nextMilestone:''}</div>
 </div>
 <div class="mcard-medal">${medal||'⬜'}</div>
 </div>
 <div class="mtrack-wrap">${cells}</div>
 </div>`;
+  }
+  // Agrupar hábitos por dominio (hidratación va en Fundamentos)
+  const habsPorDom={};DOM_ORDER.forEach(k=>habsPorDom[k]=[]);
+  HABITS.filter(h=>!h.retiredOn).forEach(h=>{habsPorDom[habDom(h.id)].push(h);});
+  habsPorDom.fundamentos.push({id:'__agua',e:'💧',lbl:'Hidratación 3L',blk:'Día',freq:'daily',tip:''});
+  // Resumen de 4 dominios (2x2)
+  const sumCards=DOM_ORDER.map(k=>{
+    const dm=DOMAINS[k],p=domainProgress(k);
+    const totMed=p.bronze+p.silver+p.gold;
+    return`<div class="dom-sumcard">
+<div class="dom-sum-ico" style="background:${dm.c}22;color:${dm.c}">${dm.e}</div>
+<div class="dom-sum-inf">
+<div class="dom-sum-name" style="color:${dm.c}">${dm.n}</div>
+<div class="dom-sum-sub">${totMed}/${p.total} con medalla${p.gold>0?' · 🥇'+p.gold:''}</div>
+</div>
+</div>`;
   }).join('');
-
-  const maestriaSection=`<div class="card"><div class="ctitle">🏅 Maestría por hábito</div>
-<div style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.5">Cada ✅ = 1 semana al 100% en ese hábito · Cada 4 semanas sube un nivel<br><span style="color:#CD7F32">🥉 Nivel 4</span> · <span style="color:#888">🥈 Nivel 8</span> · <span style="color:#B8860B">🥇 Nivel 13</span></div>
-${maestriaRows}</div>`;
+  const domSummary=`<div class="card"><div class="ctitle">🗺️ Tus 4 dominios</div>
+<div class="dom-summary">${sumCards}</div>
+<p style="font-size:10px;color:var(--text2);line-height:1.55;margin-top:4px">Cada dominio es un rol de tu vida. Los progresos se acumulan. ⭐ marca hábitos keystone (mayor leverage).</p>
+</div>`;
+  // Una tarjeta por dominio con sus hábitos
+  const maestriaSection=DOM_ORDER.map(k=>{
+    const dm=DOMAINS[k],hs=habsPorDom[k];
+    if(!hs.length)return '';
+    const p=domainProgress(k);
+    const rows=hs.map(renderMCard).join('');
+    return`<div class="card"><div class="dom-hdr" style="background:linear-gradient(135deg,${dm.c},${dm.c}DD)">
+<div class="dom-hdr-ico">${dm.e}</div>
+<div class="dom-hdr-inf">
+<div class="dom-hdr-name">${dm.n}</div>
+<div class="dom-hdr-sub">${dm.sub}</div>
+</div>
+<div class="dom-hdr-stat">🥇${p.gold} 🥈${p.silver} 🥉${p.bronze}</div>
+</div>
+${rows}</div>`;
+  }).join('');
 
   // Section 2: Logros por consistencia
   const earnedList=ACHS.filter(a=>earned[a.id]);
@@ -1551,7 +1624,7 @@ ${earnedList.length===0?'<p style="font-size:12px;color:var(--text2);text-align:
 ${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${ACHS.find(a=>a.id===ACH_TIP)?.n}</strong><br>${ACHS.find(a=>a.id===ACH_TIP)?.desc}${earned[ACH_TIP]?' · Desbloqueado el '+earned[ACH_TIP]:''}</div>`:''}
 </div>`;
 
-  return maestriaSection+logroSection;
+  return domSummary+maestriaSection+logroSection;
 }
 
 /* ── CONFIG ── */
