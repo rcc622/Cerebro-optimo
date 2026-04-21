@@ -279,6 +279,22 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .why-btn-p{width:100%;padding:13px;border-radius:12px;border:none;background:var(--navy);color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-bottom:8px;letter-spacing:.3px}
 .why-btn-s{width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer}
 .why-card-quote{font-size:13px;color:var(--navy);line-height:1.6;font-style:italic;margin-bottom:14px;padding:11px 13px;background:#FAFAF7;border-left:3px solid var(--navy);border-radius:6px}
+/* JOURNAL NOTE MODAL */
+#jprompt{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9998;display:none;align-items:flex-end;justify-content:center;padding:0}
+.j-inner{background:#fff;border-radius:22px 22px 0 0;padding:22px 20px 26px;width:100%;max-width:480px;box-shadow:0 -10px 40px rgba(0,0,0,.3);max-height:70vh;overflow-y:auto}
+.j-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.j-emoji{font-size:24px}
+.j-title{font-size:15px;font-weight:800;color:var(--navy);line-height:1.3;flex:1}
+.j-prompt{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px}
+#j-input{width:100%;min-height:110px;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;color:var(--text);background:var(--bg);outline:none;resize:vertical;font-family:inherit;line-height:1.5;margin-bottom:12px;box-sizing:border-box}
+#j-input:focus{border-color:var(--navy);background:#fff}
+.j-buttons{display:flex;gap:8px}
+.j-buttons button{flex:1;padding:12px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;border:none}
+.j-save{background:var(--navy);color:#fff}
+.j-skip{background:#fff;color:var(--text2);border:1.5px solid var(--border)}
+.hcard-note{display:flex;align-items:center;gap:6px;background:#FFFCF0;border:1px solid #F0D88A;border-radius:8px;padding:5px 9px;font-size:11px;color:#6B4E00;margin-top:7px;cursor:pointer;max-width:100%;overflow:hidden}
+.hcard-note-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-style:italic;flex:1;min-width:0}
+.hcard-note-add{background:#fff;border:1px dashed #C5BFAE;color:var(--text2);font-weight:600}
 /* DOMINIOS */
 .dom-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;margin-bottom:8px;color:#fff}
 .dom-hdr-ico{font-size:22px;flex-shrink:0}
@@ -373,6 +389,17 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <button onclick="closeBackupPrompt()" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Ahora no</button>
   </div>
 </div>
+<div id="jprompt" onclick="closeJPrompt()">
+  <div class="j-inner" onclick="event.stopPropagation()">
+    <div class="j-head"><span class="j-emoji" id="j-ico"></span><div class="j-title" id="j-lbl"></div></div>
+    <div class="j-prompt" id="j-prompt"></div>
+    <textarea id="j-input" maxlength="500" rows="4" placeholder="Escribe aquí..."></textarea>
+    <div class="j-buttons">
+      <button class="j-skip" id="j-skip-btn">Cancelar</button>
+      <button class="j-save" id="j-save-btn">Guardar nota</button>
+    </div>
+  </div>
+</div>
 <div id="whyprompt" onclick="closeWhyPrompt()">
   <div class="why-inner" onclick="event.stopPropagation()">
     <div class="why-emoji">🎯</div>
@@ -403,7 +430,7 @@ const HABITS=[
    tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia).\n\n💧 AUTO-LINK: cada toma suma +1 botella de agua automáticamente. Mantén 3L de agua diarios (6 botellas). Reevaluar a las 8 semanas: si tu sueño se consolida a 7h+ continuas, baja a 5g/día.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:9},
   {id:'teverde',  e:'🍵',lbl:'Té verde (45 min antes del café)', blk:'Mañana',freq:'daily',addedOn:'2026-04-04',
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
-  {id:'gratitud', e:'🙏',lbl:'Anota 1 cosa específica de gratitud',blk:'Mañana',freq:'daily',addedOn:'2026-04-18',
+  {id:'gratitud', e:'🙏',lbl:'Anota 1 cosa específica de gratitud',blk:'Mañana',freq:'daily',addedOn:'2026-04-18',journal:true,journalPrompt:'¿Por qué específicamente estás agradecido hoy?',
    tip:'Escribe en tu nota del celular o libreta UNA cosa específica por la que estás agradecido hoy. Específica importa: no "mi familia", sino "que Diana me preparó café antes de la junta". La especificidad es la que activa la corteza prefrontal medial izquierda, no la abstracción genérica. Tarda 30 segundos. La práctica sostenida reconfigura el sesgo atencional del cerebro hacia lo positivo (no es magia, es plasticidad neural por repetición).\n📚 Emmons & McCullough, J Personality and Social Psychology (2003): la gratitud específica diaria por 10 semanas elevó bienestar subjetivo 25% y mejoró calidad de sueño; Wood et al., Clinical Psychology Review (2010): el efecto se mantiene a los 6 meses solo si la práctica continúa.'},
   {id:'listo7am', e:'⏰',lbl:'Listo a las 7:00am (vestido, lonches, todo)',blk:'Mañana',freq:'daily',addedOn:'2026-04-14',retiredOn:'2026-04-21',workdayOnly:true,
    tip:'Hábito jubilado — reemplazado por el Protocolo Pre-7am (versión desglosada en 5 pasos concretos). Tus checks históricos siguen contando en XP e historial. La nueva tarjeta te ayuda a diagnosticar qué paso falla cuando no llegas a las 7am.'},
@@ -439,9 +466,9 @@ const HABITS=[
   // TRABAJO — performance ejecutivo, sin momento fijo
   {id:'caminata20',e:'🚶‍♂️',lbl:'20 min caminata sin input (silencio mental)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
    tip:'20 minutos caminando SIN audífonos, SIN celular, SIN podcast — solo silencio o sonido ambiente. Esto activa la Default Mode Network del cerebro, la red que conecta puntos entre dominios distintos y produce los momentos "ajá". Los grandes insights creativos NUNCA ocurren mientras trabajas concentrado — ocurren cuando tu mente vaga libre. Para directivos: este es probablemente el hábito de mayor ROI para creatividad y resolución de problemas no obvios. Aburrirte a propósito es exactamente la señal de que está funcionando.\n📚 Beaty et al., NeuroImage (2016): la creatividad alta correlaciona con la capacidad de alternar entre red ejecutiva (foco) y red por defecto (vagar mental). Oppezzo & Schwartz, J Experimental Psychology (2014): caminar aumenta el pensamiento creativo en 60% vs estar sentado.'},
-  {id:'mit', e:'🐸',lbl:'MIT del día (antes del correo)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-18',workdayOnly:true,
+  {id:'mit', e:'🐸',lbl:'MIT del día (antes del correo)',blk:'Trabajo',freq:'daily',addedOn:'2026-04-18',workdayOnly:true,journal:true,journalPrompt:'¿Cuál es la 1 cosa que mueve más la aguja hoy?',
    tip:'Tu MIT (Most Important Task) es la tarea de mayor impacto del día — la que si solo logras esa, el día valió. Definirla ANTES de abrir correo o Slack es lo que la separa de un to-do reactivo. Toma 60 segundos: ¿cuál es la 1 cosa que si la completo hoy mueve más la aguja? Escríbela donde la veas (post-it, header de notas, lo que sea). Ejecútala antes de meterte a la bandeja de entrada. Encadena con tu caminata20: ahí tu cerebro ya procesó qué es lo importante, aquí solo lo escribes y lo ejecutas.\n📚 Newport, Deep Work (2016) y Drucker, The Effective Executive (1967): los ejecutivos de alto desempeño protegen una ventana de trabajo profundo antes de cualquier reactividad; el costo de cambio de contexto entre correo y trabajo cognitivo profundo puede consumir hasta 40% de la energía cognitiva diaria.'},
-  {id:'journal', e:'📓',lbl:'Bitácora HL',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,
+  {id:'journal', e:'📓',lbl:'Bitácora HL',blk:'Trabajo',freq:'daily',addedOn:'2026-04-13',workdayOnly:true,journal:true,journalPrompt:'1. Decisión clave 2. Patrón que notas 3. Lo más importante',
    tip:'Cinco minutos al final del día laboral, contesta 3 preguntas en libreta o nota del celular:\n1. ¿Qué fue lo más importante que pasó hoy? (1-2 frases)\n2. ¿Qué decisión tomé y por qué? (1-2 decisiones máximo)\n3. ¿Qué patrón estoy notando esta semana? (en gente, problemas, mercado)\nEsto no es diario emocional — es DESCARGA EJECUTIVA. Tu cerebro deja de gastar energía reteniendo info en memoria de trabajo y la consolida en memoria de largo plazo. La pregunta 3 es la que activa pensamiento creativo: te obliga a abstraer patrones, no solo recordar.\n📚 Klein & Boals, J Experimental Psychology (2001): el journaling estructurado mejora memoria de trabajo en adultos bajo estrés laboral; Pennebaker, Behaviour Research and Therapy (2004): la escritura expresiva reduce cortisol y mejora función inmune.'},
   {id:'notasjunta',e:'📝',lbl:'Notas de memoria post-junta',blk:'Trabajo',freq:'daily',addedOn:'2026-04-14',workdayOnly:true,
    tip:'Marca este hábito si en al menos UNA junta importante del día hiciste el ritual de notas de memoria:\n\n📝 Antes de salir de la junta (90 seg): escribe DE MEMORIA, sin abrir notas previas, lo siguiente:\n1. Decisiones tomadas\n2. Acciones acordadas\n3. Quién hace qué\n\nEsto fuerza recuperación activa y consolida la junta en memoria episódica. La gente que toma notas DURANTE la junta retiene MENOS porque divide atención entre escuchar y escribir. La recuperación activa después es lo que construye memoria de largo plazo.\n📚 Karpicke & Roediger, Science (2008): la recuperación activa después de un evento mejora retención 50% vs releer notas. Roediger & Butler, Trends in Cognitive Sciences (2011): el testing effect es uno de los hallazgos más robustos en ciencia de memoria.'},
@@ -1556,12 +1583,20 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
         dosedInfo=`<div class="hsub" style="color:${on?'#3D8B5E':'#C87820'};font-weight:600">${doseVal}/${h.doseCount} tomas · cada toma suma 1 botella 💧</div><div class="wpills" style="margin-top:6px">${pills}</div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tap tarjeta = sumar · Tap burbuja = ajustar</div>`;
       }
       const coreStar=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
+      let journalInfo='';
+      if(h.journal){
+        const jt=journalText(ADATE,h.id);
+        journalInfo=jt
+          ?`<div class="hcard-note" data-jnote="${ADATE}|${h.id}"><span>📝</span><span class="hcard-note-text">${escH(jt)}</span></div>`
+          :`<div class="hcard-note hcard-note-add" data-jnote="${ADATE}|${h.id}"><span>📝</span><span>Agregar nota</span></div>`;
+      }
       hab+=`<div class="hcard${on?' on':''}${CORE_HABITS[h.id]?' core':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
 <div class="hchk">${on?'✓':isDosed&&doseVal>0?doseVal:''}</div>
 <div style="flex:1;min-width:0">
 <div class="hlbl">${h.e} ${h.lbl}${coreStar}</div>
 ${challengeInfo}
 ${dosedInfo}
+${journalInfo}
 </div>
 <button class="tipbtn" data-tip="${h.id}">ℹ️</button>
 </div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
@@ -1763,7 +1798,11 @@ ${earnedList.length===0?'<p style="font-size:12px;color:var(--text2);text-align:
 ${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${ACHS.find(a=>a.id===ACH_TIP)?.n}</strong><br>${ACHS.find(a=>a.id===ACH_TIP)?.desc}${earned[ACH_TIP]?' · Desbloqueado el '+earned[ACH_TIP]:''}</div>`:''}
 </div>`;
 
-  return domSummary+maestriaSection+logroSection;
+  const shareCard=`<div class="card" style="text-align:center"><div class="ctitle">📸 Comparte tu progreso</div>
+<p style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px">Genera una tarjeta con tus stats para mandar por WhatsApp o poner en historias.</p>
+<button id="share-btn" style="width:100%;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px">📤 Descargar tarjeta</button>
+</div>`;
+  return domSummary+maestriaSection+logroSection+shareCard;
 }
 
 /* ── CONFIG ── */
@@ -1808,6 +1847,8 @@ document.addEventListener('click',e=>{
   if(dp){const[s,id,idx]=dp.dataset.dose.split('|');const i=parseInt(idx);setDose(s,id,i);return;}
   const sub=e.target.closest('[data-sub]');
   if(sub){const[s,id,k]=sub.dataset.sub.split('|');toggleSub(s,id,k);return;}
+  const jn=e.target.closest('[data-jnote]');
+  if(jn){const[s,id]=jn.dataset.jnote.split('|');showJPrompt(s,id);return;}
   const cd=e.target.closest('[data-t]');
   if(cd&&!e.target.closest('[data-tip]')){const[s,id]=cd.dataset.t.split('|');toggle(s,id);return;}
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render(true);return;}
@@ -1848,6 +1889,9 @@ document.addEventListener('click',e=>{
   if(e.target.id==='why-skip'){saveWhy('');return;}
   if(e.target.id==='why-edit-btn'){showWhyPrompt();return;}
   const we=e.target.closest('[data-whyedit]');if(we){showWhyPrompt();return;}
+  if(e.target.id==='j-save-btn'){saveJournal();return;}
+  if(e.target.id==='j-skip-btn'){closeJPrompt();return;}
+  if(e.target.id==='share-btn'){shareStats();return;}
   if(e.target.id==='ins-btn'&&PROMPT){PROMPT.prompt();PROMPT.userChoice.then(r=>{if(r.outcome==='accepted')toast('¡App instalada! 🎉');PROMPT=null;render();});}
   if(e.target.id==='btn-export'){exportProfile();return;}
   if(e.target.id==='btn-import'){document.getElementById('file-import')?.click();return;}
@@ -2047,6 +2091,113 @@ function saveWhy(text){
   save();closeWhyPrompt();render();
   if(trimmed)toast('🎯 Guardado · tu norte en 2027');
   else toast('Pospuesto — lo puedes definir después en Config');
+}
+/* ── SHARE CARD (Tribe) ── */
+function shareCanvas(){
+  const W=1080,H=1080;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');
+  // Background gradient
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#0D1B2A');g.addColorStop(.55,'#1B2A3B');g.addColorStop(1,'#1E3A5F');
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  // Title
+  ctx.fillStyle='#fff';ctx.textAlign='center';
+  ctx.font='bold 52px system-ui,-apple-system,sans-serif';
+  ctx.fillText('MI CEREBRO ÓPTIMO 🧠',W/2,130);
+  // Date
+  ctx.font='24px system-ui,-apple-system,sans-serif';ctx.fillStyle='rgba(255,255,255,.55)';
+  const now=new Date();
+  ctx.fillText(now.getDate()+' '+MS[now.getMonth()]+' '+now.getFullYear(),W/2,180);
+  // Level emoji big
+  const xp=calcXP(),lvl=calcLvl(xp),li=LEVELS[lvl-1],lc=lvlColor(lvl);
+  ctx.font='270px system-ui,-apple-system,sans-serif';ctx.fillText(li.i,W/2,500);
+  // Level text
+  ctx.font='bold 54px system-ui,-apple-system,sans-serif';ctx.fillStyle=lc;
+  ctx.fillText('Nivel '+lvl,W/2,580);
+  ctx.font='34px system-ui,-apple-system,sans-serif';ctx.fillStyle='rgba(255,255,255,.88)';
+  ctx.fillText(li.n,W/2,630);
+  // Stats row
+  const streak=calcStreakDays();
+  const wr=weekRate(monday(todayStr()));
+  const cards=[
+    {v:String(streak),lbl:'RACHA',c:'#FF6B6B'},
+    {v:wr+'%',lbl:'SEMANA',c:'#6BBBD0'},
+    {v:xp.toLocaleString(),lbl:'XP TOTAL',c:'#FFD700'}
+  ];
+  const cardW=290,cardH=160,gap=30;
+  const totalW=cardW*3+gap*2,startX=(W-totalW)/2;
+  const cardY=720;
+  cards.forEach((s,i)=>{
+    const x=startX+i*(cardW+gap);
+    ctx.fillStyle='rgba(255,255,255,.07)';
+    rr(ctx,x,cardY,cardW,cardH,22);ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.13)';
+    ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;ctx.stroke();
+    ctx.fillStyle=s.c;ctx.textAlign='center';
+    ctx.font='bold 58px system-ui,-apple-system,sans-serif';
+    ctx.fillText(s.v,x+cardW/2,cardY+80);
+    ctx.fillStyle='rgba(255,255,255,.55)';
+    ctx.font='bold 20px system-ui,-apple-system,sans-serif';
+    ctx.fillText(s.lbl,x+cardW/2,cardY+125);
+  });
+  // Why statement
+  if(SETS.whyStatement){
+    ctx.fillStyle='rgba(255,255,255,.78)';ctx.textAlign='center';
+    ctx.font='italic 28px system-ui,-apple-system,sans-serif';
+    const txt='"'+SETS.whyStatement+'"';
+    wrapLines(ctx,txt,W/2,950,W-160,36);
+  }
+  // Footer
+  ctx.fillStyle='rgba(255,255,255,.32)';ctx.textAlign='center';
+  ctx.font='18px system-ui,-apple-system,sans-serif';
+  ctx.fillText('cerebro-optimo · protocolo cognitivo · '+now.getFullYear(),W/2,1040);
+  return cv;
+}
+function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function wrapLines(ctx,text,x,y,maxW,lh){
+  const words=text.split(' ');let line='',lines=[];
+  for(const w of words){const test=line?line+' '+w:w;if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=w;}else line=test;}
+  if(line)lines.push(line);
+  const limited=lines.slice(0,3);
+  limited.forEach((l,i)=>ctx.fillText(l,x,y+i*lh));
+}
+function shareStats(){
+  try{
+    const cv=shareCanvas();
+    cv.toBlob(blob=>{
+      if(!blob){toast('❌ No se pudo generar');return;}
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download='cerebro-optimo-stats-'+todayStr()+'.png';a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),3000);
+      toast('✅ Imagen descargada · compártela');
+    },'image/png');
+  }catch(e){toast('❌ Error al generar imagen');}
+}
+/* ── JOURNAL (Hooked · Investment) ── */
+let _jctx=null; // {date, habitId}
+function journalText(date,hid){return (DB[date]&&DB[date][hid+'_text'])||'';}
+function showJPrompt(date,hid){
+  const h=HABITS.find(x=>x.id===hid);if(!h)return;
+  _jctx={date,hid};
+  document.getElementById('j-ico').textContent=h.e;
+  document.getElementById('j-lbl').textContent=h.lbl;
+  document.getElementById('j-prompt').textContent=h.journalPrompt||'';
+  const input=document.getElementById('j-input');
+  input.value=journalText(date,hid);
+  document.getElementById('jprompt').style.display='flex';
+  setTimeout(()=>{try{input.focus();}catch(e){}},200);
+}
+function closeJPrompt(){document.getElementById('jprompt').style.display='none';_jctx=null;}
+function saveJournal(){
+  if(!_jctx)return;
+  const text=document.getElementById('j-input').value.trim().slice(0,500);
+  const{date,hid}=_jctx;
+  if(!DB[date])DB[date]={};
+  if(text){DB[date][hid+'_text']=text;}
+  else{delete DB[date][hid+'_text'];}
+  save();closeJPrompt();render(true);
+  if(text)toast('📝 Nota guardada');
 }
 /* ── BACKUP PROMPT ── */
 function showBackupPrompt(){
