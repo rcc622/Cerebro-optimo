@@ -548,12 +548,22 @@ function phOn(date){
   if(!date)return ph();
   const hist=SETS.phaseHistory;
   if(!hist||hist.length===0)return ph();
-  let result=hist[0].phase;
-  for(const e of hist){
+  // Sort defensivo para tolerar historiales desordenados o corruptos
+  const sorted=[...hist].sort((a,b)=>a.start<b.start?-1:a.start>b.start?1:0);
+  let result=sorted[0].phase;
+  for(const e of sorted){
     if(e.start<=date)result=e.phase;
     else break;
   }
   return result;
+}
+function addPhaseEntry(phase){
+  const today=todayStr();
+  const hist=SETS.phaseHistory=SETS.phaseHistory||[];
+  // Elimina entradas con start>=hoy antes de añadir (evita duplicados al togglear el mismo día)
+  for(let i=hist.length-1;i>=0;i--){if(hist[i].start>=today)hist.splice(i,1);}
+  hist.push({phase,start:today});
+  hist.sort((a,b)=>a.start<b.start?-1:a.start>b.start?1:0);
 }
 function wg(date){return phOn(date)===2?7:6}
 function wLabel(){return ph()===2?'3.5L · 7 botellas':'3L · 6 botellas'}
@@ -615,8 +625,6 @@ function weekRate(m){
     dl.forEach(h=>{tot++;if(isDone(d,h))done++;});
     tot+=W;done+=Math.min(d.agua||0,W);
   });
-  const o3=dates.filter(s=>dd(s).omega3).length;
-  tot+=3;done+=Math.min(o3,3);
   return tot?Math.round(done/tot*100):0;
 }
 function rc(r){return r>=80?'#3D8B5E':r>=50?'#C87820':r>0?'#C04040':'#BDBDB0'}
@@ -646,7 +654,8 @@ function calcXP(){
     if(raw>=80&&!d._streakBonus)xp+=10;
   });
   Object.entries(SETS).forEach(([k,v])=>{
-    if(k.startsWith('chest_')&&typeof v==='number')xp+=v;
+    // Valida chest_*: entero finito entre 0 y 500 (rango máximo de weeklyChestXP)
+    if(k.startsWith('chest_')&&typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=500)xp+=v;
   });
   return xp;
 }
@@ -817,7 +826,9 @@ function sleepHabitsStreak(){
 function nocheLibreCount(){return SETS.nocheLibreCount||0;}
 function checkNocheLibre(){
   const streak=sleepHabitsStreak();
-  const lastAwarded=SETS.nocheLibreLastStreak||0;
+  let lastAwarded=SETS.nocheLibreLastStreak||0;
+  // Si la racha se rompió, realinear al múltiplo de 7 actual para no quedar bloqueado
+  if(streak<lastAwarded){lastAwarded=Math.floor(streak/7)*7;SETS.nocheLibreLastStreak=lastAwarded;save();}
   // Award a new Noche Libre every 7 consecutive days
   if(streak>=7&&streak>=lastAwarded+7){
     const newCount=(SETS.nocheLibreCount||0)+1;
@@ -975,9 +986,9 @@ function phaseProgress(){
 }
 function checkUnlock(){
   const p=ph();
-  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:1,start:todayStr()});save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
-  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:2,start:todayStr()});save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
-  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:3,start:todayStr()});save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
+  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();addPhaseEntry(1);save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
+  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();addPhaseEntry(2);save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
+  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();addPhaseEntry(3);save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
 }
 
 /* ── TOGGLE / WATER ── */
@@ -1474,7 +1485,7 @@ document.addEventListener('click',e=>{
   const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
   const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
   const sp=e.target.closest('[data-sp]');
-  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;(SETS.phaseHistory=SETS.phaseHistory||[]).push({phase:p2,start:todayStr()});save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
+  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;addPhaseEntry(p2);save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
   if(e.target.id==='ntog'){
     if(!('Notification' in window)){toast('❌ Tu navegador no soporta notificaciones');return;}
     if(SETS.notifications){
