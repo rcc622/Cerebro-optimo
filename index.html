@@ -1442,6 +1442,8 @@ function vConfig(){
 <div class="card"><div class="ctitle">Notificaciones</div>
 <div class="cfgitem" style="margin-bottom:0"><div class="cfgico">🔔</div><div class="cfginf"><div class="cfglbl">Recordatorio diario</div><div class="cfgsub">${SETS.notifications?'Activadas':'Desactivadas'} · ${SETS.reminderTime}</div></div><button class="toggle ${SETS.notifications?'on':'off'}" id="ntog"></button></div>
 <input type="time" id="rtim" value="${SETS.reminderTime}">
+<button id="ntest" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer">🧪 Probar notificación ahora</button>
+<p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">Si no ves la notificación de prueba: revisa Ajustes del teléfono → Apps → Cerebro Óptimo → Notificaciones.</p>
 </div>
 <div class="card"><div class="ctitle">💾 Respaldo de datos</div>
 <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px">Exporta tu perfil como archivo JSON para guardarlo en Drive o WhatsApp. Si se borra el caché de Chrome, impórtalo para recuperar todo tu progreso.</p>
@@ -1481,9 +1483,23 @@ document.addEventListener('click',e=>{
   const sp=e.target.closest('[data-sp]');
   if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;addPhaseEntry(p2);save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
   if(e.target.id==='ntog'){
-    if(!SETS.notifications){if('Notification' in window){Notification.requestPermission().then(p3=>{SETS.notifications=p3==='granted';toast(SETS.notifications?'✅ Activadas':'❌ Permiso denegado');save();render();scheduleR();});}else toast('No soportado');}
-    else{SETS.notifications=false;save();render();toast('Desactivadas');}return;
+    if(!('Notification' in window)){toast('❌ Tu navegador no soporta notificaciones');return;}
+    if(SETS.notifications){
+      // Apagar
+      SETS.notifications=false;save();clearScheduled();render();toast('🔕 Desactivadas');return;
+    }
+    // Encender
+    if(Notification.permission==='denied'){
+      toast('🚫 Bloqueadas. Ajustes del navegador → Permisos → Notificaciones → Permitir');return;
+    }
+    Notification.requestPermission().then(p3=>{
+      if(p3==='granted'){SETS.notifications=true;save();render();scheduleR();toast('✅ Activadas — recordatorio a las '+SETS.reminderTime);}
+      else if(p3==='denied'){toast('❌ Permiso denegado — habilítalas en ajustes del navegador');}
+      else{toast('⚠️ Pospuesto — toca de nuevo para reintentar');}
+    }).catch(()=>toast('❌ Error al solicitar permiso'));
+    return;
   }
+  if(e.target.id==='ntest'){testNotif();return;}
   if(e.target.id==='ins-btn'&&PROMPT){PROMPT.prompt();PROMPT.userChoice.then(r=>{if(r.outcome==='accepted')toast('¡App instalada! 🎉');PROMPT=null;render();});}
   if(e.target.id==='btn-export'){exportProfile();return;}
   if(e.target.id==='btn-import'){document.getElementById('file-import')?.click();return;}
@@ -1533,17 +1549,62 @@ function importProfile(file){
 
 /* ── NOTIFICATIONS ── */
 let _rt=null;
-function scheduleR(){
+function clearScheduled(){
   clearTimeout(_rt);
+  if('serviceWorker' in navigator&&navigator.serviceWorker.controller){
+    navigator.serviceWorker.ready.then(reg=>{
+      reg.getNotifications({tag:'daily',includeTriggered:true}).then(list=>list.forEach(n=>n.close())).catch(()=>{});
+    }).catch(()=>{});
+  }
+}
+function scheduleR(){
+  clearScheduled();
   if(!SETS.notifications||!('Notification' in window)||Notification.permission!=='granted')return;
   const[h,m]=SETS.reminderTime.split(':').map(Number);
   const now=new Date(),tgt=new Date();tgt.setHours(h,m,0,0);if(tgt<=now)tgt.setDate(tgt.getDate()+1);
-  _rt=setTimeout(()=>{const r=dayRate(todayStr());if(r<100)new Notification('Mi Cerebro Óptimo 🧠',{body:'Llevas '+r+'% hoy. ¡Cierra fuerte!',tag:'daily'});scheduleR();},tgt-now);
+  // Preferido: TimestampTrigger via SW — sobrevive al cierre de la app
+  const hasTrigger=('Notification' in window)&&('showTrigger' in Notification.prototype)&&('TimestampTrigger' in window);
+  if(hasTrigger&&'serviceWorker' in navigator){
+    navigator.serviceWorker.ready.then(reg=>{
+      try{
+        reg.showNotification('Mi Cerebro Óptimo 🧠',{
+          body:'¿Cómo va tu día? Revisa tus hábitos antes de dormir.',
+          tag:'daily',
+          icon:'data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' rx=\'22\' fill=\'%230D1B2A\'/><text y=\'.9em\' font-size=\'72\' x=\'14\'>🧠</text></svg>',
+          showTrigger:new TimestampTrigger(tgt.getTime())
+        }).catch(()=>scheduleRFallback(tgt));
+      }catch(e){scheduleRFallback(tgt);}
+    }).catch(()=>scheduleRFallback(tgt));
+  }else{
+    scheduleRFallback(tgt);
+  }
+}
+function scheduleRFallback(tgt){
+  // Fallback: solo funciona si el tab sigue abierto a la hora objetivo
+  const now=new Date();
+  _rt=setTimeout(()=>{
+    const r=dayRate(todayStr());
+    if(r<100&&Notification.permission==='granted'){
+      try{new Notification('Mi Cerebro Óptimo 🧠',{body:'Llevas '+r+'% hoy. ¡Cierra fuerte!',tag:'daily'});}catch(e){}
+    }
+    scheduleR();
+  },tgt-now);
+}
+function testNotif(){
+  if(!('Notification' in window)){toast('❌ Navegador sin soporte');return;}
+  if(Notification.permission!=='granted'){toast('❌ Primero activa el toggle 🔔');return;}
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.ready.then(reg=>{
+      reg.showNotification('🧪 Notificación de prueba',{body:'Si ves esto, las notificaciones funcionan correctamente.',tag:'test'}).then(()=>toast('✅ Notificación enviada')).catch(()=>toast('❌ Error al enviar'));
+    }).catch(()=>toast('❌ Service Worker no listo'));
+  }else{
+    try{new Notification('🧪 Prueba',{body:'Notificaciones OK'});toast('✅ Notificación enviada');}catch(e){toast('❌ Error');}
+  }
 }
 
 /* ── PWA ── */
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();PROMPT=e;if(VIEW==='config')render();});
-if('serviceWorker' in navigator){try{const sw=`self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',()=>self.clients.claim());self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response(''))));`;navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'text/javascript'}))).catch(()=>{});}catch(e){}}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 try{const m={name:'Mi Cerebro Óptimo',short_name:'Cerebro',start_url:'.',display:'standalone',background_color:'#F5F4F0',theme_color:'#0D1B2A',icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1B2A'/><text y='.9em' font-size='72' x='14'>🧠</text></svg>",sizes:'any',type:'image/svg+xml'}]};const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l);}catch(e){}
 
 /* ── BACKUP PROMPT ── */
