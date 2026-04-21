@@ -538,6 +538,12 @@ const ACHS=[
   {id:'omega3_b', i:'🐟',n:'???',desc:'Sardinas · 4 semanas cumpliendo la meta',      secret:true},
   {id:'omega3_s', i:'🐟',n:'???',desc:'Sardinas · 8 semanas cumpliendo la meta',      secret:true},
   {id:'omega3_g', i:'🐟',n:'???',desc:'Sardinas · 13 semanas cumpliendo la meta',     secret:true},
+  {id:'resp_b',    i:'🌬️',n:'???',desc:'Respiración pre-junta · 4 semanas cumpliendo la meta',  secret:true},
+  {id:'resp_s',    i:'🌬️',n:'???',desc:'Respiración pre-junta · 8 semanas cumpliendo la meta',  secret:true},
+  {id:'resp_g',    i:'🌬️',n:'???',desc:'Respiración pre-junta · 13 semanas cumpliendo la meta', secret:true},
+  {id:'pelota_b',  i:'🎾',n:'???',desc:'Pelota anti-ronquido · 4 semanas cumpliendo la meta',   secret:true},
+  {id:'pelota_s',  i:'🎾',n:'???',desc:'Pelota anti-ronquido · 8 semanas cumpliendo la meta',   secret:true},
+  {id:'pelota_g',  i:'🎾',n:'???',desc:'Pelota anti-ronquido · 13 semanas cumpliendo la meta',  secret:true},
   // Sleep habits achievements
   {id:'noscreen7',  i:'🔇',n:'Modo Avión',           desc:'7 días seguidos sin teléfono antes de dormir',     secret:false},
   {id:'noscreen21', i:'🔇',n:'Desintoxicado Digital', desc:'21 días seguidos sin teléfono antes de dormir',    secret:true},
@@ -908,7 +914,10 @@ function checkWeekComplete(){
   const avg=Math.round(dates.reduce((a,s)=>a+dayRate(s),0)/7);
   const bonus=weeklyChestXP(avg);
   if(!bonus)return;
+  const lvlB=calcLvl(calcXP());
   SETS[key]=bonus;save();
+  const lvlA=calcLvl(calcXP());
+  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),1400); // después del chest
   setTimeout(()=>showChest(bonus,avg),800);
 }
 function showChest(bonus,avg){
@@ -954,7 +963,11 @@ function totalHabanero(){return Object.values(DB).filter(d=>d.habanero).length;}
 
 /* ── SLEEP HABITS STREAK (Noche Libre) ── */
 function sleepHabitsStreak(){
-  let c=0,d=todayStr();
+  // Si hoy aún no se marcó, arrancar desde ayer (no romper la racha al mediodía)
+  let d=todayStr();
+  const today=dd(d);
+  if(!(today.noscreen&&today.readambar))d=shift(d,-1);
+  let c=0;
   for(let i=0;i<500;i++){const x=dd(d);if(x.noscreen&&x.readambar)c++;else break;d=shift(d,-1);}
   return c;
 }
@@ -966,6 +979,7 @@ function checkNocheLibre(){
   if(streak<lastAwarded){lastAwarded=Math.floor(streak/7)*7;SETS.nocheLibreLastStreak=lastAwarded;save();}
   // Award a new Noche Libre every 7 consecutive days
   if(streak>=7&&streak>=lastAwarded+7){
+    const lvlB=calcLvl(calcXP());
     const newCount=(SETS.nocheLibreCount||0)+1;
     SETS.nocheLibreCount=newCount;
     SETS.nocheLibreLastStreak=Math.floor(streak/7)*7;
@@ -974,6 +988,8 @@ function checkNocheLibre(){
     if(!DB[todayStr()])DB[todayStr()]={};
     DB[todayStr()]._nocheLibreBonus=(DB[todayStr()]._nocheLibreBonus||0)+bonus;
     save();
+    const lvlA=calcLvl(calcXP());
+    if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),1600);
     setTimeout(()=>showNocheLibre(newCount,bonus,streak),600);
   }
 }
@@ -1049,6 +1065,12 @@ function checkAchievements(){
     else if(id==='omega3_b')met=challengeWeekCount('omega3',2)>=4;
     else if(id==='omega3_s')met=challengeWeekCount('omega3',2)>=8;
     else if(id==='omega3_g')met=challengeWeekCount('omega3',2)>=13;
+    else if(id==='resp_b')  met=challengeWeekCount('respjunta',3)>=4;
+    else if(id==='resp_s')  met=challengeWeekCount('respjunta',3)>=8;
+    else if(id==='resp_g')  met=challengeWeekCount('respjunta',3)>=13;
+    else if(id==='pelota_b')met=challengeWeekCount('pelotatenis',5)>=4;
+    else if(id==='pelota_s')met=challengeWeekCount('pelotatenis',5)>=8;
+    else if(id==='pelota_g')met=challengeWeekCount('pelotatenis',5)>=13;
     // Sleep habit achievements
     else if(id==='noscreen7')met=habitConsecDays('noscreen')>=7;
     else if(id==='noscreen21')met=habitConsecDays('noscreen')>=21;
@@ -1800,7 +1822,7 @@ function clearScheduled(){
   clearTimeout(_rt);
   if('serviceWorker' in navigator&&navigator.serviceWorker.controller){
     navigator.serviceWorker.ready.then(reg=>{
-      reg.getNotifications({tag:'daily',includeTriggered:true}).then(list=>list.forEach(n=>n.close())).catch(()=>{});
+      ['daily','warning'].forEach(t=>reg.getNotifications({tag:t,includeTriggered:true}).then(list=>list.forEach(n=>n.close())).catch(()=>{}));
     }).catch(()=>{});
   }
 }
@@ -1808,16 +1830,29 @@ function scheduleR(){
   clearScheduled();
   if(!SETS.notifications||!('Notification' in window)||Notification.permission!=='granted')return;
   const[h,m]=SETS.reminderTime.split(':').map(Number);
-  const now=new Date(),tgt=new Date();tgt.setHours(h,m,0,0);if(tgt<=now)tgt.setDate(tgt.getDate()+1);
+  const now=new Date();
+  const tgt=new Date();tgt.setHours(h,m,0,0);if(tgt<=now)tgt.setDate(tgt.getDate()+1);
+  // Warning 1h antes: solo si racha ≥3 y dayRate<80% (Hooked · Trigger interno)
+  const warn=new Date(tgt.getTime()-60*60*1000);
+  const streak=calcStreakDays();
+  const rate=dayRate(todayStr());
+  const showWarn=streak>=3&&rate<80&&warn>now;
+  const icon='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' rx=\'22\' fill=\'%230D1B2A\'/><text y=\'.9em\' font-size=\'72\' x=\'14\'>🧠</text></svg>';
   // Preferido: TimestampTrigger via SW — sobrevive al cierre de la app
   const hasTrigger=('Notification' in window)&&('showTrigger' in Notification.prototype)&&('TimestampTrigger' in window);
   if(hasTrigger&&'serviceWorker' in navigator){
     navigator.serviceWorker.ready.then(reg=>{
       try{
+        if(showWarn){
+          reg.showNotification('⚠️ Tu racha está en juego',{
+            body:'Llevas '+streak+' días consecutivos. Aún tienes 1h para cerrar el día fuerte.',
+            tag:'warning',icon:icon,
+            showTrigger:new TimestampTrigger(warn.getTime())
+          }).catch(()=>{});
+        }
         reg.showNotification('Mi Cerebro Óptimo 🧠',{
           body:'¿Cómo va tu día? Revisa tus hábitos antes de dormir.',
-          tag:'daily',
-          icon:'data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' rx=\'22\' fill=\'%230D1B2A\'/><text y=\'.9em\' font-size=\'72\' x=\'14\'>🧠</text></svg>',
+          tag:'daily',icon:icon,
           showTrigger:new TimestampTrigger(tgt.getTime())
         }).catch(()=>scheduleRFallback(tgt));
       }catch(e){scheduleRFallback(tgt);}
