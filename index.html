@@ -295,6 +295,15 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .hcard-note{display:flex;align-items:center;gap:6px;background:#FFFCF0;border:1px solid #F0D88A;border-radius:8px;padding:5px 9px;font-size:11px;color:#6B4E00;margin-top:7px;cursor:pointer;max-width:100%;overflow:hidden}
 .hcard-note-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-style:italic;flex:1;min-width:0}
 .hcard-note-add{background:#fff;border:1px dashed #C5BFAE;color:var(--text2);font-weight:600}
+/* RETOS COLAPSADO */
+.retos-summary{display:flex;justify-content:space-between;align-items:center;background:#FEF0EB;border:1px solid #F0D8CB;border-radius:10px;padding:11px 14px;margin-bottom:7px;cursor:pointer;font-size:12px;color:#7A3520;transition:background .15s}
+.retos-summary:active{background:#FDE5DA}
+.retos-summary-txt{font-weight:600}
+.retos-summary-chev{font-weight:700;font-size:11px;color:#E05A2B;letter-spacing:.5px}
+/* QUICK-MARK EN MISIONES */
+.m-quick{width:36px;height:36px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;color:#BDBDB0;font-size:17px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;transition:all .18s;display:flex;align-items:center;justify-content:center}
+.m-quick.on{background:#3D8B5E;border-color:#3D8B5E;color:#fff}
+.m-quick:active{transform:scale(.9)}
 /* DOMINIOS */
 .dom-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;margin-bottom:8px;color:#fff}
 .dom-hdr-ico{font-size:22px;flex-shrink:0}
@@ -649,7 +658,7 @@ const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic
 
 /* ── STATE ── */
 let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
-let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null;
+let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null,SHOW_RETOS=false;
 
 /* ── DATE ── */
 function todayStr(){const d=new Date();return fmt(d)}
@@ -1447,6 +1456,11 @@ ${streakHint}
       const h=HABITS.find(x=>x.id===mm.hid);
       const dc=DOMAINS[mm.dom].c;
       const typeColor=mm.type==='CONQUISTAR'?'#FFB84D':mm.type==='DEFENDER'?'#7BC97A':'#6BB5FF';
+      // Quick-mark: solo si el hábito es togglable simple (no subSteps ni dosed) y aplica hoy
+      const todayS=todayStr();
+      const canQuick=h&&!h.subSteps&&!h.doseCount&&(!h.workdayOnly||isWorkday(todayS));
+      const doneToday=canQuick&&isDone(dd(todayS),h);
+      const quickBtn=!completed&&canQuick?`<button class="m-quick${doneToday?' on':''}" data-mquick="${h.id}" aria-label="Marcar hoy">${doneToday?'✓':'·'}</button>`:'';
       return`<div class="mission-row${completed?' done':''}">
 <div class="m-type" style="background:${typeColor}22;color:${typeColor}">${mm.type}</div>
 <div class="m-body">
@@ -1454,7 +1468,7 @@ ${streakHint}
 <div class="m-sub">${mm.goal} ${h&&h.workdayOnly?'días laborales':'días'} · +${mm.xp} XP</div>
 ${completed?'':`<div class="m-bar"><div class="m-fill" style="width:${pct}%;background:${dc}"></div></div><div class="m-prog">${prg.c}/${mm.goal}</div>`}
 </div>
-${completed?'<div class="m-done-ico">✅</div>':''}
+${completed?'<div class="m-done-ico">✅</div>':quickBtn}
 </div>`;
     }).join('');
     missionsHtml=`<div class="mission-card">
@@ -1514,7 +1528,12 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
     const {c}=BC[blk];
     const isRetos=blk==='Retos';
     hab+=`<div class="blk-hdr"><div class="blk-line" style="background:${c}"></div><div class="blk-lbl" style="color:${c}">${isRetos?'⚡ RETOS · XP EXTRA':blk}</div><div class="blk-line" style="background:${c}"></div></div>`;
-    if(isRetos)hab+=`<p style="font-size:11px;color:var(--text2);margin-bottom:8px">Opcionales — no cuentan para el 100%. Solo suman XP bonus.</p>`;
+    if(isRetos){
+      const doneRetos=bh.filter(h=>isDone(d,h)).length;
+      hab+=`<div class="retos-summary" data-showretos="1"><span class="retos-summary-txt">${bh.length} retos opcionales · ${doneRetos}/${bh.length} hoy</span><span class="retos-summary-chev">${SHOW_RETOS?'Ocultar ▲':'Ver ▼'}</span></div>`;
+      if(!SHOW_RETOS)return;
+      hab+=`<p style="font-size:11px;color:var(--text2);margin-bottom:8px">Opcionales — no cuentan para el 100%. Solo suman XP bonus.</p>`;
+    }
     if(blk==='Día'){
       const wc2=d.agua||0;
       const ac=d.aguaCre||0;
@@ -1890,6 +1909,8 @@ document.addEventListener('click',e=>{
   if(e.target.id==='why-skip'){saveWhy('');return;}
   if(e.target.id==='why-edit-btn'){showWhyPrompt();return;}
   const we=e.target.closest('[data-whyedit]');if(we){showWhyPrompt();return;}
+  const sr=e.target.closest('[data-showretos]');if(sr){SHOW_RETOS=!SHOW_RETOS;render(true);return;}
+  const mq=e.target.closest('[data-mquick]');if(mq){toggle(todayStr(),mq.dataset.mquick);return;}
   if(e.target.id==='j-save-btn'){saveJournal();return;}
   if(e.target.id==='j-skip-btn'){closeJPrompt();return;}
   if(e.target.id==='share-btn'){shareStats();return;}
