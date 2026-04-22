@@ -2150,23 +2150,18 @@ async function exportWeekJournal(weekOffset){
   if(!hasAny){toast('ℹ️ No hay notas en esta semana');return;}
   const content=lines.join('\n');
   const fname='bitacora-'+mon+'.txt';
-  // Intentar Share API primero (Android permite mandar directo a WhatsApp/Drive/etc)
-  try{
-    if(navigator.share){
-      const blob=new Blob([content],{type:'text/plain'});
-      const file=new File([blob],fname,{type:'text/plain'});
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        await navigator.share({files:[file],title:'Bitácora semanal',text:'Bitácora '+weekLabel(mon)});
-        toast('✅ Compartido');return;
-      }
-      await navigator.share({title:'Bitácora semanal',text:content});
+  // Preferir compartir como TEXTO (no archivo) — evita que WhatsApp/otros rompan el encoding UTF-8
+  if(navigator.share){
+    try{
+      await navigator.share({title:'Bitácora semanal '+weekLabel(mon),text:content});
       toast('✅ Compartido');return;
+    }catch(e){
+      if(e&&e.name==='AbortError')return; // usuario canceló
+      // Si el share falló por otro motivo, intentamos archivo con BOM
     }
-  }catch(e){
-    if(e&&e.name==='AbortError')return; // usuario canceló
   }
-  // Fallback: descarga como archivo
-  const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+  // Fallback: descarga como archivo con UTF-8 BOM (para que apps legacy detecten el encoding)
+  const blob=new Blob(['\uFEFF'+content],{type:'text/plain;charset=utf-8'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download=fname;a.click();
   setTimeout(()=>URL.revokeObjectURL(url),3000);
