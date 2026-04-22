@@ -1838,6 +1838,14 @@ ${SETS.whyStatement?`<p class="why-card-quote">"${escH(SETS.whyStatement)}"</p>`
 <button id="ntest" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer">🧪 Probar notificación ahora</button>
 <p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">Si no ves la notificación de prueba: revisa Ajustes del teléfono → Apps → Cerebro Óptimo → Notificaciones.</p>
 </div>
+<div class="card"><div class="ctitle">📓 Bitácora semanal</div>
+<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px">Exporta todas tus notas de Gratitud, MIT y Bitácora HL agrupadas por día. Ideal para mandártelo al correo cada domingo como resumen ejecutivo de la semana.</p>
+<div style="display:flex;gap:10px">
+<button id="btn-journal-this" style="flex:1;padding:12px 8px;border-radius:12px;border:none;background:var(--navy);color:#fff;font-size:13px;font-weight:700;cursor:pointer">📤 Esta semana</button>
+<button id="btn-journal-prev" style="flex:1;padding:12px 8px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer">📋 Semana pasada</button>
+</div>
+<p style="font-size:10px;color:var(--text2);margin-top:10px;text-align:center">Se abre el menú de compartir · WhatsApp, Drive, Email…</p>
+</div>
 <div class="card"><div class="ctitle">💾 Respaldo de datos</div>
 <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px">Exporta tu perfil como archivo JSON para guardarlo en Drive o WhatsApp. Si se borra el caché de Chrome, impórtalo para recuperar todo tu progreso.</p>
 <div style="display:flex;gap:10px">
@@ -1908,6 +1916,8 @@ document.addEventListener('click',e=>{
   if(e.target.id==='share-btn'){shareStats();return;}
   if(e.target.id==='ins-btn'&&PROMPT){PROMPT.prompt();PROMPT.userChoice.then(r=>{if(r.outcome==='accepted')toast('¡App instalada! 🎉');PROMPT=null;render();});}
   if(e.target.id==='btn-export'){exportProfile();return;}
+  if(e.target.id==='btn-journal-this'){exportWeekJournal(0);return;}
+  if(e.target.id==='btn-journal-prev'){exportWeekJournal(-1);return;}
   if(e.target.id==='btn-import'){document.getElementById('file-import')?.click();return;}
 });
 document.addEventListener('change',e=>{
@@ -2106,6 +2116,64 @@ function saveWhy(text){
   if(trimmed)toast('🎯 Guardado · tu norte en 2027');
   else toast('Pospuesto — lo puedes definir después en Config');
 }
+/* ── EXPORT BITÁCORA SEMANAL ── */
+async function exportWeekJournal(weekOffset){
+  weekOffset=weekOffset||0;
+  const mon=shift(monday(todayStr()),weekOffset*7);
+  const dates=week7(mon);
+  const jHabits=HABITS.filter(h=>h.journal);
+  const lines=[];
+  lines.push('📓 CEREBRO ÓPTIMO · BITÁCORA SEMANAL');
+  lines.push('Semana '+weekLabel(mon)+' '+new Date(mon+'T12:00:00').getFullYear());
+  lines.push('═══════════════════════════════════');
+  lines.push('');
+  if(SETS.whyStatement){
+    lines.push('🎯 Norte 2027: '+SETS.whyStatement);
+    lines.push('');
+  }
+  let hasAny=false;
+  dates.forEach(s=>{
+    const entries=jHabits.map(h=>{const t=journalText(s,h.id);return t?{h,t}:null;}).filter(Boolean);
+    if(!entries.length)return;
+    hasAny=true;
+    const dt=new Date(s+'T12:00:00');
+    lines.push('───────────────────────────────────');
+    lines.push(DL[dow(s)]+' '+dt.getDate()+' '+MS[dt.getMonth()]);
+    lines.push('───────────────────────────────────');
+    lines.push('');
+    entries.forEach(({h,t})=>{
+      lines.push(h.e+' '+h.lbl+':');
+      lines.push(t);
+      lines.push('');
+    });
+  });
+  if(!hasAny){toast('ℹ️ No hay notas en esta semana');return;}
+  const content=lines.join('\n');
+  const fname='bitacora-'+mon+'.txt';
+  // Intentar Share API primero (Android permite mandar directo a WhatsApp/Drive/etc)
+  try{
+    if(navigator.share){
+      const blob=new Blob([content],{type:'text/plain'});
+      const file=new File([blob],fname,{type:'text/plain'});
+      if(navigator.canShare&&navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'Bitácora semanal',text:'Bitácora '+weekLabel(mon)});
+        toast('✅ Compartido');return;
+      }
+      await navigator.share({title:'Bitácora semanal',text:content});
+      toast('✅ Compartido');return;
+    }
+  }catch(e){
+    if(e&&e.name==='AbortError')return; // usuario canceló
+  }
+  // Fallback: descarga como archivo
+  const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=fname;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+  toast('✅ Descargado · '+fname);
+}
+/* ── EXPORT BITÁCORA SEMANAL fin ── */
+
 /* ── SHARE CARD (Tribe) ── */
 function shareCanvas(){
   const W=1080,H=1080;
