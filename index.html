@@ -486,6 +486,9 @@ const HABITS=[
    tip:'Cinco minutos al final del día laboral, contesta 3 preguntas en libreta o nota del celular:\n1. ¿Qué fue lo más importante que pasó hoy? (1-2 frases)\n2. ¿Qué decisión tomé y por qué? (1-2 decisiones máximo)\n3. ¿Qué patrón estoy notando esta semana? (en gente, problemas, mercado)\nEsto no es diario emocional — es DESCARGA EJECUTIVA. Tu cerebro deja de gastar energía reteniendo info en memoria de trabajo y la consolida en memoria de largo plazo. La pregunta 3 es la que activa pensamiento creativo: te obliga a abstraer patrones, no solo recordar.\n📚 Klein & Boals, J Experimental Psychology (2001): el journaling estructurado mejora memoria de trabajo en adultos bajo estrés laboral; Pennebaker, Behaviour Research and Therapy (2004): la escritura expresiva reduce cortisol y mejora función inmune.'},
   {id:'notasjunta',e:'📝',lbl:'Notas de memoria post-junta',blk:'Trabajo',freq:'daily',addedOn:'2026-04-14',workdayOnly:true,
    tip:'Marca este hábito si en al menos UNA junta importante del día hiciste el ritual de notas de memoria:\n\n📝 Antes de salir de la junta (90 seg): escribe DE MEMORIA, sin abrir notas previas, lo siguiente:\n1. Decisiones tomadas\n2. Acciones acordadas\n3. Quién hace qué\n\nEsto fuerza recuperación activa y consolida la junta en memoria episódica. La gente que toma notas DURANTE la junta retiene MENOS porque divide atención entre escuchar y escribir. La recuperación activa después es lo que construye memoria de largo plazo.\n📚 Karpicke & Roediger, Science (2008): la recuperación activa después de un evento mejora retención 50% vs releer notas. Roediger & Butler, Trends in Cognitive Sciences (2011): el testing effect es uno de los hallazgos más robustos en ciencia de memoria.'},
+  // FIN DE SEMANA — sólo sábado y domingo
+  {id:'cuarto', e:'🧹',lbl:'Recoger y limpiar mi cuarto',blk:'Día',freq:'daily',addedOn:'2026-04-21',weekendOnly:true,
+   tip:'Hábito de fin de semana. Un espacio ordenado reduce la carga cognitiva — tu cerebro gasta menos glucosa procesando el entorno y queda con más recursos para foco profundo. 15-20 min son suficientes si lo haces consistente. La regla: nada termina fuera de su lugar antes de salir del cuarto.\n📚 McMains & Kastner, Journal of Neuroscience (2011): el desorden visual compite por recursos atencionales en la corteza visual y reduce la capacidad de procesamiento de información relevante. Vohs et al., Psychological Science (2013): entornos ordenados correlacionan con mejor autocontrol y decisiones más sanas.'},
   // RETOS — opcionales, XP extra, no cuentan para el 100%
   {id:'walk5am', e:'🌅',lbl:'Caminata 5am',  blk:'Retos',freq:'daily',challenge:true,xpBonus:15,weeklyGoal:3,addedOn:'2020-01-01',
    tip:'Caminar a las 5am combina luz circadiana temprana, BDNF por aeróbico y oxidación de grasas cerebrales. El BDNF generado actúa 4-6 horas después, justo en tu ventana de máximo desempeño cognitivo. La hora temprana es lo que lo hace reto — es el ancla circadiana más potente del día. Meta realista: 3 veces por semana.\n📚 Erickson et al., PNAS (2011): el ejercicio aeróbico aumenta el volumen del hipocampo 2% y los niveles de BDNF en adultos.'},
@@ -780,6 +783,7 @@ function dailyH(date){
   return activeH(date).filter(h=>{
     if(h.freq!=='daily'||h.challenge)return false;
     if(h.workdayOnly&&date&&!isWorkday(date))return false;
+    if(h.weekendOnly&&date&&isWorkday(date))return false;
     return true;
   });
 }
@@ -1450,14 +1454,14 @@ ${lockBtn}
       const typeColor=mm.type==='CONQUISTAR'?'#FFB84D':mm.type==='DEFENDER'?'#7BC97A':'#6BB5FF';
       // Quick-mark: solo si el hábito es togglable simple (no subSteps ni dosed) y aplica hoy
       const todayS=todayStr();
-      const canQuick=h&&!h.subSteps&&!h.doseCount&&(!h.workdayOnly||isWorkday(todayS));
+      const canQuick=h&&!h.subSteps&&!h.doseCount&&(!h.workdayOnly||isWorkday(todayS))&&(!h.weekendOnly||!isWorkday(todayS));
       const doneToday=canQuick&&isDone(dd(todayS),h);
       const quickBtn=!completed&&canQuick?`<button class="m-quick${doneToday?' on':''}" data-mquick="${h.id}" aria-label="Marcar hoy">${doneToday?'✓':'·'}</button>`:'';
       return`<div class="mission-row${completed?' done':''}">
 <div class="m-type" style="background:${typeColor}22;color:${typeColor}">${mm.type}</div>
 <div class="m-body">
 <div class="m-title">${h?h.e:'·'} ${h?h.lbl:'—'}</div>
-<div class="m-sub">${mm.goal} ${h&&h.workdayOnly?'días laborales':'días'} · +${mm.xp} XP</div>
+<div class="m-sub">${mm.goal} ${h&&h.workdayOnly?'días laborales':h&&h.weekendOnly?'fines de semana':'días'} · +${mm.xp} XP</div>
 ${completed?'':`<div class="m-bar"><div class="m-fill" style="width:${pct}%;background:${dc}"></div></div><div class="m-prog">${prg.c}/${mm.goal}</div>`}
 </div>
 ${completed?'<div class="m-done-ico">✅</div>':quickBtn}
@@ -1515,7 +1519,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
 
   let hab='';
   BLOCKS.forEach(blk=>{
-    const bh=activeH(ADATE).filter(h=>h.blk===blk&&!(h.workdayOnly&&!isWorkday(ADATE)));
+    const bh=activeH(ADATE).filter(h=>h.blk===blk&&!(h.workdayOnly&&!isWorkday(ADATE))&&!(h.weekendOnly&&isWorkday(ADATE)));
     if(!bh.length&&blk!=='Día')return;
     const {c}=BC[blk];
     const isRetos=blk==='Retos';
@@ -1680,8 +1684,8 @@ function habitMasteryWeeks(hid){
   let count=0;
   allW.forEach(mon=>{
     const days=week7(mon);
-    // Para hábitos workdayOnly, solo cuentan días laborales; si la semana no tiene laborales, se salta
-    const relevant=h&&h.workdayOnly?days.filter(isWorkday):days;
+    // Para hábitos workdayOnly/weekendOnly, filtrar a sus días aplicables
+    const relevant=h&&h.workdayOnly?days.filter(isWorkday):h&&h.weekendOnly?days.filter(s=>!isWorkday(s)):days;
     if(relevant.length===0)return;
     const weekDone=relevant.every(s=>s>today?false:(h?isDone(dd(s),h):!!dd(s)[hid]));
     if(weekDone)count++;
@@ -2060,7 +2064,7 @@ function generateMissions(monKey){
         wm.sort((a,b)=>a.w-b.w);
         pick=wm[0].h;type='DOMINAR';xp=100;
       }
-      goal=pick.workdayOnly?5:7;
+      goal=pick.workdayOnly?5:pick.weekendOnly?2:7;
     }
     result.push({id:`m_${monKey}_${i}`,type,hid:pick.id,dom:k,goal,xp,weekMon:monKey});
   });
@@ -2074,6 +2078,7 @@ function missionProgress(m){
   let c=0;
   days.forEach(s=>{
     if(h.workdayOnly&&!isWorkday(s))return; // no cuentan fines de semana para workdayOnly
+    if(h.weekendOnly&&isWorkday(s))return; // no cuentan días laborales para weekendOnly
     if(isDone(dd(s),h))c++;
   });
   return{c,g:m.goal};
