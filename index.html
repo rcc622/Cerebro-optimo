@@ -266,6 +266,21 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .p7chk{width:22px;height:22px;border-radius:50%;border:2px solid #D5D0C8;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;transition:all .18s}
 .p7lbl{font-size:12px;line-height:1.35;color:var(--text)}
 .p7time{font-size:10px;color:var(--text2);margin-left:auto;font-weight:700;flex-shrink:0}
+/* MICRO-ANIMACIONES Tier 1 — feedback sensorial */
+.xp-float{position:fixed;pointer-events:none;z-index:9000;font-size:13px;font-weight:800;color:#F5C842;text-shadow:0 1px 4px rgba(0,0,0,.45);transform:translate(-50%,0);animation:xpFloat 1.2s ease-out forwards;white-space:nowrap}
+@keyframes xpFloat{0%{transform:translate(-50%,6px) scale(.7);opacity:0}20%{transform:translate(-50%,-8px) scale(1.15);opacity:1}60%{transform:translate(-50%,-45px) scale(1);opacity:1}100%{transform:translate(-50%,-78px) scale(.95);opacity:0}}
+.hcard.just-checked{animation:cardPulse .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes cardPulse{0%{transform:scale(1)}40%{transform:scale(1.025)}100%{transform:scale(1)}}
+.hcard.just-checked .hchk{animation:chkBounce .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes chkBounce{0%{transform:scale(.5);opacity:.4}55%{transform:scale(1.35);opacity:1}100%{transform:scale(1);opacity:1}}
+.p7step.just-checked{animation:stepPulse .4s ease}
+@keyframes stepPulse{0%{background:#FAFFFC}45%{background:#C8E6D2}100%{background:#FAFFFC}}
+.p7step.just-checked .p7chk{animation:chkBounce .5s cubic-bezier(.34,1.56,.64,1)}
+.wpill.just-checked{animation:pillPop .42s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pillPop{0%{transform:scale(1)}50%{transform:scale(1.28)}100%{transform:scale(1)}}
+.m-quick.just-checked{animation:pillPop .42s cubic-bezier(.34,1.56,.64,1)}
+.confetti-piece{position:fixed;width:9px;height:9px;border-radius:50%;pointer-events:none;z-index:9000;top:-20px;animation:confettiFall 2.6s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 /* MI POR QUÉ */
 .why-line{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:5px 10px;margin-bottom:8px;font-size:10.5px;line-height:1.35;color:rgba(255,255,255,.8);cursor:pointer;display:flex;align-items:center;gap:7px;overflow:hidden}
 .why-line .why-ico{font-size:13px;flex-shrink:0;opacity:.85}
@@ -1060,6 +1075,9 @@ function checkDayComplete(){
   // Store bonus in DB for calcXP
   if(!DB[today])DB[today]={};
   DB[today]._streakBonus=bonus;save();
+  // Confetti instantáneo + vibración celebratoria
+  spawnConfetti(40);
+  haptic([30,60,30,60,30]);
   setTimeout(()=>showDayComplete(streak,bonus,label,msg),500);
 }
 function showDayComplete(streak,bonus,label,msg){
@@ -1286,6 +1304,37 @@ function checkPRs(){
   if(prev>=30&&s<prev-10&&!SETS.comebackFrom){SETS.comebackFrom=prev;save();}
 }
 
+/* ── MICRO-FEEDBACK Tier 1 ── */
+let LAST_HDR_DR=0,LAST_HDR_WR=0,LAST_XP_PCT=0;
+function haptic(ms){if(navigator.vibrate&&ms>0)try{navigator.vibrate(ms);}catch(e){}}
+function floatXP(amount,x,y){
+  if(!amount||amount<=0)return;
+  const el=document.createElement('div');el.className='xp-float';
+  el.textContent='+'+amount+' XP';
+  el.style.left=x+'px';el.style.top=y+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1300);
+}
+function spawnConfetti(count){
+  const colors=['#FFD700','#FF6B6B','#6BFFB8','#6BB5FF','#FFB86B','#C06BFF','#5EC98A','#F5C842'];
+  for(let i=0;i<count;i++){
+    const p=document.createElement('div');p.className='confetti-piece';
+    p.style.cssText=`left:${Math.random()*100}vw;background:${colors[i%colors.length]};animation-delay:${Math.random()*0.4}s;animation-duration:${2.2+Math.random()*1.2}s;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),4200);
+  }
+}
+function actionPos(el){
+  const inner=el.querySelector('.hchk, .p7chk')||el;
+  const r=inner.getBoundingClientRect();
+  return{x:r.left+r.width/2,y:r.top+r.height/2};
+}
+function pulseAfterRender(selector,delta){
+  if(delta<=0)return;
+  const el=document.querySelector(selector);
+  if(el)el.classList.add('just-checked');
+}
+
 /* ── LEVEL UP OVERLAY ── */
 let _luq=[];
 function triggerLevelUp(lvl){
@@ -1464,15 +1513,15 @@ function render(keepScroll=false){
 <div class="hdr-title">Mi Cerebro Óptimo 🧠 <span style="font-size:11px;opacity:.45;font-weight:400;letter-spacing:1px">v4.0</span>${luckBadge}</div>
 ${whyLine}
 <div class="hdr-cards">
-<div class="hdr-card"><div class="hdr-row"><span class="hdr-lbl">Hoy</span><span class="hdr-val">${dr}<span>%</span></span></div><div class="hdr-bar"><div class="hdr-fill ${dc}" style="width:${dr}%"></div></div></div>
-<div class="hdr-card"><div class="hdr-row"><span class="hdr-lbl">Esta semana</span><span class="hdr-val">${wr}<span>%</span></span></div><div class="hdr-bar"><div class="hdr-fill ${wc}" style="width:${wr}%"></div></div></div>
+<div class="hdr-card"><div class="hdr-row"><span class="hdr-lbl">Hoy</span><span class="hdr-val">${dr}<span>%</span></span></div><div class="hdr-bar"><div class="hdr-fill ${dc}" id="hdr-fill-hoy" style="width:${LAST_HDR_DR}%"></div></div></div>
+<div class="hdr-card"><div class="hdr-row"><span class="hdr-lbl">Esta semana</span><span class="hdr-val">${wr}<span>%</span></span></div><div class="hdr-bar"><div class="hdr-fill ${wc}" id="hdr-fill-wr" style="width:${LAST_HDR_WR}%"></div></div></div>
 </div>
 <div class="xp-bar-wrap">
 <div class="xp-top">
 <span class="xp-lvl" style="color:${lc}">${li.i} Nv.${lvl} · ${li.n}</span>
 <span class="xp-pts">${xp.toLocaleString()} XP${lvl<30?' · faltan '+xpNext.toLocaleString():' · MAX'}</span>
 </div>
-<div class="xp-track"><div class="xp-fill" style="width:${pct}%;background:${lc}"></div></div>
+<div class="xp-track"><div class="xp-fill" id="hdr-xp-fill" style="width:${LAST_XP_PCT}%;background:${lc}"></div></div>
 </div>
 </div>`;
   const nav=`<div class="bnav" id="bnav">${[['today','📋','Hoy'],['week','📊','Semana'],['year','📅','Año'],['logros','🏅','Logros'],['config','⚙️','Config']].map(([v,i,l])=>`<button class="nbtn${VIEW===v?' active':''}" data-nav="${v}"><span class="ni">${i}</span>${l}</button>`).join('')}</div>`;
@@ -1487,10 +1536,22 @@ ${whyLine}
     requestAnimationFrame(()=>{
       const s=document.getElementById('sc');
       if(s)s.scrollTop=sy;
+      animateHdrBars(dr,wr,pct);
     });
   } else {
     document.getElementById('app').innerHTML=hdr+`<div class="scroll" id="sc">${content}</div>`+nav;
+    requestAnimationFrame(()=>animateHdrBars(dr,wr,pct));
   }
+}
+function animateHdrBars(dr,wr,xpPct){
+  // CSS transition se encarga de tweenear desde el LAST_* inicial → valor real
+  const a=document.getElementById('hdr-fill-hoy');
+  const b=document.getElementById('hdr-fill-wr');
+  const c=document.getElementById('hdr-xp-fill');
+  if(a)a.style.width=dr+'%';
+  if(b)b.style.width=wr+'%';
+  if(c)c.style.width=xpPct+'%';
+  LAST_HDR_DR=dr;LAST_HDR_WR=wr;LAST_XP_PCT=xpPct;
 }
 
 /* ── TODAY ── */
@@ -1956,15 +2017,43 @@ document.addEventListener('click',e=>{
   const n=e.target.closest('[data-nav]');if(n){VIEW=n.dataset.nav;TIP=null;ACH_TIP=null;render();return;}
   const dy=e.target.closest('[data-day]');if(dy){ADATE=dy.dataset.day;TIP=null;render();return;}
   const wp=e.target.closest('[data-wp]');
-  if(wp){const[s,idx]=wp.dataset.wp.split('|');const i=parseInt(idx);const cur=dd(s).agua||0;setWater(s,i<cur?i:i+1);return;}
+  if(wp){
+    const[s,idx]=wp.dataset.wp.split('|');const i=parseInt(idx);const cur=dd(s).agua||0;
+    const pos=actionPos(wp);const xpB=calcXP();
+    setWater(s,i<cur?i:i+1);
+    const delta=calcXP()-xpB;haptic(delta>0?15:8);if(delta>0)floatXP(delta,pos.x,pos.y);
+    pulseAfterRender(`[data-wp="${s}|${idx}"]`,delta);
+    return;
+  }
   const dp=e.target.closest('[data-dose]');
-  if(dp){const[s,id,idx]=dp.dataset.dose.split('|');const i=parseInt(idx);setDose(s,id,i);return;}
+  if(dp){
+    const[s,id,idx]=dp.dataset.dose.split('|');const i=parseInt(idx);
+    const pos=actionPos(dp);const xpB=calcXP();
+    setDose(s,id,i);
+    const delta=calcXP()-xpB;haptic(delta>0?15:8);if(delta>0)floatXP(delta,pos.x,pos.y);
+    pulseAfterRender(`[data-dose="${s}|${id}|${idx}"]`,delta);
+    return;
+  }
   const sub=e.target.closest('[data-sub]');
-  if(sub){const[s,id,k]=sub.dataset.sub.split('|');toggleSub(s,id,k);return;}
+  if(sub){
+    const[s,id,k]=sub.dataset.sub.split('|');
+    const pos=actionPos(sub);const xpB=calcXP();
+    toggleSub(s,id,k);
+    const delta=calcXP()-xpB;haptic(delta>0?15:8);if(delta>0)floatXP(delta,pos.x,pos.y);
+    pulseAfterRender(`[data-sub="${s}|${id}|${k}"]`,delta);
+    return;
+  }
   const jn=e.target.closest('[data-jnote]');
   if(jn){const[s,id]=jn.dataset.jnote.split('|');showJPrompt(s,id);return;}
   const cd=e.target.closest('[data-t]');
-  if(cd&&!e.target.closest('[data-tip]')){const[s,id]=cd.dataset.t.split('|');toggle(s,id);return;}
+  if(cd&&!e.target.closest('[data-tip]')){
+    const[s,id]=cd.dataset.t.split('|');
+    const pos=actionPos(cd);const xpB=calcXP();
+    toggle(s,id);
+    const delta=calcXP()-xpB;haptic(delta>0?15:8);if(delta>0)floatXP(delta,pos.x,pos.y);
+    pulseAfterRender(`[data-t="${s}|${id}"]`,delta);
+    return;
+  }
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render(true);return;}
   const wn=e.target.closest('[data-wn]');if(wn){WOFF=Math.min(0,WOFF+parseInt(wn.dataset.wn));render();return;}
   const eo=e.target.closest('[data-eo]');if(eo){
@@ -2004,7 +2093,15 @@ document.addEventListener('click',e=>{
   if(e.target.id==='why-edit-btn'){showWhyPrompt();return;}
   const we=e.target.closest('[data-whyedit]');if(we){showWhyPrompt();return;}
   const sr=e.target.closest('[data-showretos]');if(sr){SHOW_RETOS=!SHOW_RETOS;render(true);return;}
-  const mq=e.target.closest('[data-mquick]');if(mq){toggle(todayStr(),mq.dataset.mquick);return;}
+  const mq=e.target.closest('[data-mquick]');
+  if(mq){
+    const id=mq.dataset.mquick;
+    const pos=actionPos(mq);const xpB=calcXP();
+    toggle(todayStr(),id);
+    const delta=calcXP()-xpB;haptic(delta>0?15:8);if(delta>0)floatXP(delta,pos.x,pos.y);
+    pulseAfterRender(`[data-mquick="${id}"]`,delta);
+    return;
+  }
   if(e.target.id==='j-save-btn'){saveJournal();return;}
   if(e.target.id==='j-skip-btn'){closeJPrompt();return;}
   if(e.target.id==='share-btn'){shareStats();return;}
