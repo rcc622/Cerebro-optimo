@@ -455,7 +455,9 @@ const HABITS=[
   {id:'cre20g',  e:'⚡',lbl:'Creatina 20g · 4 tomas × 5g',  blk:'Día',freq:'daily',addedOn:'2020-01-01',doseCount:4,
    tip:'Divide en 4 tomas de 5g a lo largo del día: al despertar, mediodía, tarde y noche.\n\n💧 AUTO-LINK: cada toma que marques suma automáticamente +1 botella de agua (porque la creatina se mezcla con ~500ml de líquido). En fase 20g necesitas 7 botellas: 4 vienen con cada toma de creatina + 3 independientes.\n📚 Harris et al., Clinical Science (1992): el protocolo de carga de 20g/día es el más eficiente para saturar fosfocreatina muscular y cerebral.',minP:2,maxP:2},
   {id:'cremnt',  e:'🧪',lbl:'Creatina 10g · 2 tomas × 5g',blk:'Día',freq:'daily',addedOn:'2020-01-01',doseCount:2,
-   tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia).\n\n💧 AUTO-LINK: cada toma suma +1 botella de agua automáticamente. Mantén 3L de agua diarios (6 botellas). Reevaluar a las 8 semanas: si tu sueño se consolida a 7h+ continuas, baja a 5g/día.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:9},
+   tip:'Dosis elevada de mantenimiento para maximizar el buffer energético cerebral durante tu periodo de sueño fragmentado. Divide en 2 tomas: 5g en la mañana en ayunas + 5g a mediodía o tarde (NO en la noche para no aumentar la nocturia).\n\n💧 AUTO-LINK: cada toma suma +1 botella de agua automáticamente. Mantén 3L de agua diarios (6 botellas). Esta es una fase de 8 semanas: al completarlas el protocolo baja automáticamente a 5g/día de mantenimiento de por vida (ya no necesitas la dosis elevada una vez saturado el buffer).\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): dosis altas de creatina sostenidas protegen función cognitiva bajo privación de sueño y estrés metabólico neuronal.',minP:3,maxP:3},
+  {id:'cre5gmnt',e:'🧪',lbl:'Creatina 5g · mantenimiento de por vida',blk:'Mañana',freq:'daily',addedOn:'2020-01-01',
+   tip:'Dosis de mantenimiento sostenible de por vida. Tras 8 semanas en dosis elevada (10g) el buffer de fosfocreatina cerebral ya está saturado; 5g/día en ayunas con mínimo 500ml de agua bastan para mantenerlo indefinidamente, sin carga digestiva ni nocturia extra. No necesitas volver a cargar.\n📚 Smith et al., Alzheimer\'s & Dementia (2025) y Gordji-Nejad et al., Scientific Reports (2024): tras la saturación inicial, dosis de mantenimiento de 3-5g/día conservan la creatina cerebral elevada a largo plazo.',minP:4,maxP:9},
   {id:'teverde',  e:'🍵',lbl:'Té verde (45 min antes del café)', blk:'Mañana',freq:'daily',addedOn:'2026-04-04',
    tip:'La L-teanina del té verde genera ondas alfa cerebrales (relajación alerta) y actúa como buffer de la cafeína: tomarlo antes del café hace el efecto del café más sostenido y sin el pico-caída típico. El limón aumenta la biodisponibilidad de las catequinas (EGCG) hasta 6 veces. Temperatura no importa — el cold brew conserva igual o más EGCG que la versión caliente.\n📚 Owen et al., Nutritional Neuroscience (2008): la combinación L-teanina + cafeína mejora la atención y el tiempo de reacción más que la cafeína sola.'},
   {id:'gratitud', e:'🙏',lbl:'Anota 1 cosa específica de gratitud',blk:'Mañana',freq:'daily',addedOn:'2026-04-18',journal:true,journalPrompt:'¿Por qué específicamente estás agradecido hoy?',
@@ -692,7 +694,8 @@ const PHASES=[
   {n:'Sin creatina',    i:'🔒',bg:'linear-gradient(135deg,#1E1E35,#2A2A4E)',fi:'#7B7BCE',goal:7, unit:'días agua completa', next:'Completa 3L de agua 7 días seguidos'},
   {n:'Fase 1 · 5g/día', i:'🧪',bg:'linear-gradient(135deg,#0E2A18,#1A4028)',fi:'#5EC98A',goal:14,unit:'días agua + creatina',next:'Agua + creatina 14 días seguidos'},
   {n:'Fase 2 · 20g/día',i:'⚡',bg:'linear-gradient(135deg,#2A1500,#3A2200)',fi:'#F5C842',goal:14,unit:'días de carga',       next:'Automático — 14 días de carga'},
-  {n:'🏆 Mantenimiento', i:'🏆',bg:'linear-gradient(135deg,#0A1A2A,#1A2A4A)',fi:'#5EC98A',goal:999,unit:'días',             next:'Mantén el protocolo indefinidamente'},
+  {n:'Mantenimiento · 10g',i:'🧪',bg:'linear-gradient(135deg,#2A1500,#3A2200)',fi:'#F5C842',goal:56,unit:'días en dosis elevada',next:'Automático — 8 semanas, luego baja a 5g'},
+  {n:'🏆 Mantenimiento · 5g', i:'🏆',bg:'linear-gradient(135deg,#0A1A2A,#1A2A4A)',fi:'#5EC98A',goal:999,unit:'días',             next:'Mantén el protocolo indefinidamente'},
 ];
 const BLOCKS=['Mañana','Día','Trabajo','Noche','Retos'];
 const BC={'Mañana':{c:'#D4853A',l:'#FDF3E7'},'Día':{c:'#3D8B5E',l:'#EAF5EE'},'Trabajo':{c:'#1F5C8B',l:'#E6F0F8'},'Noche':{c:'#5A5A9E',l:'#EFEFFA'},'Retos':{c:'#E05A2B',l:'#FEF0EB'}};
@@ -707,7 +710,7 @@ const DOM_ORDER=['fundamentos','restauracion','performance','retos'];
 /* Mapa hábito → dominio (fuente de verdad) */
 const HABIT_DOM={
   agua:'fundamentos', aguafria:'fundamentos', huevo:'fundamentos',
-  cre5g:'fundamentos', cre20g:'fundamentos', cremnt:'fundamentos',
+  cre5g:'fundamentos', cre20g:'fundamentos', cremnt:'fundamentos', cre5gmnt:'fundamentos',
   teverde:'fundamentos', gratitud:'fundamentos', p7am:'fundamentos', listo7am:'fundamentos',
   nueces:'fundamentos', curcuma:'fundamentos',
   vino:'restauracion', noscreen:'restauracion', readambar:'restauracion',
@@ -1392,13 +1395,15 @@ function phaseProgress(){
   if(p===0){const s=waterStreak(6);return{c:s,g:7,pct:Math.min(100,Math.round(s/7*100))};}
   if(p===1){const s=creStreak();return{c:s,g:14,pct:Math.min(100,Math.round(s/14*100))};}
   if(p===2){const d=daysInPhase();return{c:d,g:14,pct:Math.min(100,Math.round(d/14*100))};}
+  if(p===3){const d=daysInPhase();return{c:d,g:56,pct:Math.min(100,Math.round(d/56*100))};}
   return{c:999,g:999,pct:100};
 }
 function checkUnlock(){
   const p=ph();
   if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();addPhaseEntry(1);save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
   else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();addPhaseEntry(2);save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
-  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();addPhaseEntry(3);save();toast('🏆 ¡CARGA COMPLETA! Pasando a 5g mantenimiento');}
+  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();addPhaseEntry(3);save();toast('🧪 ¡CARGA COMPLETA! Mantenimiento elevado 10g · 8 semanas');}
+  else if(p===3&&daysInPhase()>=56){SETS.phase=4;SETS.phaseStart=todayStr();addPhaseEntry(4);save();toast('🏆 8 semanas completas · ahora 5g/día de por vida');}
 }
 
 /* ── TOGGLE / WATER ── */
@@ -1632,10 +1637,10 @@ ${rows}
 </div>`:'';
 
   // Creatine phase achievement
-  const achBody=p===3?
+  const achBody=p>=4?
     `<div class="ach-phase">${info.i} ${info.n}</div><div class="ach-title">Protocolo completo — Nivel máximo</div><div class="ach-sub">5g/día para siempre. Tu cerebro está en modo óptimo permanente.</div>`:
     `<div class="ach-phase">${info.i} ${info.n}</div>
-<div class="ach-title">${p===0?'Construye el hábito del agua primero':p===1?'Siguiente: Fase 20g desbloqueada':'Carga activa — ¡casi!'}</div>
+<div class="ach-title">${p===0?'Construye el hábito del agua primero':p===1?'Siguiente: Fase 20g desbloqueada':p===2?'Carga activa — ¡casi!':'Mantenimiento elevado · baja a 5g a las 8 semanas'}</div>
 <div class="ach-sub">${info.next}</div>
 <div class="ach-bar"><div class="ach-fill ${prog.pct<100?'glowing':''}" style="width:${prog.pct}%;background:${info.fi}"></div></div>
 <div class="ach-lbl">${prog.c}/${prog.g===999?'∞':prog.g} ${PHASES[p].unit}</div>`;
@@ -2069,7 +2074,7 @@ document.addEventListener('click',e=>{
   const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
   const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
   const sp=e.target.closest('[data-sp]');
-  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;addPhaseEntry(p2);save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🏆 Mantenimiento activado'][p2]);return;}
+  if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;addPhaseEntry(p2);save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🧪 Mantenimiento 10g activado','🏆 Mantenimiento 5g activado'][p2]);return;}
   if(e.target.id==='ntog'){
     if(!('Notification' in window)){toast('❌ Tu navegador no soporta notificaciones');return;}
     if(SETS.notifications){
