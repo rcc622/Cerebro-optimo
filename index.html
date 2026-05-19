@@ -358,6 +358,31 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .m-fill{height:100%;border-radius:2px;transition:width .4s ease}
 .m-prog{font-size:10px;opacity:.75;margin-top:3px;font-weight:700}
 .m-done-ico{font-size:18px;flex-shrink:0}
+/* EJERCICIO */
+.ex-pick{display:flex;gap:6px;margin-bottom:12px}
+.ex-day{flex:1;padding:9px 0;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:800;cursor:pointer;text-align:center;transition:all .15s}
+.ex-day.active{background:var(--navy);border-color:var(--navy);color:#fff}
+.ex-day.today:not(.active){color:var(--navy);border-color:var(--navy)}
+.ex-day.rest{opacity:.55}
+.ex-focus{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:3px}
+.ex-meta{font-size:11px;color:var(--text2);margin-bottom:12px}
+.ex-img-wrap{border-radius:12px;overflow:hidden;background:#F0EEE8;margin-bottom:12px}
+.ex-img{display:block;width:100%;height:auto}
+.ex-img-ph{padding:34px 16px;text-align:center;color:var(--text2);font-size:12px;line-height:1.6}
+.ex-img-ph .em{font-size:30px;display:block;margin-bottom:8px}
+.ex-li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid var(--border)}
+.ex-li:first-of-type{border-top:none}
+.ex-li-n{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ex-li-b{flex:1;min-width:0}
+.ex-li-t{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.ex-li-s{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.35}
+.ex-empty{padding:22px 14px;text-align:center;color:var(--text2);font-size:12px;line-height:1.6}
+.ex-trk{display:flex;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--border)}
+.ex-trk:first-of-type{border-top:none}
+.ex-trk-e{font-size:20px;flex-shrink:0;width:26px;text-align:center}
+.ex-trk-b{flex:1;min-width:0}
+.ex-trk-t{font-size:12.5px;font-weight:700;color:var(--text);line-height:1.25}
+.ex-trk-s{font-size:10px;color:var(--text2);margin-top:1px}
 </style>
 </head>
 <body>
@@ -699,6 +724,20 @@ const PHASES=[
   {n:'Mantenimiento · 10g',i:'🧪',bg:'linear-gradient(135deg,#2A1500,#3A2200)',fi:'#F5C842',goal:56,unit:'días en dosis elevada',next:'Automático — 8 semanas, luego baja a 5g'},
   {n:'🏆 Mantenimiento · 5g', i:'🏆',bg:'linear-gradient(135deg,#0A1A2A,#1A2A4A)',fi:'#5EC98A',goal:999,unit:'días',             next:'Mantén el protocolo indefinidamente'},
 ];
+/* RUTINA DE EJERCICIO · lunes(0) a viernes(4)
+   Para cada día: focus = enfoque del día, img = infografía en /img,
+   items = [{t:'nombre ejercicio', s:'series × reps / detalle'}]
+   Rellenar con la rutina real; mientras esté vacío la sección muestra
+   un estado "pendiente" y la infografía cae a un placeholder si falta. */
+const EX_DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes'];
+const EX_TRACK=['walk5am','pasos','caminata20','fuerza'];
+const WORKOUTS=[
+  {focus:'',img:'img/ej-lunes.jpg',items:[]},
+  {focus:'',img:'img/ej-martes.jpg',items:[]},
+  {focus:'',img:'img/ej-miercoles.jpg',items:[]},
+  {focus:'',img:'img/ej-jueves.jpg',items:[]},
+  {focus:'',img:'img/ej-viernes.jpg',items:[]},
+];
 const BLOCKS=['Mañana','Día','Trabajo','Noche','Retos'];
 const BC={'Mañana':{c:'#D4853A',l:'#FDF3E7'},'Día':{c:'#3D8B5E',l:'#EAF5EE'},'Trabajo':{c:'#1F5C8B',l:'#E6F0F8'},'Noche':{c:'#5A5A9E',l:'#EFEFFA'},'Retos':{c:'#E05A2B',l:'#FEF0EB'}};
 /* DOMINIOS (Covey · Roles/Continuo de madurez) — eje de progreso, no afecta el orden diario */
@@ -740,7 +779,7 @@ const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic
 
 /* ── STATE ── */
 let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
-let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null,SHOW_RETOS=false;
+let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null,SHOW_RETOS=false,EXDAY=null;
 
 /* ── DATE ── */
 function todayStr(){const d=new Date();return fmt(d)}
@@ -1531,8 +1570,8 @@ ${whyLine}
 <div class="xp-track"><div class="xp-fill" id="hdr-xp-fill" style="width:${LAST_XP_PCT}%;background:${lc}"></div></div>
 </div>
 </div>`;
-  const nav=`<div class="bnav" id="bnav">${[['today','📋','Hoy'],['week','📊','Semana'],['year','📅','Año'],['logros','🏅','Logros'],['config','⚙️','Config']].map(([v,i,l])=>`<button class="nbtn${VIEW===v?' active':''}" data-nav="${v}"><span class="ni">${i}</span>${l}</button>`).join('')}</div>`;
-  const content={today:vToday(xp,lvl,lc,li),week:vWeek(m),year:vYear(),logros:vLogros(),config:vConfig()}[VIEW]||'';
+  const nav=`<div class="bnav" id="bnav">${[['today','📋','Hoy'],['exercise','🏋️','Ejercicio'],['week','📊','Semana'],['year','📅','Año'],['logros','🏅','Logros'],['config','⚙️','Config']].map(([v,i,l])=>`<button class="nbtn${VIEW===v?' active':''}" data-nav="${v}"><span class="ni">${i}</span>${l}</button>`).join('')}</div>`;
+  const content={today:vToday(xp,lvl,lc,li),exercise:vExercise(),week:vWeek(m),year:vYear(),logros:vLogros(),config:vConfig()}[VIEW]||'';
 
   const sc=document.getElementById('sc');
   if(keepScroll&&sc){
@@ -1980,6 +2019,53 @@ ${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id==
   return domSummary+maestriaSection+logroSection+shareCard;
 }
 
+/* ── EJERCICIO ── */
+function vExercise(){
+  const today=todayStr();
+  const realDow=dow(today); // 0=Lun .. 6=Dom
+  if(EXDAY===null)EXDAY=realDow<=4?realDow:0; // fin de semana → Lunes
+  const i=Math.max(0,Math.min(4,EXDAY));
+  const w=WORKOUTS[i]||{focus:'',img:'',items:[]};
+  const isToday=realDow===i;
+  const weekend=realDow>4;
+
+  const pick=`<div class="ex-pick">${EX_DAYS.map((d,k)=>`<button class="ex-day${k===i?' active':''}${k===realDow?' today':''}" data-exday="${k}">${d.slice(0,3).toUpperCase()}</button>`).join('')}</div>`;
+
+  const phId='exph'+i;
+  const img=`<div class="ex-img-wrap"><img class="ex-img" src="${w.img}" alt="Rutina ${EX_DAYS[i]}" loading="lazy" onload="var p=document.getElementById('${phId}');if(p)p.remove()" onerror="this.style.display='none'"><div class="ex-img-ph" id="${phId}"><span class="em">🏋️</span>Infografía de ${EX_DAYS[i]} pendiente<br>Súbela como <b>${escH(w.img)}</b></div></div>`;
+
+  const list=(w.items&&w.items.length)
+    ?w.items.map((it,k)=>`<div class="ex-li"><div class="ex-li-n">${k+1}</div><div class="ex-li-b"><div class="ex-li-t">${escH(it.t)}</div>${it.s?`<div class="ex-li-s">${escH(it.s)}</div>`:''}</div></div>`).join('')
+    :`<div class="ex-empty">Aún no has cargado los ejercicios de ${EX_DAYS[i]}.<br>Se agregan editando <b>WORKOUTS</b> en el código.</div>`;
+
+  const trkRows=EX_TRACK.map(id=>{
+    const h=HABITS.find(x=>x.id===id);
+    if(!h)return'';
+    const canQuick=!h.subSteps&&!h.doseCount&&(!h.workdayOnly||isWorkday(today))&&(!h.weekendOnly||!isWorkday(today));
+    const done=canQuick&&isDone(dd(today),h);
+    const naReason=h.workdayOnly&&!isWorkday(today)?'Solo días laborales':h.weekendOnly&&isWorkday(today)?'Solo fin de semana':'No disponible hoy';
+    const btn=canQuick
+      ?`<button class="m-quick${done?' on':''}" data-mquick="${h.id}" aria-label="Marcar hoy">${done?'✓':'·'}</button>`
+      :`<span class="m-quick na" title="${naReason}" aria-hidden="true">·</span>`;
+    return`<div class="ex-trk"><div class="ex-trk-e">${h.e}</div><div class="ex-trk-b"><div class="ex-trk-t">${escH(h.lbl)}</div><div class="ex-trk-s">${h.weeklyGoal?h.weeklyGoal+'×/semana':'diario'}</div></div>${btn}</div>`;
+  }).join('');
+
+  const focusLine=`<div class="ex-focus">${escH(w.focus||EX_DAYS[i])}</div>`;
+  const metaLine=`<div class="ex-meta">${weekend?'🛌 Fin de semana — descanso activo. Mostrando '+EX_DAYS[i]:isToday?'📍 Rutina de hoy':'Rutina de '+EX_DAYS[i]}</div>`;
+
+  return`<div class="card"><div class="ctitle">🏋️ Rutina semanal</div>
+${pick}
+${focusLine}
+${metaLine}
+${img}
+<div class="ctitle" style="margin-top:4px">Ejercicios</div>
+${list}
+</div>
+<div class="card"><div class="ctitle">Registro de hoy</div>
+${trkRows||'<div class="ex-empty">Sin hábitos de ejercicio configurados.</div>'}
+</div>`;
+}
+
 /* ── CONFIG ── */
 function vConfig(){
   const p=ph(),info=PHASES[p],prog=phaseProgress();
@@ -2023,6 +2109,7 @@ ${SETS.whyStatement?`<p class="why-card-quote">"${escH(SETS.whyStatement)}"</p>`
 /* ── EVENTS ── */
 document.addEventListener('click',e=>{
   const n=e.target.closest('[data-nav]');if(n){VIEW=n.dataset.nav;TIP=null;ACH_TIP=null;render();return;}
+  const exd=e.target.closest('[data-exday]');if(exd){EXDAY=parseInt(exd.dataset.exday);render();return;}
   const dy=e.target.closest('[data-day]');if(dy){ADATE=dy.dataset.day;TIP=null;render();return;}
   const wp=e.target.closest('[data-wp]');
   if(wp){
