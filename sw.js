@@ -1,15 +1,14 @@
 // Cerebro Óptimo · Service Worker
-// App shell offline + runtime cache de infografías + click en notificaciones
-const CACHE='cog-v2';
-const SHELL=['./','./index.html'];
+// La app (HTML/JS) SIEMPRE se sirve fresca desde la red — nunca se cachea,
+// para que nunca te quedes atrapado en una versión vieja.
+// Sólo se cachean las imágenes (infografías) para que funcionen sin internet.
+const CACHE='cog-v3';
 
-self.addEventListener('install',e=>{
-  self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL).catch(()=>{})));
-});
+self.addEventListener('install',e=>{ self.skipWaiting(); });
 
 self.addEventListener('activate',e=>{
   e.waitUntil((async()=>{
+    // Borra cualquier caché vieja (incl. shells cacheados por versiones anteriores del SW)
     const keys=await caches.keys();
     await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));
     await self.clients.claim();
@@ -25,7 +24,7 @@ self.addEventListener('fetch',e=>{
   const isImg=req.destination==='image'||/\.(png|jpe?g|webp|gif|svg)$/i.test(url.pathname);
 
   if(isImg){
-    // Cache-first para infografías/imágenes: una vez vistas online, quedan offline.
+    // Sólo las imágenes son cache-first: una vez vistas online quedan offline.
     e.respondWith((async()=>{
       const cached=await caches.match(req);
       if(cached)return cached;
@@ -40,19 +39,9 @@ self.addEventListener('fetch',e=>{
     return;
   }
 
-  // Network-first para el resto (HTML/JS): siempre la versión más nueva,
-  // y guarda el shell para funcionar sin conexión.
-  e.respondWith((async()=>{
-    try{
-      const res=await fetch(req);
-      const isShell=req.mode==='navigate'||url.pathname.endsWith('/')||url.pathname.endsWith('index.html');
-      if(res&&res.ok&&isShell){const c=await caches.open(CACHE);c.put(req,res.clone());}
-      return res;
-    }catch(_){
-      const cached=await caches.match(req)||await caches.match('./index.html')||await caches.match('./');
-      return cached||new Response('',{status:503,statusText:'offline'});
-    }
-  })());
+  // Todo lo demás (HTML/JS): SIEMPRE red, sin caché. Si no hay red, 503
+  // (mismo comportamiento que la versión original — no se cachea el shell).
+  e.respondWith(fetch(req).catch(()=>new Response('',{status:503,statusText:'offline'})));
 });
 
 self.addEventListener('notificationclick',e=>{
