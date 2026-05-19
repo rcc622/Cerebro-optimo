@@ -1651,15 +1651,16 @@ ${lockBtn}
       const typeColor=(mm.type==='EXPLORAR'||mm.type==='CONQUISTAR')?'#FFB84D':mm.type==='DEFENDER'?'#7BC97A':'#6BB5FF';
       // Quick-mark: solo si el hábito es togglable simple (no subSteps ni dosed) y aplica hoy
       const todayS=todayStr();
-      const canQuick=h&&!h.subSteps&&!h.doseCount&&(!h.workdayOnly||isWorkday(todayS))&&(!h.weekendOnly||!isWorkday(todayS));
+      // En misiones el hábito se puede marcar cualquier día (no se espera al fin de semana / día laboral)
+      const canQuick=h&&!h.subSteps&&!h.doseCount;
       const doneToday=canQuick&&isDone(dd(todayS),h);
-      const naReason=!h?'No disponible hoy':(h.subSteps||h.doseCount)?'Márcalo en su tarjeta':(h.weekendOnly&&isWorkday(todayS))?'Solo fin de semana':(h.workdayOnly&&!isWorkday(todayS))?'Solo días laborales':'No disponible hoy';
+      const naReason=!h?'No disponible hoy':(h.subSteps||h.doseCount)?'Márcalo en su tarjeta':'No disponible hoy';
       const quickBtn=completed?'':canQuick?`<button class="m-quick${doneToday?' on':''}" data-mquick="${h.id}" aria-label="Marcar hoy">${doneToday?'✓':'·'}</button>`:`<span class="m-quick na" title="${naReason}" aria-hidden="true">·</span>`;
       return`<div class="mission-row${completed?' done':''}">
 <div class="m-type" style="background:${typeColor}22;color:${typeColor}">${mm.type}</div>
 <div class="m-body">
 <div class="m-title">${h?h.e:'·'} ${h?h.lbl:'—'}</div>
-<div class="m-sub">${mm.goal} ${h&&h.workdayOnly?'días laborales':h&&h.weekendOnly?'fines de semana':'días'} · +${mm.xp} XP</div>
+<div class="m-sub">${mm.goal} ${mm.goal===1?'día':'días'} · +${mm.xp} XP</div>
 ${completed?'':`<div class="m-bar"><div class="m-fill" style="width:${pct}%;background:${dc}"></div></div><div class="m-prog">${prg.c}/${mm.goal}</div>`}
 </div>
 ${completed?'<div class="m-done-ico">✅</div>':quickBtn}
@@ -2378,8 +2379,7 @@ function missionProgress(m){
   const days=week7(m.weekMon).filter(s=>s<=todayStr());
   let c=0;
   days.forEach(s=>{
-    if(h.workdayOnly&&!isWorkday(s))return; // no cuentan fines de semana para workdayOnly
-    if(h.weekendOnly&&isWorkday(s))return; // no cuentan días laborales para weekendOnly
+    // En misiones cuenta cualquier día (el usuario no tiene que esperar al fin de semana)
     if(isDone(dd(s),h))c++;
   });
   return{c,g:m.goal};
