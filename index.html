@@ -320,8 +320,10 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .retos-summary-txt{font-weight:600}
 .retos-summary-chev{font-weight:700;font-size:11px;color:#E05A2B;letter-spacing:.5px}
 /* QUICK-MARK EN MISIONES */
-.m-quick{width:36px;height:36px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;color:#BDBDB0;font-size:17px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;transition:all .18s;display:flex;align-items:center;justify-content:center}
+.m-quick{width:26px;height:26px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;color:#BDBDB0;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;transition:all .18s;display:flex;align-items:center;justify-content:center}
 .m-quick.on{background:#3D8B5E;border-color:#3D8B5E;color:#fff}
+.m-quick.na{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.16);color:rgba(255,255,255,.32);cursor:default}
+.m-quick.na:active{transform:none}
 .m-quick:active{transform:scale(.9)}
 /* DOMINIOS */
 .dom-hdr{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;margin-bottom:8px;color:#fff}
@@ -1612,7 +1614,8 @@ ${lockBtn}
       const todayS=todayStr();
       const canQuick=h&&!h.subSteps&&!h.doseCount&&(!h.workdayOnly||isWorkday(todayS))&&(!h.weekendOnly||!isWorkday(todayS));
       const doneToday=canQuick&&isDone(dd(todayS),h);
-      const quickBtn=!completed&&canQuick?`<button class="m-quick${doneToday?' on':''}" data-mquick="${h.id}" aria-label="Marcar hoy">${doneToday?'✓':'·'}</button>`:'';
+      const naReason=!h?'No disponible hoy':(h.subSteps||h.doseCount)?'Márcalo en su tarjeta':(h.weekendOnly&&isWorkday(todayS))?'Solo fin de semana':(h.workdayOnly&&!isWorkday(todayS))?'Solo días laborales':'No disponible hoy';
+      const quickBtn=completed?'':canQuick?`<button class="m-quick${doneToday?' on':''}" data-mquick="${h.id}" aria-label="Marcar hoy">${doneToday?'✓':'·'}</button>`:`<span class="m-quick na" title="${naReason}" aria-hidden="true">·</span>`;
       return`<div class="mission-row${completed?' done':''}">
 <div class="m-type" style="background:${typeColor}22;color:${typeColor}">${mm.type}</div>
 <div class="m-body">
