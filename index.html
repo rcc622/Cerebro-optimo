@@ -729,14 +729,15 @@ const PHASES=[
    items = [{t:'nombre ejercicio', s:'series × reps / detalle'}]
    Rellenar con la rutina real; mientras esté vacío la sección muestra
    un estado "pendiente" y la infografía cae a un placeholder si falta. */
-const EX_DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes'];
+const EX_DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const EX_TRACK=['walk5am','pasos','caminata20','fuerza'];
 const WORKOUTS=[
-  {focus:'',img:'img/ej-lunes.jpg',items:[]},
-  {focus:'',img:'img/ej-martes.jpg',items:[]},
-  {focus:'',img:'img/ej-miercoles.jpg',items:[]},
-  {focus:'',img:'img/ej-jueves.jpg',items:[]},
-  {focus:'',img:'img/ej-viernes.jpg',items:[]},
+  {focus:'',img:'img/rutina-lunes.png',items:[]},
+  {focus:'',img:'img/rutina-martes.png',items:[]},
+  {focus:'',img:'img/rutina-miercoles.png',items:[]},
+  {focus:'',img:'img/rutina-jueves.png',items:[]},
+  {focus:'',img:'img/rutina-viernes.png',items:[]},
+  {focus:'',img:'img/rutina-sabado.png',items:[]},
 ];
 const BLOCKS=['Mañana','Día','Trabajo','Noche','Retos'];
 const BC={'Mañana':{c:'#D4853A',l:'#FDF3E7'},'Día':{c:'#3D8B5E',l:'#EAF5EE'},'Trabajo':{c:'#1F5C8B',l:'#E6F0F8'},'Noche':{c:'#5A5A9E',l:'#EFEFFA'},'Retos':{c:'#E05A2B',l:'#FEF0EB'}};
@@ -2024,11 +2025,11 @@ ${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id==
 function vExercise(){
   const today=todayStr();
   const realDow=dow(today); // 0=Lun .. 6=Dom
-  if(EXDAY===null)EXDAY=realDow<=4?realDow:0; // fin de semana → Lunes
-  const i=Math.max(0,Math.min(4,EXDAY));
+  if(EXDAY===null)EXDAY=realDow<=5?realDow:0; // domingo → Lunes
+  const i=Math.max(0,Math.min(5,EXDAY));
   const w=WORKOUTS[i]||{focus:'',img:'',items:[]};
   const isToday=realDow===i;
-  const weekend=realDow>4;
+  const weekend=realDow===6; // solo domingo es descanso
 
   const pick=`<div class="ex-pick">${EX_DAYS.map((d,k)=>`<button class="ex-day${k===i?' active':''}${k===realDow?' today':''}" data-exday="${k}">${d.slice(0,3).toUpperCase()}</button>`).join('')}</div>`;
 
