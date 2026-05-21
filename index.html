@@ -2037,8 +2037,8 @@ function vExercise(){
   const img=`<div class="ex-img-wrap"><img class="ex-img" src="${w.img}" alt="Rutina ${EX_DAYS[i]}" loading="lazy" onload="var p=document.getElementById('${phId}');if(p)p.remove()" onerror="this.style.display='none'"><div class="ex-img-ph" id="${phId}"><span class="em">🏋️</span>Infografía de ${EX_DAYS[i]} pendiente<br>Súbela como <b>${escH(w.img)}</b></div></div>`;
 
   const list=(w.items&&w.items.length)
-    ?w.items.map((it,k)=>`<div class="ex-li"><div class="ex-li-n">${k+1}</div><div class="ex-li-b"><div class="ex-li-t">${escH(it.t)}</div>${it.s?`<div class="ex-li-s">${escH(it.s)}</div>`:''}</div></div>`).join('')
-    :`<div class="ex-empty">Aún no has cargado los ejercicios de ${EX_DAYS[i]}.<br>Se agregan editando <b>WORKOUTS</b> en el código.</div>`;
+    ?`<div class="ctitle" style="margin-top:4px">Ejercicios</div>`+w.items.map((it,k)=>`<div class="ex-li"><div class="ex-li-n">${k+1}</div><div class="ex-li-b"><div class="ex-li-t">${escH(it.t)}</div>${it.s?`<div class="ex-li-s">${escH(it.s)}</div>`:''}</div></div>`).join('')
+    :'';
 
   const trkRows=EX_TRACK.map(id=>{
     const h=HABITS.find(x=>x.id===id);
@@ -2060,7 +2060,6 @@ ${pick}
 ${focusLine}
 ${metaLine}
 ${img}
-<div class="ctitle" style="margin-top:4px">Ejercicios</div>
 ${list}
 </div>
 <div class="card"><div class="ctitle">Registro de hoy</div>
