@@ -377,6 +377,18 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .ex-li-t{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
 .ex-li-s{font-size:11px;color:var(--text2);margin-top:2px;line-height:1.35}
 .ex-empty{padding:22px 14px;text-align:center;color:var(--text2);font-size:12px;line-height:1.6}
+.rt-toggle{width:100%;margin-top:10px;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:13px;font-weight:800;cursor:pointer;text-align:center}
+.rt-panel{margin-top:8px;padding:14px 15px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.rt-h2{font-size:12px;font-weight:800;color:var(--navy);letter-spacing:.05em;margin:14px 0 6px}
+.rt-h2:first-child{margin-top:0}
+.rt-ex{font-size:13px;font-weight:800;color:var(--navy);margin:13px 0 5px;padding-top:11px;border-top:1px solid var(--border)}
+.rt-ex:first-child{margin-top:0;padding-top:0;border-top:none}
+.rt-h{font-size:11.5px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.03em;margin:9px 0 3px}
+.rt-kv{font-size:12.5px;color:var(--text);line-height:1.55}
+.rt-li{font-size:12.5px;color:var(--text);line-height:1.55;padding-left:15px;position:relative}
+.rt-li:before{content:'•';position:absolute;left:3px;color:var(--teal);font-weight:800}
+.rt-p{font-size:12.5px;color:var(--text2);line-height:1.55}
+.rt-sp{height:7px}
 .ex-trk{display:flex;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--border)}
 .ex-trk:first-of-type{border-top:none}
 .ex-trk-e{font-size:20px;flex-shrink:0;width:26px;text-align:center}
@@ -732,12 +744,298 @@ const PHASES=[
 const EX_DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const EX_TRACK=['walk5am','pasos','caminata20','fuerza'];
 const WORKOUTS=[
-  {focus:'',img:'img/rutina-lunes.png',items:[]},
-  {focus:'',img:'img/rutina-martes.png',items:[]},
-  {focus:'',img:'img/rutina-miercoles.png',items:[]},
-  {focus:'',img:'img/rutina-jueves.png',items:[]},
-  {focus:'',img:'img/rutina-viernes.png',items:[]},
-  {focus:'',img:'img/rutina-sabado.png',items:[]},
+  {focus:'Día A · Fuerza',img:'img/rutina-lunes.png'},
+  {focus:'Cuerda + Movilidad',img:'img/rutina-martes.png'},
+  {focus:'Día B · Fuerza',img:'img/rutina-miercoles.png'},
+  {focus:'Recuperación activa',img:'img/rutina-jueves.png'},
+  {focus:'Día A · Fuerza',img:'img/rutina-viernes.png'},
+  {focus:'Día B + Cuerda',img:'img/rutina-sabado.png'},
+];
+const ROUTINE_GENERAL=`Equipo disponible: mancuernas, mancuerna rusa, tapete de yoga negro y cuerda para saltar negra.
+
+Regla general:
+- Calienta 5 minutos antes de iniciar.
+- Descansa 60 a 90 segundos entre series.
+- Usa un peso que te permita terminar con buena técnica.
+- No sacrifiques postura por cargar más.
+- Mantén abdomen firme, espalda neutra y respiración controlada.
+- Si hay dolor articular fuerte, mareo o molestia anormal, detén el ejercicio.
+
+PROGRESIÓN SEMANAL
+
+Semana 1:
+Haz 2 a 3 series por ejercicio.
+
+Semana 2:
+Sube a 3 series completas.
+
+Semana 3:
+Agrega 1 o 2 repeticiones por serie.
+
+Semana 4:
+Aumenta ligeramente el peso o reduce un poco el descanso.
+
+Regla de oro:
+Primero técnica, después consistencia, después intensidad.`;
+const ROUTINES=[
+`Duración: 25 a 35 minutos
+
+Calentamiento:
+- 2 minutos de cuerda suave
+- 10 sentadillas sin peso
+- 10 círculos de hombros hacia atrás
+- 10 bisagras de cadera sin peso
+
+Ejercicio 1: Sentadilla Goblet con mancuerna rusa
+Series: 3
+Repeticiones: 10 a 15
+Cómo hacerlo:
+Sujeta la mancuerna rusa frente al pecho, con ambas manos en los cuernos.
+Coloca los pies al ancho de hombros.
+Baja llevando la cadera hacia atrás y abajo.
+Mantén el pecho arriba, abdomen firme y espalda recta.
+Las rodillas deben seguir la línea de los pies.
+Sube empujando el piso con los talones.
+Errores a evitar:
+- No encorvar la espalda.
+- No juntar las rodillas hacia adentro.
+- No despegar los talones.
+
+Ejercicio 2: Remo a una mano con mancuerna
+Series: 3
+Repeticiones: 10 a 12 por lado
+Cómo hacerlo:
+Apoya una mano y una rodilla sobre una superficie estable o mantén posición inclinada.
+La espalda debe quedar recta.
+Sujeta la mancuerna con agarre neutro.
+Jala el codo hacia la cadera, no hacia el hombro.
+Aprieta la espalda al final del movimiento.
+Baja controlado.
+Errores a evitar:
+- No girar el torso.
+- No subir el hombro.
+- No usar impulso.
+
+Ejercicio 3: Press de hombro con mancuernas
+Series: 3
+Repeticiones: 10 a 12
+Cómo hacerlo:
+Sujeta las mancuernas a la altura de los hombros.
+Mantén muñecas rectas, abdomen firme y espalda neutra.
+Empuja las mancuernas hacia arriba hasta extender los brazos.
+Baja lento y controlado.
+Errores a evitar:
+- No arquear la espalda.
+- No encoger los hombros.
+- No bajar las mancuernas de golpe.
+
+Final:
+- Plancha frontal: 3 series de 30 a 45 segundos
+- Estiramiento de piernas, espalda y hombros: 5 minutos`,
+
+`Duración: 20 a 30 minutos
+
+Calentamiento:
+- 1 minuto caminando en el lugar
+- 10 movimientos circulares de tobillos
+- 10 círculos de cadera
+- 10 círculos de hombros
+
+Bloque 1: Cuerda para saltar
+Rondas: 6 a 8
+Trabajo: 45 segundos
+Descanso: 30 segundos
+Cómo hacerlo:
+Mantén los codos cerca del cuerpo.
+Gira la cuerda con las muñecas, no con los hombros.
+Haz saltos bajos, de 2 a 3 cm.
+Aterriza suave con la parte media del pie.
+Mantén abdomen firme y postura erguida.
+Errores a evitar:
+- No saltar demasiado alto.
+- No caer con los talones.
+- No abrir mucho los brazos.
+
+Bloque 2: Movilidad en tapete
+
+Ejercicio 1: Gato-vaca
+Series: 2
+Repeticiones: 10
+En cuatro puntos, alterna entre arquear y redondear suavemente la espalda.
+
+Ejercicio 2: Apertura de cadera
+Series: 2
+Tiempo: 30 segundos por lado
+Coloca una pierna adelante y baja la cadera de forma controlada.
+
+Ejercicio 3: Postura del niño
+Series: 2
+Tiempo: 45 segundos
+Siéntate hacia los talones y estira los brazos al frente.
+
+Ejercicio 4: Estiramiento de pecho y hombros
+Series: 2
+Tiempo: 30 segundos
+Abre el pecho y respira profundo.`,
+
+`Duración: 25 a 35 minutos
+
+Calentamiento:
+- 2 minutos de cuerda suave
+- 10 bisagras de cadera sin peso
+- 10 desplantes alternos sin peso
+- 10 flexiones suaves o apoyadas
+
+Ejercicio 1: Peso muerto rumano con mancuernas
+Series: 3
+Repeticiones: 10 a 15
+Cómo hacerlo:
+Sujeta una mancuerna en cada mano con agarre neutro.
+Coloca los pies al ancho de cadera.
+Lleva la cadera hacia atrás, manteniendo las rodillas ligeramente flexionadas.
+Baja las mancuernas cerca de las piernas.
+Mantén espalda recta y cuello neutro.
+Sube apretando glúteos.
+Errores a evitar:
+- No redondear la espalda.
+- No flexionar demasiado las rodillas.
+- No alejar las mancuernas del cuerpo.
+
+Ejercicio 2: Flexiones en tapete
+Series: 3
+Repeticiones: 8 a 12
+Cómo hacerlo:
+Coloca manos un poco más abiertas que los hombros.
+Mantén línea recta de cabeza a talones.
+Baja el pecho de forma controlada.
+Los codos deben ir entre 30 y 45 grados.
+Sube empujando el piso.
+Opción fácil:
+Apoya rodillas en el tapete.
+Errores a evitar:
+- No hundir la cadera.
+- No levantar demasiado la cadera.
+- No abrir los codos completamente hacia los lados.
+
+Ejercicio 3: Remo inclinado con mancuernas
+Series: 3
+Repeticiones: 10 a 15
+Cómo hacerlo:
+Inclina el torso haciendo bisagra de cadera.
+Mantén espalda recta.
+Sujeta las mancuernas con agarre neutro o prono.
+Jala los codos hacia atrás.
+Aprieta las escápulas al final.
+Baja controlado.
+Errores a evitar:
+- No redondear la espalda.
+- No usar impulso.
+- No encoger hombros.
+
+Final:
+- Plancha lateral: 2 series de 20 a 30 segundos por lado
+- Estiramiento general: 5 minutos`,
+
+`Duración: 20 a 30 minutos
+
+Objetivo:
+Mover el cuerpo sin fatigar. Debe sentirse ligero.
+
+Bloque 1: Cuerda muy suave
+Tiempo: 5 minutos
+Formato:
+30 segundos saltando suave
+30 segundos descanso
+Repetir 5 veces
+
+Bloque 2: Movilidad en tapete
+
+Ejercicio 1: Gato-vaca
+Series: 2
+Repeticiones: 10
+
+Ejercicio 2: Postura del niño
+Series: 2
+Tiempo: 45 segundos
+
+Ejercicio 3: Estiramiento de isquiotibiales
+Series: 2
+Tiempo: 30 segundos por pierna
+
+Ejercicio 4: Estiramiento de cuádriceps
+Series: 2
+Tiempo: 30 segundos por pierna
+
+Ejercicio 5: Respiración profunda acostado en tapete
+Tiempo: 3 a 5 minutos
+Inhala por nariz 4 segundos.
+Exhala lento 6 segundos.`,
+
+`Duración: 25 a 35 minutos
+
+Repite la rutina del lunes, intentando mejorar solo una cosa:
+- 1 repetición más por serie, o
+- mejor control del movimiento, o
+- mejor postura, o
+- un poco más de peso si la técnica sigue limpia.
+
+Ejercicios:
+
+1. Sentadilla Goblet con mancuerna rusa
+3 series de 10 a 15 repeticiones
+
+2. Remo a una mano con mancuerna
+3 series de 10 a 12 repeticiones por lado
+
+3. Press de hombro con mancuernas
+3 series de 10 a 12 repeticiones
+
+4. Plancha frontal
+3 series de 30 a 45 segundos
+
+Técnica clave:
+- Espalda neutra.
+- Abdomen firme.
+- Movimiento controlado.
+- No llegar al fallo muscular.
+- Terminar sintiendo que todavía podrías hacer 1 o 2 repeticiones más.`,
+
+`Duración: 35 a 45 minutos
+
+Calentamiento:
+- 3 minutos de cuerda suave
+- 10 sentadillas sin peso
+- 10 bisagras de cadera
+- 10 círculos de hombros
+
+Bloque 1: Fuerza
+
+Ejercicio 1: Peso muerto rumano con mancuernas
+Series: 3
+Repeticiones: 10 a 15
+
+Ejercicio 2: Flexiones en tapete
+Series: 3
+Repeticiones: 8 a 12
+
+Ejercicio 3: Remo inclinado con mancuernas
+Series: 3
+Repeticiones: 10 a 15
+
+Bloque 2: Cuerda
+Rondas: 6
+Trabajo: 45 segundos
+Descanso: 30 segundos
+
+Técnica clave de cuerda:
+- Saltos bajos.
+- Codos pegados.
+- Muñecas giran la cuerda.
+- Aterrizaje suave.
+- Respiración constante.
+
+Final:
+- Estiramiento de espalda, piernas y hombros: 5 minutos`,
 ];
 const BLOCKS=['Mañana','Día','Trabajo','Noche','Retos'];
 const BC={'Mañana':{c:'#D4853A',l:'#FDF3E7'},'Día':{c:'#3D8B5E',l:'#EAF5EE'},'Trabajo':{c:'#1F5C8B',l:'#E6F0F8'},'Noche':{c:'#5A5A9E',l:'#EFEFFA'},'Retos':{c:'#E05A2B',l:'#FEF0EB'}};
@@ -780,7 +1078,7 @@ const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic
 
 /* ── STATE ── */
 let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
-let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null,SHOW_RETOS=false,EXDAY=null;
+let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null,SHOW_RETOS=false,EXDAY=null,EXTXT=false,EXRULES=false;
 
 /* ── DATE ── */
 function todayStr(){const d=new Date();return fmt(d)}
@@ -2022,12 +2320,25 @@ ${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id==
 }
 
 /* ── EJERCICIO ── */
+function fmtRoutine(txt){
+  return txt.trim().split('\n').map(raw=>{
+    const ln=raw.trim();
+    if(!ln)return'<div class="rt-sp"></div>';
+    if(/^[-•]\s/.test(ln))return`<div class="rt-li">${escH(ln.replace(/^[-•]\s/,''))}</div>`;
+    if(/^(Ejercicio\s\d+:|Bloque\s\d+:|\d+\.\s)/.test(ln))return`<div class="rt-ex">${escH(ln)}</div>`;
+    if(/^[A-ZÁÉÍÓÚÑ0-9 ]{4,}$/.test(ln)&&/[A-ZÁÉÍÓÚÑ]/.test(ln))return`<div class="rt-h2">${escH(ln)}</div>`;
+    if(/:$/.test(ln))return`<div class="rt-h">${escH(ln)}</div>`;
+    const m=ln.match(/^([A-ZÁÉÍÓÚÑ][\wáéíóúñ]*(?: [a-záéíóúñ]+){0,3}):\s(.+)$/);
+    if(m)return`<div class="rt-kv"><b>${escH(m[1])}:</b> ${escH(m[2])}</div>`;
+    return`<div class="rt-p">${escH(ln)}</div>`;
+  }).join('');
+}
 function vExercise(){
   const today=todayStr();
   const realDow=dow(today); // 0=Lun .. 6=Dom
   if(EXDAY===null)EXDAY=realDow<=5?realDow:0; // domingo → Lunes
   const i=Math.max(0,Math.min(5,EXDAY));
-  const w=WORKOUTS[i]||{focus:'',img:'',items:[]};
+  const w=WORKOUTS[i]||{focus:'',img:''};
   const isToday=realDow===i;
   const weekend=realDow===6; // solo domingo es descanso
 
@@ -2036,9 +2347,11 @@ function vExercise(){
   const phId='exph'+i;
   const img=`<div class="ex-img-wrap"><img class="ex-img" src="${w.img}" alt="Rutina ${EX_DAYS[i]}" loading="lazy" onload="var p=document.getElementById('${phId}');if(p)p.remove()" onerror="this.style.display='none'"><div class="ex-img-ph" id="${phId}"><span class="em">🏋️</span>Infografía de ${EX_DAYS[i]} pendiente<br>Súbela como <b>${escH(w.img)}</b></div></div>`;
 
-  const list=(w.items&&w.items.length)
-    ?`<div class="ctitle" style="margin-top:4px">Ejercicios</div>`+w.items.map((it,k)=>`<div class="ex-li"><div class="ex-li-n">${k+1}</div><div class="ex-li-b"><div class="ex-li-t">${escH(it.t)}</div>${it.s?`<div class="ex-li-s">${escH(it.s)}</div>`:''}</div></div>`).join('')
-    :'';
+  const txt=ROUTINES[i]||'';
+  const txtToggle=txt?`<button class="rt-toggle" data-extxt="1">${EXTXT?'📝 Ocultar rutina en texto ▲':'📝 Ver rutina en texto ▼'}</button>`:'';
+  const txtPanel=EXTXT&&txt?`<div class="rt-panel">${fmtRoutine(txt)}</div>`:'';
+  const rulesToggle=`<button class="rt-toggle" data-exrules="1">${EXRULES?'📋 Ocultar reglas generales ▲':'📋 Reglas generales y progresión ▼'}</button>`;
+  const rulesPanel=EXRULES?`<div class="rt-panel">${fmtRoutine(ROUTINE_GENERAL)}</div>`:'';
 
   const trkRows=EX_TRACK.map(id=>{
     const h=HABITS.find(x=>x.id===id);
@@ -2060,7 +2373,10 @@ ${pick}
 ${focusLine}
 ${metaLine}
 ${img}
-${list}
+${txtToggle}
+${txtPanel}
+${rulesToggle}
+${rulesPanel}
 </div>
 <div class="card"><div class="ctitle">Registro de hoy</div>
 ${trkRows||'<div class="ex-empty">Sin hábitos de ejercicio configurados.</div>'}
@@ -2111,6 +2427,8 @@ ${SETS.whyStatement?`<p class="why-card-quote">"${escH(SETS.whyStatement)}"</p>`
 document.addEventListener('click',e=>{
   const n=e.target.closest('[data-nav]');if(n){VIEW=n.dataset.nav;TIP=null;ACH_TIP=null;render();return;}
   const exd=e.target.closest('[data-exday]');if(exd){EXDAY=parseInt(exd.dataset.exday);render();return;}
+  const etx=e.target.closest('[data-extxt]');if(etx){EXTXT=!EXTXT;render();return;}
+  const erl=e.target.closest('[data-exrules]');if(erl){EXRULES=!EXRULES;render();return;}
   const dy=e.target.closest('[data-day]');if(dy){ADATE=dy.dataset.day;TIP=null;render();return;}
   const wp=e.target.closest('[data-wp]');
   if(wp){
