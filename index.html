@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,19 +15,21 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{--navy:#0D1B2A;--navy2:#1B2A3B;--navy3:#1E3A5F;--bg:#F5F4F0;--text:#0D1B2A;--text2:#7A7A7A;--border:#E5E3DC;--green:#3D8B5E;--violet:#5A5A9E;--teal:#2A8FA8;--r:14px}
+/* manipulation: sin zoom por doble-tap en controles, pero el pinch-zoom (accesibilidad) sigue disponible */
+html{touch-action:manipulation}
 html,body{height:100%;overflow:hidden;background:var(--bg)}
 body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 /* HEADER */
 .hdr{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 55%,var(--navy3) 100%);color:#fff;padding:42px 16px 12px;flex-shrink:0}
-.hdr-eyebrow{font-size:9px;letter-spacing:3px;opacity:.5;text-transform:uppercase;margin-bottom:2px}
+.hdr-eyebrow{font-size:10px;letter-spacing:3px;opacity:.7;text-transform:uppercase;margin-bottom:2px}
 .hdr-title{font-size:17px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
 .hdr-cards{display:flex;gap:8px;margin-bottom:8px}
 .hdr-card{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:7px 11px 8px}
 .hdr-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px}
-.hdr-lbl{font-size:8.5px;letter-spacing:2px;opacity:.6;text-transform:uppercase;font-weight:600}
+.hdr-lbl{font-size:10px;letter-spacing:2px;opacity:.78;text-transform:uppercase;font-weight:600}
 .hdr-val{font-size:19px;font-weight:800;line-height:1}
-.hdr-val span{font-size:11px;opacity:.55;margin-left:1px}
+.hdr-val span{font-size:11px;opacity:.75;margin-left:1px}
 .hdr-bar{height:3px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden}
 .hdr-fill{height:100%;border-radius:2px;transition:width .5s ease}
 .c-good{background:#5EC98A}.c-mid{background:#F5C842}.c-low{background:#E86B6B}
@@ -35,12 +37,12 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 .xp-bar-wrap{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:7px 11px}
 .xp-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
 .xp-lvl{font-size:11.5px;font-weight:800;letter-spacing:.5px}
-.xp-pts{font-size:10px;opacity:.65}
+.xp-pts{font-size:11px;opacity:.8}
 .xp-track{height:4px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
 .xp-fill{height:100%;border-radius:3px;transition:width .6s ease}
 /* NAV */
 .bnav{display:flex;background:#fff;border-top:1px solid var(--border);padding:6px 0 22px;flex-shrink:0}
-.nbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:none;background:none;cursor:pointer;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;transition:color .2s}
+.nbtn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border:none;background:none;cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;transition:color .2s}
 .nbtn .ni{font-size:19px}
 .nbtn.active{color:var(--navy)}.nbtn:not(.active){color:#C0C0C0}
 /* SCROLL */
@@ -63,14 +65,16 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 .hcard.on .hchk{background:var(--hc);border-color:var(--hc)}
 .hlbl{font-size:13px;font-weight:500;line-height:1.3}
 .hsub{font-size:11px;color:var(--text2);margin-top:1px}
-.tipbtn{border:none;background:none;font-size:15px;opacity:.35;cursor:pointer;padding:4px;flex-shrink:0}
+.tipbtn{border:none;background:none;font-size:15px;opacity:.45;cursor:pointer;padding:12px 8px;margin:-8px -4px;flex-shrink:0}
 .tipbox{background:#FFFCF0;border:1px solid #F0D88A;border-radius:10px;padding:9px 12px;margin-bottom:6px;font-size:12px;color:#6B4E00;line-height:1.55}
 /* WATER PILLS */
 .wcard{background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:12px 13px;margin-bottom:6px;transition:all .18s}
 .wcard.done{background:#E0F7F0;border-color:var(--teal)}
 .wcard-top{display:flex;align-items:center;gap:11px;margin-bottom:10px}
 .wpills{display:flex;gap:7px;flex-wrap:wrap}
-.wpill{width:38px;height:38px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#C0C0C0;transition:all .18s;flex-shrink:0;user-select:none;-webkit-user-select:none}
+.wpill{width:38px;height:38px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#C0C0C0;transition:all .18s;flex-shrink:0;user-select:none;-webkit-user-select:none;position:relative}
+/* Área táctil ≥44px sin alterar el layout */
+.wpill::after{content:'';position:absolute;inset:-4px;border-radius:50%}
 .wpill.on{background:var(--teal);border-color:var(--teal);color:#fff}
 .wpill.cre{background:#D4A843;border-color:#D4A843;color:#fff}
 /* ACHIEVEMENT CARD */
@@ -105,7 +109,7 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 .abadge{width:52px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
 .abadge-ico{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;transition:transform .15s}
 .abadge-ico:active{transform:scale(.9)}
-.abadge-lbl{font-size:9px;text-align:center;color:var(--text2);line-height:1.2;width:100%}
+.abadge-lbl{font-size:10px;text-align:center;color:var(--text2);line-height:1.2;width:100%}
 .abadge.locked .abadge-ico{background:#EFEDE8;opacity:.5}
 .abadge.earned .abadge-ico{box-shadow:0 2px 8px rgba(0,0,0,.15)}
 .abadge.hidden-locked .abadge-ico{background:#EFEDE8}
@@ -117,7 +121,7 @@ body{font-family:system-ui,-apple-system,sans-serif;color:var(--text);display:fl
 /* WEEK */
 .wbars{display:flex;gap:5px;align-items:flex-end;height:68px;margin-bottom:4px}
 .wcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
-.wnum{font-size:9px;color:var(--text2);height:12px}
+.wnum{font-size:10px;color:var(--text2);height:12px}
 .wtrack{width:100%;flex:1;background:#EFEDE8;border-radius:5px;overflow:hidden;display:flex;align-items:flex-end}
 .wfill{width:100%;border-radius:5px;transition:height .5s ease}
 .wlbl{font-size:11px;font-weight:700}
@@ -165,7 +169,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .mcol{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
 .mtrack{width:100%;height:48px;background:#EFEDE8;border-radius:4px;overflow:hidden;display:flex;align-items:flex-end}
 .mfill{width:100%;border-radius:4px;transition:height .5s ease}
-.mlbl{font-size:8px;color:var(--text2)}
+.mlbl{font-size:10px;color:var(--text2)}
 /* TOAST */
 .toast{position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--navy);color:#fff;padding:9px 20px;border-radius:20px;font-size:13px;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;z-index:9999}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -183,7 +187,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .lvlup-badge{display:inline-block;padding:4px 16px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;animation:slideUp .4s ease .2s both}
 .lvlup-num{font-size:48px;font-weight:900;color:#fff;line-height:1;margin-bottom:4px;animation:slideUp .4s ease .3s both}
 .lvlup-name{font-size:20px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:24px;animation:slideUp .4s ease .4s both}
-.lvlup-tap{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:1px;animation:pulse 2s ease infinite}
+.lvlup-tap{font-size:12px;color:rgba(255,255,255,.65);letter-spacing:1px;animation:pulse 2s ease infinite}
 @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:.8}}
 /* ACH UNLOCK OVERLAY */
@@ -192,7 +196,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 @keyframes slideUpToast{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
 .achup-ico{font-size:32px;flex-shrink:0}
 .achup-inf{flex:1}
-.achup-tag{font-size:9px;letter-spacing:2px;opacity:.6;text-transform:uppercase}
+.achup-tag{font-size:10px;letter-spacing:2px;opacity:.75;text-transform:uppercase}
 .achup-name{font-size:15px;font-weight:800}
 .achup-desc{font-size:11px;opacity:.7;margin-top:1px}
 
@@ -206,7 +210,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .nl-xp{display:inline-block;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#fff;font-size:13px;font-weight:800;padding:5px 16px;border-radius:20px;margin-bottom:10px;letter-spacing:1px;animation:slideUp .4s ease .35s both}
 .nl-streak{font-size:12px;color:#C8A8FF;font-weight:700;margin-bottom:14px;animation:slideUp .4s ease .4s both}
 .nl-msg{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:20px;animation:slideUp .4s ease .45s both}
-.nl-tap{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+.nl-tap{font-size:12px;color:rgba(255,255,255,.65);letter-spacing:1px}
 
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes glow{0%,100%{opacity:1}50%{opacity:.55}}
@@ -220,7 +224,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .dc-xp{display:inline-block;background:linear-gradient(135deg,#FFD700,#FF8C00);color:#fff;font-size:13px;font-weight:800;padding:5px 16px;border-radius:20px;margin-bottom:14px;letter-spacing:1px}
 .dc-streak{font-size:12px;color:#FFD700;font-weight:700;margin-bottom:10px}
 .dc-msg{font-size:15px;color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:20px}
-.dc-tap{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+.dc-tap{font-size:12px;color:rgba(255,255,255,.65);letter-spacing:1px}
 /* CHEST OVERLAY */
 #chest{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9987;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:30px}
 #chest.show{display:flex;animation:fadeIn .3s ease}
@@ -230,7 +234,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .ch-xp{font-size:52px;font-weight:900;color:#FFD700;line-height:1;margin-bottom:6px;animation:slideUp .4s ease .3s both}
 .ch-lbl{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:6px;animation:slideUp .4s ease .4s both}
 .ch-rank{font-size:13px;font-weight:700;margin-bottom:20px;animation:slideUp .4s ease .5s both}
-.ch-tap{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px}
+.ch-tap{font-size:12px;color:rgba(255,255,255,.65);letter-spacing:1px}
 /* MAESTRÍA */
 .mcard{background:#fff;border-radius:14px;padding:14px 15px;margin-bottom:8px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
 .mcard-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
@@ -323,7 +327,8 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .retos-summary-txt{font-weight:600}
 .retos-summary-chev{font-weight:700;font-size:11px;color:#E05A2B;letter-spacing:.5px}
 /* QUICK-MARK EN MISIONES */
-.m-quick{width:26px;height:26px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;color:#BDBDB0;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;transition:all .18s;display:flex;align-items:center;justify-content:center}
+.m-quick{width:26px;height:26px;border-radius:50%;border:2px solid #D5D0C8;background:#fff;color:#BDBDB0;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;align-self:center;transition:all .18s;display:flex;align-items:center;justify-content:center;position:relative}
+.m-quick::after{content:'';position:absolute;inset:-9px;border-radius:50%}
 .m-quick.on{background:#3D8B5E;border-color:#3D8B5E;color:#fff}
 .m-quick.na{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.16);color:rgba(255,255,255,.32);cursor:default}
 .m-quick.na:active{transform:none}
@@ -402,7 +407,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 </head>
 <body>
 <div id="app"></div>
-<div id="lvlup" onclick="closeLvlUp()">
+<div id="lvlup" role="dialog" aria-modal="true" aria-label="Subiste de nivel" onclick="closeLvlUp()">
   <div class="lvlup-particles" id="particles"></div>
   <div class="lvlup-inner">
     <div class="lvlup-ico" id="lu-ico"></div>
@@ -412,7 +417,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <div class="lvlup-tap">Toca para continuar</div>
   </div>
 </div>
-<div id="daycomplete" onclick="closeDayComplete()">
+<div id="daycomplete" role="dialog" aria-modal="true" aria-label="Día completo" onclick="closeDayComplete()">
   <div class="dc-inner">
     <div class="dc-emoji" id="dc-emoji"></div>
     <div class="dc-xp" id="dc-xp"></div>
@@ -421,7 +426,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <div class="dc-tap">Toca para continuar</div>
   </div>
 </div>
-<div id="chest" onclick="closeChest()">
+<div id="chest" role="dialog" aria-modal="true" aria-label="Cofre semanal" onclick="closeChest()">
   <div class="ch-inner">
     <div class="ch-title">☀️ Cofre semanal</div>
     <div class="ch-ico">🎁</div>
@@ -431,7 +436,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <div class="ch-tap">Toca para continuar</div>
   </div>
 </div>
-<div id="achup">
+<div id="achup" role="status" aria-live="polite">
   <div class="achup-ico" id="au-ico"></div>
   <div class="achup-inf">
     <div class="achup-tag">Logro desbloqueado</div>
@@ -439,7 +444,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <div class="achup-desc" id="au-desc"></div>
   </div>
 </div>
-<div id="nochelibre" onclick="closeNocheLibre()">
+<div id="nochelibre" role="dialog" aria-modal="true" aria-label="Noche libre desbloqueada" onclick="closeNocheLibre()">
   <div class="nl-inner">
     <div class="nl-emoji">🌙</div>
     <div class="nl-badge">NOCHE LIBRE DESBLOQUEADA</div>
@@ -450,7 +455,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <div class="nl-tap">Toca para continuar</div>
   </div>
 </div>
-<div id="backupprompt" style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9998;display:none;align-items:center;justify-content:center;padding:24px" onclick="closeBackupPrompt()">
+<div id="backupprompt" role="dialog" aria-modal="true" aria-label="Hacer backup" style="position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9998;display:none;align-items:center;justify-content:center;padding:24px" onclick="closeBackupPrompt()">
   <div style="background:#fff;border-radius:22px;padding:26px 22px 20px;max-width:310px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)" onclick="event.stopPropagation()">
     <div style="font-size:52px;margin-bottom:10px">💾</div>
     <div style="font-size:17px;font-weight:800;color:var(--navy);margin-bottom:7px">¿Hacer backup hoy?</div>
@@ -459,7 +464,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     <button onclick="closeBackupPrompt()" style="width:100%;padding:12px;border-radius:14px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:14px;font-weight:600;cursor:pointer">Ahora no</button>
   </div>
 </div>
-<div id="jprompt" onclick="if(event.target===this)closeJPrompt()">
+<div id="jprompt" role="dialog" aria-modal="true" aria-label="Nota de bitácora" onclick="if(event.target===this)closeJPrompt()">
   <div class="j-inner">
     <div class="j-head"><span class="j-emoji" id="j-ico"></span><div class="j-title" id="j-lbl"></div></div>
     <div class="j-prompt" id="j-prompt"></div>
@@ -470,7 +475,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
     </div>
   </div>
 </div>
-<div id="whyprompt" onclick="if(event.target===this)closeWhyPrompt()">
+<div id="whyprompt" role="dialog" aria-modal="true" aria-label="Mi por qué" onclick="if(event.target===this)closeWhyPrompt()">
   <div class="why-inner">
     <div class="why-emoji">🎯</div>
     <div class="why-title">¿Quién quieres ser para 2027?</div>
@@ -2102,7 +2107,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
     hab+=`<div class="blk-hdr"><div class="blk-line" style="background:${c}"></div><div class="blk-lbl" style="color:${c}">${isRetos?'⚡ RETOS · XP EXTRA':blk}</div><div class="blk-line" style="background:${c}"></div></div>`;
     if(isRetos){
       const doneRetos=bh.filter(h=>isDone(d,h)).length;
-      hab+=`<div class="retos-summary" data-showretos="1"><span class="retos-summary-txt">${bh.length} retos opcionales · ${doneRetos}/${bh.length} hoy</span><span class="retos-summary-chev">${SHOW_RETOS?'Ocultar ▲':'Ver ▼'}</span></div>`;
+      hab+=`<div class="retos-summary" data-showretos="1" role="button" tabindex="0" aria-expanded="${SHOW_RETOS}"><span class="retos-summary-txt">${bh.length} retos opcionales · ${doneRetos}/${bh.length} hoy</span><span class="retos-summary-chev">${SHOW_RETOS?'Ocultar ▲':'Ver ▼'}</span></div>`;
       if(!SHOW_RETOS)return;
       hab+=`<p style="font-size:11px;color:var(--text2);margin-bottom:8px">Opcionales — no cuentan para el 100%. Solo suman XP bonus.</p>`;
     }
@@ -2112,7 +2117,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
       const pills=Array.from({length:W},(_,i)=>{
         const filled=i<wc2;
         const isCre=filled&&i<ac;
-        return`<div class="wpill${filled?(isCre?' cre':' on'):''}" data-wp="${ADATE}|${i}">${filled?(isCre?'🧪':'✓'):'·'}</div>`;
+        return`<div class="wpill${filled?(isCre?' cre':' on'):''}" data-wp="${ADATE}|${i}" role="button" tabindex="0" aria-pressed="${filled}" aria-label="Botella ${i+1} de ${W}">${filled?(isCre?'🧪':'✓'):'·'}</div>`;
       }).join('');
       hab+=`<div class="wcard${wc2>=W?' done':''}">
 <div class="wcard-top">
@@ -2140,7 +2145,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
         const pct=Math.round(count/h.subSteps.length*100);
         const subsHtml=h.subSteps.map(s=>{
           const sv=subStepVal(d,h,s.k);
-          return`<div class="p7step${sv?' on':''}" data-sub="${ADATE}|${h.id}|${s.k}">
+          return`<div class="p7step${sv?' on':''}" data-sub="${ADATE}|${h.id}|${s.k}" role="button" tabindex="0" aria-pressed="${sv}" aria-label="${s.lbl}">
 <div class="p7chk" style="${sv?`background:${c};border-color:${c}`:''}">${sv?'✓':''}</div>
 <div class="p7lbl">${s.e} ${s.lbl}</div>
 <div class="p7time">${s.t||''}</div>
@@ -2171,7 +2176,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
       }
       let dosedInfo='';
       if(isDosed){
-        const pills=Array.from({length:h.doseCount},(_,i)=>`<div class="wpill${i<doseVal?' cre':''}" data-dose="${ADATE}|${h.id}|${i}" style="width:42px;height:42px;font-size:13px">${i<doseVal?'🧪':'·'}</div>`).join('');
+        const pills=Array.from({length:h.doseCount},(_,i)=>`<div class="wpill${i<doseVal?' cre':''}" data-dose="${ADATE}|${h.id}|${i}" role="button" tabindex="0" aria-pressed="${i<doseVal}" aria-label="Toma ${i+1} de ${h.doseCount}" style="width:42px;height:42px;font-size:13px">${i<doseVal?'🧪':'·'}</div>`).join('');
         dosedInfo=`<div class="hsub" style="color:${on?'#3D8B5E':'#C87820'};font-weight:600">${doseVal}/${h.doseCount} tomas · cada toma suma 1 botella 💧</div><div class="wpills" style="margin-top:6px">${pills}</div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tap tarjeta = sumar · Tap burbuja = ajustar</div>`;
       }
       const coreStar=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
@@ -2182,7 +2187,7 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
           ?`<div class="hcard-note" data-jnote="${ADATE}|${h.id}"><span>📝</span><span class="hcard-note-text">${escH(jt)}</span></div>`
           :`<div class="hcard-note hcard-note-add" data-jnote="${ADATE}|${h.id}"><span>📝</span><span>Agregar nota</span></div>`;
       }
-      hab+=`<div class="hcard${on?' on':''}${CORE_HABITS[h.id]?' core':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}">
+      hab+=`<div class="hcard${on?' on':''}${CORE_HABITS[h.id]?' core':''}" style="--hc:${c};background:${on?BC[blk].l:'#fff'};border-color:${on?c:'var(--border)'}" data-t="${ADATE}|${h.id}" role="button" tabindex="0" aria-pressed="${on}" aria-label="${h.lbl}">
 <div class="hchk">${on?'✓':isDosed&&doseVal>0?doseVal:''}</div>
 <div style="flex:1;min-width:0">
 <div class="hlbl">${h.e} ${h.lbl}${coreStar}</div>
@@ -2194,7 +2199,11 @@ ${journalInfo}
 </div>${st?`<div class="tipbox">${tipMain}${tipSource}</div>`:''}`;
     });
   });
-  return daySel+lvlCard+missionsHtml+factHtml+achCard+achMini+info2+hab;
+  // Banner de instalación también en Hoy (antes solo vivía en Config, la última pestaña)
+  const insBanner=PROMPT&&!SETS.installDismissed
+    ?`<div class="ibanner"><div class="ibico">📲</div><div class="ibinf"><div class="ibtitle">Instalar como app</div><div class="ibsub">Funciona offline y abre desde tu pantalla de inicio</div></div><button class="ibbtn" id="ins-btn">Instalar</button><button data-insdismiss="1" aria-label="Descartar" style="border:none;background:none;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;padding:6px;flex-shrink:0">✕</button></div>`
+    :'';
+  return daySel+insBanner+lvlCard+missionsHtml+factHtml+achCard+achMini+info2+hab;
 }
 
 /* ── WEEK ── */
@@ -2502,6 +2511,23 @@ ${SETS.whyStatement?`<p class="why-card-quote">"${escH(SETS.whyStatement)}"</p>`
 
 
 /* ── EVENTS ── */
+// Teclado: Enter/Espacio activan los controles con role=button; Escape cierra overlays
+document.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===' ')&&e.target instanceof Element&&e.target.matches('[role="button"]')){
+    e.preventDefault();e.target.click();return;
+  }
+  if(e.key==='Escape'){
+    const shown=id=>{const el=document.getElementById(id);return el&&el.classList.contains('show');};
+    const open=id=>{const el=document.getElementById(id);return el&&el.style.display==='flex';};
+    if(shown('lvlup'))closeLvlUp();
+    if(shown('daycomplete'))closeDayComplete();
+    if(shown('chest'))closeChest();
+    if(shown('nochelibre'))closeNocheLibre();
+    if(open('backupprompt'))closeBackupPrompt();
+    if(open('jprompt'))closeJPrompt();
+    if(open('whyprompt'))closeWhyPrompt();
+  }
+});
 document.addEventListener('click',e=>{
   const n=e.target.closest('[data-nav]');if(n){VIEW=n.dataset.nav;TIP=null;ACH_TIP=null;render();return;}
   const exd=e.target.closest('[data-exday]');if(exd){EXDAY=parseInt(exd.dataset.exday);render();return;}
@@ -2602,6 +2628,7 @@ document.addEventListener('click',e=>{
   if(e.target.id==='btn-journal-this'){exportWeekJournal(0);return;}
   if(e.target.id==='btn-journal-prev'){exportWeekJournal(-1);return;}
   if(e.target.id==='btn-import'){document.getElementById('file-import')?.click();return;}
+  const idm=e.target.closest('[data-insdismiss]');if(idm){SETS.installDismissed=1;save();render(true);return;}
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='rtim'){SETS.reminderTime=e.target.value;save();toast('Recordatorio: '+SETS.reminderTime);scheduleR();}
@@ -2767,7 +2794,7 @@ function testNotif(){
 }
 
 /* ── PWA ── */
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();PROMPT=e;if(VIEW==='config')render();});
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();PROMPT=e;render(true);});
 if('serviceWorker' in navigator){
   let _swReloaded=false;
   navigator.serviceWorker.addEventListener('controllerchange',()=>{
