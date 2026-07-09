@@ -243,6 +243,9 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .mcard-name{font-size:13px;font-weight:700;color:var(--text)}
 .mcard-sub{font-size:11px;color:var(--text2);margin-top:1px}
 .mcard-medal{font-size:20px;flex-shrink:0}
+.mcard.grad{opacity:.75;background:#FAFAF5}
+.grad-btn{width:100%;margin-top:9px;padding:9px;border-radius:9px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer}
+.grad-btn.gold{border-color:#D4A843;color:#8A6A10;background:#FFFBEF}
 .mtrack-wrap{display:flex;gap:3px;flex-wrap:wrap}
 .mchk{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
 .mchk.done{background:#3D8B5E;color:#fff}
@@ -295,7 +298,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .why-line em{font-style:italic;color:#fff;font-weight:500}
 /* Strip fino de racha — reemplaza tarjeta de nivel duplicada */
 .streak-hint-strip{display:flex;justify-content:space-between;align-items:center;background:#FFF7ED;border:1px solid #F5D9AD;border-radius:10px;padding:8px 13px;margin-bottom:10px;font-size:11px;font-weight:700;color:#8A5A10}
-#whyprompt{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px}
+#whyprompt{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px;padding-bottom:calc(20px + var(--kb,0px))}
 .why-inner{background:#fff;border-radius:22px;padding:26px 22px 20px;max-width:340px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .why-emoji{font-size:44px;margin-bottom:10px}
 .why-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:8px;line-height:1.3}
@@ -306,7 +309,7 @@ input[type=time]{border:1.5px solid var(--border);border-radius:8px;padding:7px 
 .why-btn-s{width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer}
 .why-card-quote{font-size:13px;color:var(--navy);line-height:1.6;font-style:italic;margin-bottom:14px;padding:11px 13px;background:#FAFAF7;border-left:3px solid var(--navy);border-radius:6px}
 /* JOURNAL NOTE MODAL */
-#jprompt{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9998;display:none;align-items:flex-end;justify-content:center;padding:0}
+#jprompt{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9998;display:none;align-items:flex-end;justify-content:center;padding:0;padding-bottom:var(--kb,0px)}
 .j-inner{background:#fff;border-radius:22px 22px 0 0;padding:22px 20px 26px;width:100%;max-width:480px;box-shadow:0 -10px 40px rgba(0,0,0,.3);max-height:70vh;overflow-y:auto}
 .j-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .j-emoji{font-size:24px}
@@ -1089,7 +1092,8 @@ const MS=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic
 
 /* ── STATE ── */
 let DB={},SETS={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
-let VIEW='today',ADATE=todayStr(),TIP=null,WOFF=0,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,SHOW_ACH=false,ACH_TIP=null,SHOW_RETOS=false,EXDAY=null,EXTXT=false,EXRULES=false;
+// EOFF: único offset de navegación semanal, compartido por Hoy y Semana
+let VIEW='today',ADATE=todayStr(),TIP=null,EOFF=0,EOFF_EDIT=false,YSW=null,PROMPT=null,ACH_TIP=null,SHOW_RETOS=false,EXDAY=null,EXTXT=false,EXRULES=false,SHOW_GRADLIST=false;
 
 /* ── DATE ── */
 function todayStr(){const d=new Date();return fmt(d)}
@@ -1109,7 +1113,7 @@ function yearMondays(yr){
   while(d.getFullYear()<=yr){r.push(fmt(d));d.setDate(d.getDate()+7)}
   return r;
 }
-function curMon(){return shift(monday(todayStr()),WOFF*7)}
+function curMon(){return shift(monday(todayStr()),EOFF*7)}
 
 /* ── STORAGE ── */
 function load(){
@@ -1211,12 +1215,19 @@ function isWorkday(dateStr){
   if(isMXHoliday(dateStr))return false;
   return true;
 }
+/* ── HÁBITOS DOMINADOS (graduación) ──
+   Un hábito que ya es parte de tu identidad no necesita registro: al graduarlo
+   sale de la lista diaria y del cálculo del % (menos fricción, % más alto y
+   honesto), pero su historial, XP y medallas se conservan. Reversible. */
+function gradOn(hid){return (SETS.graduated||{})[hid]||null;}
+function isGradFor(hid,date){const g=gradOn(hid);return !!g&&g<=(date||todayStr());}
 function activeH(date){
   const p=phOn(date);
   return HABITS.filter(h=>
     (h.minP===undefined||(p>=h.minP&&p<=h.maxP))
     &&(!h.addedOn||!date||h.addedOn<=date)
     &&(!h.retiredOn||!date||h.retiredOn>date)
+    &&!isGradFor(h.id,date) // los días previos a la graduación conservan su registro
   );
 }
 function subStepVal(d,h,k){return !!(d[h.id]&&d[h.id][k]);}
@@ -1347,6 +1358,7 @@ function morningStreakDays(){
     const mh=HABITS.filter(h=>h.blk==='Mañana'
       &&(!h.addedOn||h.addedOn<=d)
       &&(!h.retiredOn||h.retiredOn>d)
+      &&!isGradFor(h.id,d)
       &&(h.minP===undefined||(p>=h.minP&&p<=h.maxP))
       &&!(h.workdayOnly&&!isWorkday(d))
       &&!(h.weekendOnly&&isWorkday(d)));
@@ -1420,7 +1432,6 @@ function checkWeekComplete(){
   // no se pierde si el cofre no se abrió ese mismo día (antes solo se evaluaba
   // la semana en curso, y solo al cerrar el modal de día completo)
   const curMonday=monday(todayStr());
-  let show=null;
   for(let k=8;k>=0;k--){
     const mon=shift(curMonday,-7*k),key='chest_'+mon;
     if(SETS[key])continue; // already opened
@@ -1432,22 +1443,15 @@ function checkWeekComplete(){
     const lvlB=calcLvl(calcXP());
     SETS[key]=bonus;save();
     const lvlA=calcLvl(calcXP());
-    if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),1400); // después del chest
-    show={bonus,avg};
+    queueCeleb({type:'chest',bonus,avg});
+    if(lvlA>lvlB)triggerLevelUp(lvlA); // la cola lo muestra después del cofre
   }
-  if(show)setTimeout(()=>showChest(show.bonus,show.avg),800);
 }
-function showChest(bonus,avg){
+function _renderChest({bonus}){
   const rank=weeklyChestRank(bonus);
   document.getElementById('ch-xp').textContent='+'+bonus+' XP';
   document.getElementById('ch-rank').innerHTML=`<span style="color:${rank.c}">${rank.t}</span>`;
-  // Particles
-  const pc=document.getElementById('particles');pc.innerHTML='';
-  const colors=['#FFD700','#FF6B6B','#6BFFB8','#6BB5FF','#FFB86B','#C06BFF'];
-  for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*2}s;animation-duration:${2+Math.random()*2}s;width:${4+Math.random()*8}px;height:${4+Math.random()*8}px`;pc.appendChild(p);}
-  document.getElementById('chest').classList.add('show');
 }
-function closeChest(){document.getElementById('chest').classList.remove('show');}
 
 /* ── DAY COMPLETE ── */
 function checkDayComplete(){
@@ -1471,18 +1475,14 @@ function checkDayComplete(){
   // Confetti instantáneo + vibración celebratoria
   spawnConfetti(40);
   haptic([30,60,30,60,30]);
-  setTimeout(()=>showDayComplete(streak,bonus,label,msg),500);
+  queueCeleb({type:'day',streak,bonus,label,msg});
+  checkWeekComplete(); // si además cierra la semana, el cofre se encola detrás
 }
-function showDayComplete(streak,bonus,label,msg){
+function _renderDayComplete({streak,bonus,label,msg}){
   document.getElementById('dc-emoji').textContent=msg.e;
   document.getElementById('dc-xp').textContent='+'+bonus+' XP · '+label;
   document.getElementById('dc-streak').textContent='🔥 '+streak+' día'+(streak!==1?'s':'')+' de racha al 100%';
   document.getElementById('dc-msg').textContent=msg.m;
-  document.getElementById('daycomplete').classList.add('show');
-}
-function closeDayComplete(){
-  document.getElementById('daycomplete').classList.remove('show');
-  checkWeekComplete();
 }
 
 function totalHabanero(){return Object.values(DB).filter(d=>d.habanero).length;}
@@ -1515,17 +1515,15 @@ function checkNocheLibre(){
     DB[todayStr()]._nocheLibreBonus=(DB[todayStr()]._nocheLibreBonus||0)+bonus;
     save();
     const lvlA=calcLvl(calcXP());
-    if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),1600);
-    setTimeout(()=>showNocheLibre(newCount,bonus,streak),600);
+    queueCeleb({type:'noche',count:newCount,bonus,streak});
+    if(lvlA>lvlB)triggerLevelUp(lvlA);
   }
 }
-function showNocheLibre(count,bonus,streak){
+function _renderNocheLibre({count,bonus,streak}){
   document.getElementById('nl-count').textContent='Noche Libre #'+count;
   document.getElementById('nl-xp').textContent='+'+bonus+' XP';
   document.getElementById('nl-streak').textContent='🔥 '+streak+' noches de sueño óptimo';
-  document.getElementById('nochelibre').classList.add('show');
 }
-function closeNocheLibre(){document.getElementById('nochelibre').classList.remove('show');}
 
 /* ── CHALLENGE WEEK TRACKING ── */
 function allMondays(){
@@ -1663,7 +1661,7 @@ function checkMasteryUnlocks(){
   const aw=SETS.masteryAwarded=SETS.masteryAwarded||{};
   const unlocked=[];
   HABITS.forEach(h=>{
-    if(h.retiredOn)return;
+    if(h.retiredOn||gradOn(h.id))return;
     const weeks=habitMasteryWeeks(h.id);
     const idx=tierIndex(masteryLevel(weeks));
     const last=aw[h.id]||0;
@@ -1686,6 +1684,8 @@ function showMasteryUnlock({h,idx,weeks}){
   document.getElementById('au-desc').textContent=`${weeks} semanas al 100% · Mastery desbloqueada`;
   el.classList.add('show');
   clearTimeout(_at);_at=setTimeout(()=>el.classList.remove('show'),4500);
+  // Al llegar a oro, sugerir graduarlo para aligerar el registro diario
+  if(idx===3&&h.id!=='__agua'&&!gradOn(h.id))setTimeout(()=>toast('🎓 Ya lo dominas — puedes graduarlo en Config y dejar de registrarlo'),4800);
 }
 
 /* ── PERSONAL RECORDS + COMEBACK (Hooked · Self) ── */
@@ -1739,15 +1739,43 @@ function pulseAfterRender(selector,delta){
   if(el)el.classList.add('just-checked');
 }
 
-/* ── LEVEL UP OVERLAY ── */
-let _luq=[];
-function triggerLevelUp(lvl){
-  _luq.push(lvl);
-  if(_luq.length===1)showNextLvlUp();
+/* ── COLA ÚNICA DE CELEBRACIONES ──
+   Día completo, noche libre, cofre y level-up entran a UNA cola: se muestra
+   un overlay a la vez y el tap avanza al siguiente — antes podían encimarse
+   hasta 4 takeovers de pantalla completa encadenados por setTimeout */
+const CELEBQ=[];
+let _celebFocus=null;
+function queueCeleb(item){
+  if(item.type==='lvl'&&CELEBQ.some(c=>c.type==='lvl'&&c.lvl===item.lvl))return;
+  CELEBQ.push(item);
+  if(CELEBQ.length===1){_celebFocus=document.activeElement;setTimeout(_showCeleb,450);}
 }
-function showNextLvlUp(){
-  if(!_luq.length)return;
-  const lvl=_luq[0];
+function _celebEl(t){return document.getElementById({lvl:'lvlup',day:'daycomplete',chest:'chest',noche:'nochelibre'}[t]);}
+function _showCeleb(){
+  const it=CELEBQ[0];if(!it)return;
+  if(it.type==='lvl')_renderLvlUp(it.lvl);
+  else if(it.type==='day')_renderDayComplete(it);
+  else if(it.type==='chest')_renderChest(it);
+  else _renderNocheLibre(it);
+  const el=_celebEl(it.type);
+  el.classList.add('show');
+  el.setAttribute('tabindex','-1');
+  try{el.focus({preventScroll:true});}catch(e){}
+}
+function closeCeleb(){
+  const it=CELEBQ.shift();
+  if(it){const el=_celebEl(it.type);if(el)el.classList.remove('show');}
+  if(CELEBQ.length)setTimeout(_showCeleb,250);
+  else if(_celebFocus&&document.contains(_celebFocus)){try{_celebFocus.focus();}catch(e){}_celebFocus=null;}
+}
+function closeLvlUp(){closeCeleb()}
+function closeDayComplete(){closeCeleb()}
+function closeChest(){closeCeleb()}
+function closeNocheLibre(){closeCeleb()}
+
+/* ── LEVEL UP OVERLAY ── */
+function triggerLevelUp(lvl){queueCeleb({type:'lvl',lvl});}
+function _renderLvlUp(lvl){
   const info=LEVELS[lvl-1];
   const c=lvlColor(lvl);
   document.getElementById('lu-ico').textContent=info.i;
@@ -1767,12 +1795,6 @@ function showNextLvlUp(){
     p.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${colors[i%colors.length]};animation-delay:${Math.random()*2}s;animation-duration:${2+Math.random()*2}s;width:${4+Math.random()*6}px;height:${4+Math.random()*6}px`;
     pc.appendChild(p);
   }
-  document.getElementById('lvlup').classList.add('show');
-}
-function closeLvlUp(){
-  document.getElementById('lvlup').classList.remove('show');
-  _luq.shift();
-  if(_luq.length)setTimeout(showNextLvlUp,300);
 }
 
 /* ── ACH UNLOCK NOTIFICATION ── */
@@ -1846,7 +1868,7 @@ function toggleSub(s,hid,k){
   DB[s][hid][k]=!DB[s][hid][k];
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
-  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  if(lvlA>lvlB)triggerLevelUp(lvlA);
   checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   render(true);
@@ -1864,7 +1886,7 @@ function toggle(s,id){
     adjustDose(s,h,cur,next);
     save();
     const xpA=calcXP(),lvlA=calcLvl(xpA);
-    if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+    if(lvlA>lvlB)triggerLevelUp(lvlA);
     checkUnlock();checkAchievements();checkMissions();
     if(s===todayStr()){checkDayComplete();checkNocheLibre();}
     if(next===0)toast(`↩️ ${h.e} Reiniciado a 0`);
@@ -1875,7 +1897,7 @@ function toggle(s,id){
   DB[s][id]=!DB[s][id];
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
-  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  if(lvlA>lvlB)triggerLevelUp(lvlA);
   checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   if(id==='agua'&&!wasOn&&s===todayStr()&&shouldPromptBackup()){
@@ -1893,7 +1915,7 @@ function setDose(s,id,target){
   adjustDose(s,h,cur,next);
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
-  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  if(lvlA>lvlB)triggerLevelUp(lvlA);
   checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
   if(next>=h.doseCount)toast(`✅ ¡Creatina completa! (${h.doseCount}/${h.doseCount})`);
@@ -1909,7 +1931,7 @@ function setWater(s,n){
   if((DB[s].aguaCre||0)>n)DB[s].aguaCre=n;
   save();
   const xpA=calcXP(),lvlA=calcLvl(xpA);
-  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
+  if(lvlA>lvlB)triggerLevelUp(lvlA);
   checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr())checkDayComplete();
   render(true);
@@ -2066,28 +2088,7 @@ ${rows}
 <div class="ach-lbl">${prog.c}/${prog.g===999?'∞':prog.g} ${PHASES[p].unit}</div>`;
   const achCard=`<div class="ach" style="${info.bg}"><div class="ach-ico">${info.i}</div>${achBody}</div>`;
 
-  // Mini achievements
-  const earned=SETS.achievements||{};
-  const earnedList=ACHS.filter(a=>earned[a.id]);
-  const achMini=`<div class="ach-section">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-<div class="ctitle" style="margin:0">Logros · ${earnedList.length}/${ACHS.length}</div>
-<button style="border:none;background:none;font-size:12px;color:var(--teal);font-weight:700;cursor:pointer" data-showach="1">${SHOW_ACH?'Ocultar ▲':'Ver todos ▼'}</button>
-</div>
-${earnedList.length===0?'<p style="font-size:12px;color:var(--text2);text-align:center;padding:8px 0">Completa hábitos para desbloquear logros 🔒</p>':
-`<div class="ach-grid">${earnedList.slice(0,SHOW_ACH?999:6).map(a=>`<div class="abadge earned" data-ach="${a.id}">
-<div class="abadge-ico" style="background:${lc}18">${a.i}</div>
-<div class="abadge-lbl">${a.n}</div>
-</div>`).join('')}</div>`}
-${SHOW_ACH?`<div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
-<div class="ctitle">Bloqueados</div>
-<div class="ach-grid">${ACHS.filter(a=>!earned[a.id]).map(a=>a.secret?
-`<div class="abadge hidden-locked"><div class="abadge-ico">🔒</div><div class="abadge-lbl">???</div></div>`:
-`<div class="abadge locked" data-ach="${a.id}"><div class="abadge-ico">${a.i}</div><div class="abadge-lbl">${a.n}</div></div>`
-).join('')}</div></div>`:''}
-${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${ACHS.find(a=>a.id===ACH_TIP)?.n}</strong><br>${ACHS.find(a=>a.id===ACH_TIP)?.desc}${earned[ACH_TIP]?' · Desbloqueado '+earned[ACH_TIP]:''}</div>`:''}
-</div>`;
-
+  // (La sección de logros vive solo en la pestaña Logros — aquí duplicaba UI y alargaba el scroll diario)
   const d=dd(ADATE),dl=dailyH(ADATE);
   const dobj=new Date(ADATE+'T12:00:00');
   const done=dl.filter(h=>isDone(d,h)).length+Math.min(d.agua||0,W);
@@ -2203,7 +2204,9 @@ ${journalInfo}
   const insBanner=PROMPT&&!SETS.installDismissed
     ?`<div class="ibanner"><div class="ibico">📲</div><div class="ibinf"><div class="ibtitle">Instalar como app</div><div class="ibsub">Funciona offline y abre desde tu pantalla de inicio</div></div><button class="ibbtn" id="ins-btn">Instalar</button><button data-insdismiss="1" aria-label="Descartar" style="border:none;background:none;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;padding:6px;flex-shrink:0">✕</button></div>`
     :'';
-  return daySel+insBanner+lvlCard+missionsHtml+factHtml+achCard+achMini+info2+hab;
+  const gradCount=Object.keys(SETS.graduated||{}).length;
+  const gradStrip=gradCount?`<div style="font-size:11px;color:var(--text2);text-align:center;margin:-2px 0 9px">🎓 ${gradCount} hábito${gradCount!==1?'s':''} dominado${gradCount!==1?'s':''} — sin registro diario</div>`:'';
+  return daySel+gradStrip+insBanner+lvlCard+missionsHtml+factHtml+achCard+info2+hab;
 }
 
 /* ── WEEK ── */
@@ -2333,16 +2336,24 @@ function vLogros(){
     }
     const nextMilestone=lvlM<4?`🥉 en ${4-weeks} sem`:lvlM<8?`🥈 en ${8-weeks} sem`:lvlM<13?`🥇 en ${13-weeks} sem`:'';
     const core=CORE_HABITS[h.id]?'<span class="core-star">⭐</span>':'';
-    return`<div class="mcard">
+    const grad=h.id==='__agua'?null:gradOn(h.id);
+    const sub=grad
+      ?`🎓 Dominado desde ${grad} — sin registro diario`
+      :`Nivel ${lvlM}/13 · ${weeks} sem completas${nextMilestone?' · '+nextMilestone:''}`;
+    const gradBtn=h.id==='__agua'?'':grad
+      ?`<button class="grad-btn" data-grad="${h.id}">↩️ Reactivar registro</button>`
+      :lvlM>=13?`<button class="grad-btn gold" data-grad="${h.id}">🎓 Graduar — ya lo dominas, deja de registrarlo</button>`:'';
+    return`<div class="mcard${grad?' grad':''}">
 <div class="mcard-hdr">
 <div class="mcard-ico">${h.e}</div>
 <div class="mcard-inf">
 <div class="mcard-name">${h.lbl}${core}</div>
-<div class="mcard-sub">Nivel ${lvlM}/13 · ${weeks} sem completas${nextMilestone?' · '+nextMilestone:''}</div>
+<div class="mcard-sub">${sub}</div>
 </div>
-<div class="mcard-medal">${medal||'⬜'}</div>
+<div class="mcard-medal">${grad?'🎓':medal||'⬜'}</div>
 </div>
 <div class="mtrack-wrap">${cells}</div>
+${gradBtn}
 </div>`;
   }
   // Agrupar hábitos por dominio (hidratación va en Fundamentos)
@@ -2399,11 +2410,14 @@ ${earnedList.length===0?'<p style="font-size:12px;color:var(--text2);text-align:
 ${ACH_TIP?`<div class="ach-detail" style="margin-top:10px">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${ACHS.find(a=>a.id===ACH_TIP)?.n}</strong><br>${ACHS.find(a=>a.id===ACH_TIP)?.desc}${earned[ACH_TIP]?' · Desbloqueado el '+earned[ACH_TIP]:''}</div>`:''}
 </div>`;
 
+  const nlCard=`<div class="card"><div class="ctitle">🌙 Noches Libres · ${nocheLibreCount()} desbloqueadas</div>
+<p style="font-size:12px;color:var(--text2);line-height:1.6">Cada 7 noches seguidas cumpliendo tus 2 hábitos de sueño (🔇 teléfono fuera + 📖 lectura ámbar) desbloqueas una Noche Libre con XP bonus: un descanso consciente que no rompe tu progreso.</p>
+</div>`;
   const shareCard=`<div class="card" style="text-align:center"><div class="ctitle">📸 Comparte tu progreso</div>
 <p style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:12px">Genera una tarjeta con tus stats para mandar por WhatsApp o poner en historias.</p>
 <button id="share-btn" style="width:100%;padding:12px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:.3px">📤 Descargar tarjeta</button>
 </div>`;
-  return domSummary+maestriaSection+logroSection+shareCard;
+  return domSummary+maestriaSection+logroSection+nlCard+shareCard;
 }
 
 /* ── EJERCICIO ── */
@@ -2442,7 +2456,7 @@ function vExercise(){
 
   const trkRows=EX_TRACK.map(id=>{
     const h=HABITS.find(x=>x.id===id);
-    if(!h)return'';
+    if(!h||gradOn(h.id))return'';
     // Mismo criterio que el quick-mark de misiones: se puede marcar cualquier día
     const canQuick=!h.subSteps&&!h.doseCount;
     const done=canQuick&&isDone(dd(today),h);
@@ -2480,11 +2494,26 @@ function vConfig(){
 <div style="font-size:13px;color:var(--text2);margin-bottom:12px">Fase actual: <strong style="color:var(--text)">${info.i} ${info.n}</strong><br>Progreso: ${prog.c}/${prog.g===999?'∞':prog.g} ${info.unit}</div>
 <div style="display:flex;gap:7px;flex-wrap:wrap">${PHASES.map((ph,i)=>`<button data-sp="${i}" style="padding:7px 11px;border-radius:9px;border:1.5px solid ${p===i?'var(--navy)':'var(--border)'};background:${p===i?'var(--navy)':'#fff'};color:${p===i?'#fff':'var(--text2)'};font-size:12px;font-weight:${p===i?700:400};cursor:pointer">${ph.i} ${ph.n.replace('🏆 ','')}</button>`).join('')}</div>
 <p style="font-size:11px;color:var(--text2);margin-top:10px">Ajusta manualmente si necesitas</p></div>`;
+  // Gestor de hábitos dominados: reduce la carga de registro diario
+  const gradObj=SETS.graduated||{};
+  const gradActive=HABITS.filter(h=>!h.retiredOn&&gradObj[h.id]);
+  const gradCandidates=HABITS.filter(h=>!h.retiredOn&&!gradObj[h.id]);
+  const gradRow=(h,g)=>`<div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border)">
+<span style="font-size:17px;width:24px;text-align:center;flex-shrink:0">${h.e}</span>
+<div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${h.lbl}</div>${g?`<div style="font-size:10.5px;color:var(--text2)">🎓 desde ${g}</div>`:''}</div>
+<button data-grad="${h.id}" style="border:1.5px solid ${g?'var(--border)':'#D4A843'};background:${g?'#fff':'#FFFBEF'};color:${g?'var(--text2)':'#8A6A10'};border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0">${g?'↩️ Reactivar':'🎓 Graduar'}</button>
+</div>`;
+  const gradCard=`<div class="card"><div class="ctitle">🎓 Hábitos dominados · ${gradActive.length}</div>
+<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px">Cuando un hábito ya es parte de ti, gradúalo: sale del registro diario y tu % se calcula sin él — menos fricción, más señal. Historial, XP y medallas se conservan, y puedes reactivarlo cuando quieras.</p>
+${gradActive.map(h=>gradRow(h,gradObj[h.id])).join('')||'<p style="font-size:11px;color:var(--text2);text-align:center;padding:6px 0">Aún no has graduado ningún hábito</p>'}
+<button data-showgrad="1" style="width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:12px;font-weight:700;cursor:pointer">${SHOW_GRADLIST?'Ocultar lista ▲':'🎓 Graduar un hábito ▼'}</button>
+${SHOW_GRADLIST?gradCandidates.map(h=>gradRow(h,null)).join(''):''}
+</div>`;
   const whyCard=`<div class="card"><div class="ctitle">🎯 Mi Por Qué · norte 2027</div>
 ${SETS.whyStatement?`<p class="why-card-quote">"${escH(SETS.whyStatement)}"</p>`:`<p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:14px">Aún no has definido tu norte para 2027. Una frase clara orienta cada día.</p>`}
 <button id="why-edit-btn" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer">${SETS.whyStatement?'✏️ Editar':'🎯 Definir'}</button>
 </div>`;
-  return ins+whyCard+phCtrl+lvlList+`
+  return ins+gradCard+whyCard+phCtrl+lvlList+`
 <div class="card"><div class="ctitle">Notificaciones</div>
 <div class="cfgitem" style="margin-bottom:0"><div class="cfgico">🔔</div><div class="cfginf"><div class="cfglbl">Recordatorio diario</div><div class="cfgsub">${SETS.notifications?'Activadas':'Desactivadas'} · ${SETS.reminderTime}</div></div><button class="toggle ${SETS.notifications?'on':'off'}" id="ntog"></button></div>
 <input type="time" id="rtim" value="${SETS.reminderTime}">
@@ -2511,10 +2540,28 @@ ${SETS.whyStatement?`<p class="why-card-quote">"${escH(SETS.whyStatement)}"</p>`
 
 
 /* ── EVENTS ── */
-// Teclado: Enter/Espacio activan los controles con role=button; Escape cierra overlays
+// Modal abierto actualmente (para focus trap con Tab)
+function _openModal(){
+  const dlg=['lvlup','daycomplete','chest','nochelibre'].map(id=>document.getElementById(id)).find(el=>el&&el.classList.contains('show'));
+  if(dlg)return dlg;
+  return ['backupprompt','jprompt','whyprompt'].map(id=>document.getElementById(id)).find(el=>el&&el.style.display==='flex')||null;
+}
+// Teclado: Enter/Espacio activan los controles con role=button; Escape cierra
+// overlays; Tab queda atrapado dentro del modal abierto
 document.addEventListener('keydown',e=>{
   if((e.key==='Enter'||e.key===' ')&&e.target instanceof Element&&e.target.matches('[role="button"]')){
     e.preventDefault();e.target.click();return;
+  }
+  if(e.key==='Tab'){
+    const modal=_openModal();
+    if(!modal)return;
+    const f=[...modal.querySelectorAll('button,textarea,input,[tabindex="0"]')].filter(el=>el.offsetParent!==null);
+    if(!f.length){e.preventDefault();return;} // overlays tap-para-continuar: el foco se queda en ellos
+    const first=f[0],last=f[f.length-1];
+    if(!modal.contains(document.activeElement)){e.preventDefault();first.focus();}
+    else if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    return;
   }
   if(e.key==='Escape'){
     const shown=id=>{const el=document.getElementById(id);return el&&el.classList.contains('show');};
@@ -2573,7 +2620,14 @@ document.addEventListener('click',e=>{
     return;
   }
   const tp=e.target.closest('[data-tip]');if(tp){TIP=TIP===tp.dataset.tip?null:tp.dataset.tip;render(true);return;}
-  const wn=e.target.closest('[data-wn]');if(wn){WOFF=Math.min(0,WOFF+parseInt(wn.dataset.wn));render();return;}
+  const wn=e.target.closest('[data-wn]');if(wn){
+    // Mismo offset que la vista Hoy: inspeccionar una semana aquí y cambiar a Hoy muestra la misma semana
+    EOFF=Math.min(0,EOFF+parseInt(wn.dataset.wn));
+    EOFF_EDIT=false;
+    const newMon=shift(monday(todayStr()),EOFF*7);
+    if(!week7(newMon).includes(ADATE))ADATE=EOFF===0?todayStr():newMon;
+    render();return;
+  }
   const eo=e.target.closest('[data-eo]');if(eo){
     EOFF=Math.min(0,EOFF+parseInt(eo.dataset.eo));
     EOFF_EDIT=false; // siempre bloquear al cambiar de semana
@@ -2584,7 +2638,6 @@ document.addEventListener('click',e=>{
   }
   const tl=e.target.closest('[data-togglelock]');if(tl){EOFF_EDIT=!EOFF_EDIT;render();return;}
   const hm=e.target.closest('[data-hm]');if(hm){YSW=YSW===hm.dataset.hm?null:hm.dataset.hm;render();return;}
-  const sa=e.target.closest('[data-showach]');if(sa){SHOW_ACH=!SHOW_ACH;render();return;}
   const ach=e.target.closest('[data-ach]');if(ach){ACH_TIP=ACH_TIP===ach.dataset.ach?null:ach.dataset.ach;render();return;}
   const sp=e.target.closest('[data-sp]');
   if(sp){const p2=parseInt(sp.dataset.sp);SETS.phase=p2;SETS.phaseStart=p2>0?todayStr():null;addPhaseEntry(p2);save();render();toast(['🔒 Sin creatina','🧪 Fase 5g activada','⚡ Fase 20g activada','🧪 Mantenimiento 10g activado','🏆 Mantenimiento 5g activado'][p2]);return;}
@@ -2629,6 +2682,20 @@ document.addEventListener('click',e=>{
   if(e.target.id==='btn-journal-prev'){exportWeekJournal(-1);return;}
   if(e.target.id==='btn-import'){document.getElementById('file-import')?.click();return;}
   const idm=e.target.closest('[data-insdismiss]');if(idm){SETS.installDismissed=1;save();render(true);return;}
+  const sg=e.target.closest('[data-showgrad]');if(sg){SHOW_GRADLIST=!SHOW_GRADLIST;render(true);return;}
+  const gr=e.target.closest('[data-grad]');
+  if(gr){
+    const hid=gr.dataset.grad;
+    SETS.graduated=SETS.graduated||{};
+    if(SETS.graduated[hid]){
+      delete SETS.graduated[hid];save();render(true);
+      toast('↩️ Reactivado — vuelve al registro diario');
+    }else{
+      SETS.graduated[hid]=todayStr();save();render(true);
+      toast('🎓 Dominado — fuera del registro. Historial y medallas se conservan');
+    }
+    return;
+  }
 });
 document.addEventListener('change',e=>{
   if(e.target.id==='rtim'){SETS.reminderTime=e.target.value;save();toast('Recordatorio: '+SETS.reminderTime);scheduleR();}
@@ -2689,6 +2756,8 @@ function sanitizeImport(data){
   else if(raw.whyStatement==='')s.whyStatement='';
   if(isObj(raw.pr)){s.pr={};if(numIn(raw.pr.streak,0,9999))s.pr.streak=Math.round(raw.pr.streak);if(typeof raw.pr.streakDate==='string'&&RE_DATE.test(raw.pr.streakDate))s.pr.streakDate=raw.pr.streakDate;}
   if(isObj(raw.masteryAwarded)){s.masteryAwarded={};Object.entries(raw.masteryAwarded).forEach(([k,v])=>{if(numIn(v,0,3))s.masteryAwarded[k]=Math.round(v);});}
+  if(isObj(raw.graduated)){s.graduated={};Object.entries(raw.graduated).forEach(([k,v])=>{if(typeof v==='string'&&RE_DATE.test(v))s.graduated[k.slice(0,40)]=v;});}
+  if(raw.installDismissed)s.installDismissed=1;
   if(isObj(raw.missions)){
     s.missions={};
     const TYPES=['EXPLORAR','DOMINAR','DEFENDER','CONQUISTAR'];
@@ -2811,7 +2880,7 @@ function generateMissions(monKey){
   let seed=0;for(const ch of monKey)seed=(seed*31+ch.charCodeAt(0))>>>0;
   const rnd=()=>{seed=(seed*1103515245+12345)>>>0;return seed/4294967296;};
   // Misiones 100% enfocadas en Retos (Cuadrante II Covey · Trigger interno Hooked)
-  const retos=HABITS.filter(h=>!h.retiredOn&&h.challenge);
+  const retos=HABITS.filter(h=>!h.retiredOn&&!gradOn(h.id)&&h.challenge);
   if(!retos.length){SETS.missions[monKey]={candidates:[],completedIds:[]};save();return;}
   // Anotar cada reto con sus métricas históricas
   const annotated=retos.map(h=>{
@@ -2884,10 +2953,15 @@ function checkMissions(){
 }
 /* ── MI POR QUÉ (Covey H2) ── */
 function escH(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+// Devolver el foco al elemento que abrió el modal (lectores de pantalla / teclado)
+let _modalFocus=null;
+function _grabModalFocus(){_modalFocus=document.activeElement;}
+function _restoreModalFocus(){if(_modalFocus&&document.contains(_modalFocus)){try{_modalFocus.focus();}catch(e){}}_modalFocus=null;}
 function showWhyPrompt(){
   const el=document.getElementById('whyprompt');
   const input=document.getElementById('why-input');
   if(!el||!input)return;
+  _grabModalFocus();
   input.value=SETS.whyStatement||'';
   el.style.display='flex';
   setTimeout(()=>{try{input.focus();}catch(e){}},250);
@@ -2895,6 +2969,7 @@ function showWhyPrompt(){
 function closeWhyPrompt(){
   const el=document.getElementById('whyprompt');
   if(el)el.style.display='none';
+  _restoreModalFocus();
 }
 function saveWhy(text){
   const trimmed=(text||'').replace(/\s+/g,' ').trim();
@@ -3043,6 +3118,7 @@ let _jctx=null; // {date, habitId}
 function journalText(date,hid){return (DB[date]&&DB[date][hid+'_text'])||'';}
 function showJPrompt(date,hid){
   const h=HABITS.find(x=>x.id===hid);if(!h)return;
+  _grabModalFocus();
   _jctx={date,hid};
   document.getElementById('j-ico').textContent=h.e;
   document.getElementById('j-lbl').textContent=h.lbl;
@@ -3052,7 +3128,7 @@ function showJPrompt(date,hid){
   document.getElementById('jprompt').style.display='flex';
   setTimeout(()=>{try{input.focus();}catch(e){}},200);
 }
-function closeJPrompt(){document.getElementById('jprompt').style.display='none';_jctx=null;}
+function closeJPrompt(){document.getElementById('jprompt').style.display='none';_jctx=null;_restoreModalFocus();}
 function saveJournal(){
   if(!_jctx)return;
   const text=document.getElementById('j-input').value.trim();
@@ -3072,20 +3148,34 @@ function shouldPromptBackup(){
 }
 function showBackupPrompt(){
   SETS.backupPromptDay=todayStr();save();
+  _grabModalFocus();
   const el=document.getElementById('backupprompt');
   if(el)el.style.display='flex';
   const btn=document.getElementById('bp-export-btn');
-  if(btn)btn.onclick=function(){exportProfile();closeBackupPrompt();};
+  if(btn){btn.onclick=function(){exportProfile();closeBackupPrompt();};try{btn.focus();}catch(e){}}
 }
 function closeBackupPrompt(){
   const el=document.getElementById('backupprompt');
   if(el)el.style.display='none';
+  _restoreModalFocus();
 }
 
 /* ── INIT ── */
 load();checkUnlock();checkAchievements();render();checkWeekComplete();scheduleR();
 // Pedir almacenamiento persistente: reduce el riesgo de que el navegador borre localStorage
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+// Teclado en pantalla (iOS): --kb = alto del teclado sobre el viewport visual,
+// para que los modales con textarea no queden tapados
+if(window.visualViewport){
+  const vv=window.visualViewport;
+  const syncKb=()=>{
+    const kb=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);
+    document.documentElement.style.setProperty('--kb',kb+'px');
+  };
+  vv.addEventListener('resize',syncKb);
+  vv.addEventListener('scroll',syncKb);
+  syncKb();
+}
 // Al volver a la app: si cambió el día, re-evaluar todo (fases, cofres, misiones)
 // y re-agendar el recordatorio con datos frescos (racha/% se congelan al agendar)
 let _lastDay=todayStr();
