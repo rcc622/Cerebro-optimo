@@ -8,6 +8,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Cerebro Óptimo">
 <meta name="theme-color" content="#0D1B2A">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="img/icon-192.png">
 <title>Mi Cerebro Óptimo</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -744,12 +747,12 @@ const PHASES=[
 const EX_DAYS=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 const EX_TRACK=['walk5am','pasos','caminata20','fuerza'];
 const WORKOUTS=[
-  {focus:'Día A · Fuerza',img:'img/rutina-lunes.png'},
-  {focus:'Cuerda + Movilidad',img:'img/rutina-martes.png'},
-  {focus:'Día B · Fuerza',img:'img/rutina-miercoles.png'},
-  {focus:'Recuperación activa',img:'img/rutina-jueves.png'},
-  {focus:'Día A · Fuerza',img:'img/rutina-viernes.png'},
-  {focus:'Día B + Cuerda',img:'img/rutina-sabado.png'},
+  {focus:'Día A · Fuerza',img:'img/rutina-lunes.webp'},
+  {focus:'Cuerda + Movilidad',img:'img/rutina-martes.webp'},
+  {focus:'Día B · Fuerza',img:'img/rutina-miercoles.webp'},
+  {focus:'Recuperación activa',img:'img/rutina-jueves.webp'},
+  {focus:'Día A · Fuerza',img:'img/rutina-viernes.webp'},
+  {focus:'Día B + Cuerda',img:'img/rutina-sabado.webp'},
 ];
 const ROUTINE_GENERAL=`Equipo disponible: mancuernas, mancuerna rusa, tapete de yoga negro y cuerda para saltar negra.
 
@@ -2360,7 +2363,7 @@ function vExercise(){
   const pick=`<div class="ex-pick">${EX_DAYS.map((d,k)=>`<button class="ex-day${k===i?' active':''}${k===realDow?' today':''}" data-exday="${k}">${d.slice(0,3).toUpperCase()}</button>`).join('')}</div>`;
 
   const phId='exph'+i;
-  const img=`<div class="ex-img-wrap"><img class="ex-img" src="${w.img}" alt="Rutina ${EX_DAYS[i]}" loading="lazy" onload="var p=document.getElementById('${phId}');if(p)p.remove()" onerror="this.style.display='none'"><div class="ex-img-ph" id="${phId}"><span class="em">🏋️</span>Infografía de ${EX_DAYS[i]} pendiente<br>Súbela como <b>${escH(w.img)}</b></div></div>`;
+  const img=`<div class="ex-img-wrap"><img class="ex-img" src="${w.img}" alt="Rutina ${EX_DAYS[i]}" loading="lazy" onload="var p=document.getElementById('${phId}');if(p)p.remove()" onerror="this.style.display='none'"><div class="ex-img-ph" id="${phId}"><span class="em">🏋️</span>Infografía no disponible por ahora.<br>Abajo tienes la rutina completa en texto 👇</div></div>`;
 
   const txt=ROUTINES[i]||'';
   const txtToggle=txt?`<button class="rt-toggle" data-extxt="1">${EXTXT?'📝 Ocultar rutina en texto ▲':'📝 Ver rutina en texto ▼'}</button>`:'';
@@ -2712,7 +2715,6 @@ if('serviceWorker' in navigator){
   });
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
-try{const m={name:'Mi Cerebro Óptimo',short_name:'Cerebro',start_url:'.',display:'standalone',background_color:'#F5F4F0',theme_color:'#0D1B2A',icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230D1B2A'/><text y='.9em' font-size='72' x='14'>🧠</text></svg>",sizes:'any',type:'image/svg+xml'}]};const l=document.createElement('link');l.rel='manifest';l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'}));document.head.appendChild(l);}catch(e){}
 
 /* ── MISIONES SEMANALES (Hooked loop · Covey H3 planificación semanal) ── */
 function generateMissions(monKey){
