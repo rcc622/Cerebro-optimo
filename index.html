@@ -515,7 +515,7 @@ const HABITS=[
      {k:'lonches630',e:'🥪',lbl:'Lonches terminados',t:'6:30'},
      {k:'listo7',    e:'🚪',lbl:'Listo en la puerta',t:'7:00'}
    ],
-   tip:'Keystone desglosado — 5 micro-pasos concretos en vez de un solo binario opaco. El éxito de las 7am se construye la NOCHE anterior (2 pasos) y se ejecuta en 3 gates temporales en la mañana.\n\n🎯 Por qué funciona (Covey · Cuadrante II): los 2 checks de anoche son pura prevención — importante pero no urgente. Si los saltas, la mañana se vuelve reactiva (Cuadrante I: urgente + importante = caos). El desglose convierte una meta opaca en una cadena causal diagnosticable: cuando no llegas, sabes exactamente qué eslabón se rompió.\n\n💡 Progreso parcial cuenta: marcar 3/5 vale 60% — no es todo-o-nada. Pero la meta es los 5.\n\n📚 Duhigg, The Power of Habit (2012): los hábitos llave reorganizan conductas aguas arriba. Covey, 7 Hábitos (1989): "lo que importa es que lo importante siga siendo lo importante" — Cuadrante II es donde se construyen los resultados sostenibles.'},
+   tip:'Keystone desglosado — 6 micro-pasos concretos en vez de un solo binario opaco. El éxito de las 7am se construye la NOCHE anterior (2 pasos) y se ejecuta en 4 gates temporales en la mañana.\n\n🎯 Por qué funciona (Covey · Cuadrante II): los 2 checks de anoche son pura prevención — importante pero no urgente. Si los saltas, la mañana se vuelve reactiva (Cuadrante I: urgente + importante = caos). El desglose convierte una meta opaca en una cadena causal diagnosticable: cuando no llegas, sabes exactamente qué eslabón se rompió.\n\n💡 Progreso parcial cuenta: marcar 3/6 vale 50% — no es todo-o-nada. Pero la meta es los 6.\n\n📚 Duhigg, The Power of Habit (2012): los hábitos llave reorganizan conductas aguas arriba. Covey, 7 Hábitos (1989): "lo que importa es que lo importante siga siendo lo importante" — Cuadrante II es donde se construyen los resultados sostenibles.'},
   // DÍA
   {id:'nueces',  e:'🌰',lbl:'Almendras (15-20 piezas)',      blk:'Día',freq:'daily',addedOn:'2020-01-01',
    tip:'La vitamina E protege las membranas neuronales del daño oxidativo. Cómelas con piel sobre avena entera remojada la noche anterior en leche sin azúcar — el remojo reduce el ácido fítico de ambas y mejora absorción. Agrega canela: es antiinflamatoria y regula insulina. Siempre después del huevo y creatina en ayunas.\n📚 Morris et al., JAMA (2002): alto consumo de vitamina E se asoció con 67% menor riesgo de Alzheimer.'},
@@ -1061,7 +1061,10 @@ const HABIT_DOM={
   lectura:'performance', caminata20:'performance', mit:'performance',
   journal:'performance', notasjunta:'performance',
   walk5am:'retos', pasos:'retos', habanero:'retos', omega3:'retos',
-  respjunta:'retos', pelotatenis:'retos'
+  respjunta:'retos', pelotatenis:'retos',
+  fuerza:'retos', meditacion:'retos', 'friobaño':'retos',
+  cuarto:'retos', naturaleza:'retos', hijoscalidad:'retos', reflexion:'retos',
+  pareja:'retos', mealprep:'retos', carro:'retos', estudio:'retos'
 };
 /* Keystone habits (Duhigg) — mayor leverage downstream, se marcan con ⭐ */
 const CORE_HABITS={agua:1, aguafria:1, huevo:1, p7am:1, vino:1, noscreen:1};
@@ -1171,7 +1174,7 @@ function addPhaseEntry(phase){
   hist.sort((a,b)=>a.start<b.start?-1:a.start>b.start?1:0);
 }
 function wg(date){return phOn(date)===2?7:6}
-function wLabel(){return ph()===2?'3.5L · 7 botellas':'3L · 6 botellas'}
+function wLabel(date){return phOn(date)===2?'3.5L · 7 botellas':'3L · 6 botellas'}
 // Feriados oficiales de México (Ley Federal del Trabajo art. 74) — fijos e inamovibles
 // Incluye: 1ene, 5feb(1er lunes), 21mar(3er lunes), 1may, 16sep, 20nov(3er lunes), 25dic
 // Más transmisión de poder ejecutivo (cada 6 años: 2024, 2030...)
@@ -1268,7 +1271,7 @@ function calcXP(){
     let dayXp=0;
     HABITS.forEach(h=>{
       if(h.subSteps){
-        dayXp+=subDoneCount(d,h); // 1 XP por sub-paso (total 5 XP si completo, igual que un hábito normal)
+        dayXp+=subDoneCount(d,h); // 1 XP por sub-paso (p7am: 6 pasos = 6 XP si completo)
       } else if(isDone(d,h)){
         dayXp+=5;
         if(h.challenge&&h.xpBonus)dayXp+=h.xpBonus; // challenge bonus
@@ -1310,7 +1313,11 @@ function xpToNext(xp){
 
 /* ── STREAK / HABIT STREAK ── */
 function calcStreakDays(){
-  let c=0,d=todayStr();
+  // Si hoy aún no se marcó nada, arrancar desde ayer — mismo criterio que
+  // sleepHabitsStreak: la racha no se muestra en 0 cada mañana
+  let d=todayStr();
+  if(dayRate(d)===0)d=shift(d,-1);
+  let c=0;
   for(let i=0;i<500;i++){if(dayRate(d)>0)c++;else break;d=shift(d,-1);}
   return c;
 }
@@ -1330,7 +1337,14 @@ function morningStreakDays(){
   let c=0,d=todayStr();
   for(let i=0;i<500;i++){
     const p=phOn(d);
-    const mh=HABITS.filter(h=>h.blk==='Mañana'&&(!h.addedOn||h.addedOn<=d)&&(h.minP===undefined||(p>=h.minP&&p<=h.maxP)));
+    // Mismos filtros de vigencia que la vista diaria: sin esto la racha exige
+    // hábitos jubilados (retiredOn) o de día laboral en fin de semana → 0 perpetuo
+    const mh=HABITS.filter(h=>h.blk==='Mañana'
+      &&(!h.addedOn||h.addedOn<=d)
+      &&(!h.retiredOn||h.retiredOn>d)
+      &&(h.minP===undefined||(p>=h.minP&&p<=h.maxP))
+      &&!(h.workdayOnly&&!isWorkday(d))
+      &&!(h.weekendOnly&&isWorkday(d)));
     const x=dd(d);
     if(mh.length&&mh.every(h=>isDone(x,h)))c++;else break;
     d=shift(d,-1);
@@ -1397,19 +1411,26 @@ function weeklyChestRank(xp){
   return{t:'🥉 Cofre de Bronce',c:'#CD7F32'};
 }
 function checkWeekComplete(){
-  const mon=monday(todayStr()),key='chest_'+mon;
-  if(SETS[key])return; // already opened
-  const dates=week7(mon);
-  const allDone=dates.every(s=>dayRate(s)>0);
-  if(!allDone)return;
-  const avg=Math.round(dates.reduce((a,s)=>a+dayRate(s),0)/7);
-  const bonus=weeklyChestXP(avg);
-  if(!bonus)return;
-  const lvlB=calcLvl(calcXP());
-  SETS[key]=bonus;save();
-  const lvlA=calcLvl(calcXP());
-  if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),1400); // después del chest
-  setTimeout(()=>showChest(bonus,avg),800);
+  // Revisa la semana actual Y las 8 anteriores: una semana ganada el domingo
+  // no se pierde si el cofre no se abrió ese mismo día (antes solo se evaluaba
+  // la semana en curso, y solo al cerrar el modal de día completo)
+  const curMonday=monday(todayStr());
+  let show=null;
+  for(let k=8;k>=0;k--){
+    const mon=shift(curMonday,-7*k),key='chest_'+mon;
+    if(SETS[key])continue; // already opened
+    const dates=week7(mon);
+    if(!dates.every(s=>dayRate(s)>0))continue;
+    const avg=Math.round(dates.reduce((a,s)=>a+dayRate(s),0)/7);
+    const bonus=weeklyChestXP(avg);
+    if(!bonus)continue;
+    const lvlB=calcLvl(calcXP());
+    SETS[key]=bonus;save();
+    const lvlA=calcLvl(calcXP());
+    if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),1400); // después del chest
+    show={bonus,avg};
+  }
+  if(show)setTimeout(()=>showChest(show.bonus,show.avg),800);
 }
 function showChest(bonus,avg){
   const rank=weeklyChestRank(bonus);
@@ -1426,7 +1447,13 @@ function closeChest(){document.getElementById('chest').classList.remove('show');
 /* ── DAY COMPLETE ── */
 function checkDayComplete(){
   const today=todayStr();
-  if(dayRate(today)<100)return;
+  if(dayRate(today)<100){
+    // Si el día dejó de estar al 100% (se desmarcó algo), revertir el bono
+    // para no dejar XP fantasma ni bloquear el +10 de día ≥80%
+    const d=DB[today];
+    if(d&&d._streakBonus){delete d._streakBonus;if(SETS.lastDayComplete===today)delete SETS.lastDayComplete;save();}
+    return;
+  }
   if(SETS.lastDayComplete===today)return; // already shown
   SETS.lastDayComplete=today;save();
   const streak=perfDayStreak();
@@ -1496,9 +1523,19 @@ function showNocheLibre(count,bonus,streak){
 function closeNocheLibre(){document.getElementById('nochelibre').classList.remove('show');}
 
 /* ── CHALLENGE WEEK TRACKING ── */
+function allMondays(){
+  // Todos los lunes desde el primer día con datos hasta hoy — el progreso de
+  // medallas/maestría no se reinicia el 1 de enero ni pierde la semana que cruza el año
+  const today=todayStr(),cur=monday(today);
+  const keys=Object.keys(DB).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)&&k<=today).sort();
+  let m=keys.length?monday(keys[0]):cur;
+  const r=[];
+  while(m<=cur&&r.length<1100){r.push(m);m=shift(m,7);}
+  return r;
+}
 function challengeWeekCount(habitId,weeklyGoal){
   // Count weeks where habit was done >= weeklyGoal times
-  const allW=yearMondays(new Date().getFullYear());
+  const allW=allMondays();
   const today=todayStr();
   let count=0;
   allW.forEach(mon=>{
@@ -1512,8 +1549,8 @@ function challengeWeekCount(habitId,weeklyGoal){
   return Math.min(count,13);
 }
 function challengeWeekThisWeek(habitId){
-  const mon=monday(todayStr());
-  return week7(mon).filter(s=>dd(s)[habitId]).length;
+  const mon=monday(todayStr()),today=todayStr();
+  return week7(mon).filter(s=>s<=today&&dd(s)[habitId]).length;
 }
 
 /* ── ACHIEVEMENTS CHECK ── */
@@ -1661,8 +1698,9 @@ function checkPRs(){
       el.classList.add('show');clearTimeout(_at);_at=setTimeout(()=>el.classList.remove('show'),4500);
     }
   }
-  // Detectar caída grande para habilitar logro Comeback
-  if(prev>=30&&s<prev-10&&!SETS.comebackFrom){SETS.comebackFrom=prev;save();}
+  // Detectar caída grande para habilitar logro Comeback — se actualiza si una
+  // caída posterior viene de una racha mayor (permite alcanzar comeback50)
+  if(prev>=30&&s<prev-10&&(SETS.comebackFrom||0)<prev){SETS.comebackFrom=prev;save();}
 }
 
 /* ── MICRO-FEEDBACK Tier 1 ── */
@@ -1757,14 +1795,29 @@ function phaseProgress(){
   return{c:999,g:999,pct:100};
 }
 function checkUnlock(){
-  const p=ph();
-  if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();addPhaseEntry(1);save();toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
-  else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();addPhaseEntry(2);save();toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
-  else if(p===2&&daysInPhase()>=14){SETS.phase=3;SETS.phaseStart=todayStr();addPhaseEntry(3);save();toast('🧪 ¡CARGA COMPLETA! Mantenimiento elevado 10g · 8 semanas');}
-  else if(p===3&&daysInPhase()>=56){SETS.phase=4;SETS.phaseStart=todayStr();addPhaseEntry(4);save();toast('🏆 8 semanas completas · ahora 5g/día de por vida');}
+  // En bucle y acreditando el tiempo real transcurrido: si el usuario no abre
+  // la app durante semanas, las transiciones por tiempo (fase 2→3) no
+  // reinician su reloj ni requieren una interacción por fase
+  let changed=false;
+  for(let guard=0;guard<4;guard++){
+    const p=ph();
+    if(p===0&&waterStreak(6)>=7){SETS.phase=1;SETS.phaseStart=todayStr();addPhaseEntry(1);changed=true;toast('🧪 ¡LOGRO! Ya puedes tomar 5g de creatina');}
+    else if(p===1&&creStreak()>=14){SETS.phase=2;SETS.phaseStart=todayStr();addPhaseEntry(2);changed=true;toast('⚡ ¡FASE DESBLOQUEADA! Ahora 20g/día');}
+    else if(p===2&&daysInPhase()>=14){const extra=daysInPhase()-14;SETS.phase=3;SETS.phaseStart=shift(todayStr(),-extra);addPhaseEntry(3);changed=true;toast('🧪 ¡CARGA COMPLETA! Mantenimiento elevado 10g · 8 semanas');}
+    else if(p===3&&daysInPhase()>=56){SETS.phase=4;SETS.phaseStart=todayStr();addPhaseEntry(4);changed=true;toast('🏆 8 semanas completas · ahora 5g/día de por vida');}
+    else break;
+  }
+  if(changed)save();
 }
 
 /* ── TOGGLE / WATER ── */
+function editGuard(s){
+  // Bloquea por la FECHA que se edita, no por el estado de la vista: los
+  // quick-marks de hoy funcionan aunque la vista esté en una semana pasada
+  if(s>todayStr()){toast('⏳ Ese día aún no llega');return false;}
+  if(s<monday(todayStr())&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return false;}
+  return true;
+}
 function adjustDose(s,h,cur,next){
   const diff=next-cur;
   DB[s][h.id]=next;
@@ -1781,7 +1834,7 @@ function adjustDose(s,h,cur,next){
   }
 }
 function toggleSub(s,hid,k){
-  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
+  if(!editGuard(s))return;
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};
   if(!DB[s][hid]||typeof DB[s][hid]!=='object')DB[s][hid]={};
@@ -1794,7 +1847,7 @@ function toggleSub(s,hid,k){
   render(true);
 }
 function toggle(s,id){
-  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
+  if(!editGuard(s))return;
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};
   const h=HABITS.find(x=>x.id===id);
@@ -1826,7 +1879,7 @@ function toggle(s,id){
   render(true);
 }
 function setDose(s,id,target){
-  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
+  if(!editGuard(s))return;
   const h=HABITS.find(x=>x.id===id);if(!h||!h.doseCount)return;
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};
@@ -1844,7 +1897,7 @@ function setDose(s,id,target){
   render(true);
 }
 function setWater(s,n){
-  if(EOFF<0&&!EOFF_EDIT){toast('🔒 Toca ✏️ para editar esta semana');return;}
+  if(!editGuard(s))return;
   const xpB=calcXP(),lvlB=calcLvl(xpB);
   if(!DB[s])DB[s]={};DB[s].agua=n;
   // Keep aguaCre consistent: can't have more cre-water than total water
@@ -1919,7 +1972,9 @@ function animateHdrBars(dr,wr,xpPct){
 
 /* ── TODAY ── */
 function vToday(xp,lvl,lc,li){
-  const today=todayStr(),baseMon=shift(monday(today),EOFF*7),m=baseMon,dates=week7(m),p=ph(),W=wg(),prog=phaseProgress(),info=PHASES[p];
+  // W = meta de agua de la fecha visible (no de la fase actual): editar días de
+  // otra fase muestra sus burbujas y conteo reales
+  const today=todayStr(),baseMon=shift(monday(today),EOFF*7),m=baseMon,dates=week7(m),p=ph(),W=wg(ADATE),prog=phaseProgress(),info=PHASES[p];
   const isPastWeek=EOFF<0;
   const isLocked=isPastWeek&&!EOFF_EDIT;
   // Ensure ADATE is within the visible week
@@ -2035,7 +2090,12 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
 
   let hab='';
   BLOCKS.forEach(blk=>{
-    const bh=activeH(ADATE).filter(h=>h.blk===blk&&!(h.workdayOnly&&!isWorkday(ADATE))&&!(h.weekendOnly&&isWorkday(ADATE)));
+    // Los hábitos con día restringido se muestran también si ya están marcados
+    // esa fecha (p. ej. un reto weekendOnly marcado entre semana vía misión) —
+    // si no, quedan invisibles y no hay dónde desmarcarlos
+    const bh=activeH(ADATE).filter(h=>h.blk===blk&&(
+      (!(h.workdayOnly&&!isWorkday(ADATE))&&!(h.weekendOnly&&isWorkday(ADATE)))||isDone(dd(ADATE),h)
+    ));
     if(!bh.length&&blk!=='Día')return;
     const {c}=BC[blk];
     const isRetos=blk==='Retos';
@@ -2057,10 +2117,10 @@ ${ACH_TIP?`<div class="ach-detail">${ACHS.find(a=>a.id===ACH_TIP)?.i} <strong>${
       hab+=`<div class="wcard${wc2>=W?' done':''}">
 <div class="wcard-top">
 <div style="width:22px;height:22px;border-radius:50%;border:2px solid ${wc2>=W?'var(--teal)':'#D5D0C8'};background:${wc2>=W?'var(--teal)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0">${wc2>=W?'✓':''}</div>
-<div style="flex:1"><div class="hlbl">💧 Hidratación · ${wLabel()}</div><div class="hsub">${wc2} de ${W} botellas · ${wc2*500}ml${ac>0?` (${ac} 🧪 creatina + ${wc2-ac} 💧 agua)`:''}</div></div>
+<div style="flex:1"><div class="hlbl">💧 Hidratación · ${wLabel(ADATE)}</div><div class="hsub">${wc2} de ${W} botellas · ${wc2*500}ml${ac>0?` (${ac} 🧪 creatina + ${wc2-ac} 💧 agua)`:''}</div></div>
 <button class="tipbtn" data-tip="__agua">ℹ️</button>
 </div><div class="wpills">${pills}</div>
-</div>${TIP==='__agua'?`<div class="tipbox">💡 Cada burbuja = 1 botella de 500ml. Meta: ${W} botellas = ${W/2}L.${p===2?' Fase 20g: 3.5L para proteger riñones.':''}</div>`:''}`;
+</div>${TIP==='__agua'?`<div class="tipbox">💡 Cada burbuja = 1 botella de 500ml. Meta: ${W} botellas = ${W/2}L.${phOn(ADATE)===2?' Fase 20g: 3.5L para proteger riñones.':''}</div>`:''}`;
     }
     bh.forEach(h=>{
       const isDosed=!!h.doseCount;
@@ -2145,9 +2205,9 @@ function vWeek(m){
   const bars=`<div class="card"><div class="ctitle">Tasa de éxito por día</div>
 <div class="wbars">${dates.map((s,i)=>{const r=drs[i],isT=s===today;return`<div class="wcol"><div class="wnum">${r>0?r+'%':''}</div><div class="wtrack"><div class="wfill" style="height:${r}%;background:${rc(r)}"></div></div><div class="wlbl" style="color:${isT?'var(--navy)':'var(--text2)'};font-weight:${isT?800:400}">${DS[i]}</div></div>`;}).join('')}
 </div></div>`;
-  const W=wg(),allH=activeH(dates[6]);
+  const W=wg(dates[6]),allH=activeH(dates[6]);
   const gh=`<div class="grow"><div class="gname"></div>${dates.map((s,i)=>{const isT=s===today;return`<div class="gcell" style="background:none;color:${isT?'var(--navy)':'#AAA'};font-weight:${isT?700:400};font-size:11px">${DS[i]}</div>`;}).join('')}<div class="gtotal"></div></div>`;
-  const wr=`<div class="grow"><div class="gname">💧 Agua (${W/2}L)</div>${dates.map(s=>{const c=Math.min(dd(s).agua||0,W),pp=Math.round(c/W*100);const bg=pp>=100?'var(--teal)':pp>=50?'#6BBBD0':'#EFEDE8';return`<div class="gcell" style="background:${bg};color:${pp>=50?'#fff':'#999'}">${pp>=100?'✓':c||''}</div>`;}).join('')}<div class="gtotal">${dates.filter(s=>(dd(s).agua||0)>=W).length}/7</div></div>`;
+  const wr=`<div class="grow"><div class="gname">💧 Agua (${W/2}L)</div>${dates.map(s=>{const g=wg(s),c=Math.min(dd(s).agua||0,g),pp=Math.round(c/g*100);const bg=pp>=100?'var(--teal)':pp>=50?'#6BBBD0':'#EFEDE8';return`<div class="gcell" style="background:${bg};color:${pp>=50?'#fff':'#999'}">${pp>=100?'✓':c||''}</div>`;}).join('')}<div class="gtotal">${dates.filter(s=>(dd(s).agua||0)>=wg(s)).length}/7</div></div>`;
   const gr=allH.map(h=>{const {c}=BC[h.blk];const tot=dates.filter(s=>isDone(dd(s),h)).length;return`<div class="grow"><div class="gname">${h.e} ${h.lbl.substring(0,18)}</div>${dates.map(s=>{const on=isDone(dd(s),h);return`<div class="gcell" style="background:${on?c:'#EFEDE8'}">${on?'✓':''}</div>`;}).join('')}<div class="gtotal">${tot}/7</div></div>`;}).join('');
   const grid=`<div class="card"><div class="ctitle">Grid de hábitos</div>${gh}${wr}${gr}</div>`;
   const wr2=weekRate(m);
@@ -2191,11 +2251,10 @@ ${golds.map(h=>`<div class="gold-item"><div class="gold-coin">🪙</div><div><di
 }
 
 /* ── MAESTRÍA CALCULATIONS ── */
-function yearMondays2(){return yearMondays(new Date().getFullYear());}
 // Count weeks where habit was marked every single day (Mon-Sun)
 function habitMasteryWeeks(hid){
   const h=HABITS.find(x=>x.id===hid);
-  const allW=yearMondays2();
+  const allW=allMondays();
   const today=todayStr();
   let count=0;
   allW.forEach(mon=>{
@@ -2210,11 +2269,12 @@ function habitMasteryWeeks(hid){
 }
 // Water mastery: weeks with full water goal every day
 function waterMasteryWeeks(){
-  const allW=yearMondays2(),W=wg(),today=todayStr();
+  const allW=allMondays(),today=todayStr();
   let count=0;
   allW.forEach(mon=>{
     const days=week7(mon);
-    const weekDone=days.every(s=>s>today?false:(dd(s).agua||0)>=W);
+    // Meta de la fase vigente en CADA fecha — cambiar de fase no borra maestría histórica
+    const weekDone=days.every(s=>s>today?false:(dd(s).agua||0)>=wg(s));
     if(weekDone)count++;
   });
   return Math.min(count,13);
@@ -2374,12 +2434,12 @@ function vExercise(){
   const trkRows=EX_TRACK.map(id=>{
     const h=HABITS.find(x=>x.id===id);
     if(!h)return'';
-    const canQuick=!h.subSteps&&!h.doseCount&&(!h.workdayOnly||isWorkday(today))&&(!h.weekendOnly||!isWorkday(today));
+    // Mismo criterio que el quick-mark de misiones: se puede marcar cualquier día
+    const canQuick=!h.subSteps&&!h.doseCount;
     const done=canQuick&&isDone(dd(today),h);
-    const naReason=h.workdayOnly&&!isWorkday(today)?'Solo días laborales':h.weekendOnly&&isWorkday(today)?'Solo fin de semana':'No disponible hoy';
     const btn=canQuick
       ?`<button class="m-quick${done?' on':''}" data-mquick="${h.id}" aria-label="Marcar hoy">${done?'✓':'·'}</button>`
-      :`<span class="m-quick na" title="${naReason}" aria-hidden="true">·</span>`;
+      :`<span class="m-quick na" title="Márcalo en su tarjeta" aria-hidden="true">·</span>`;
     return`<div class="ex-trk"><div class="ex-trk-e">${h.e}</div><div class="ex-trk-b"><div class="ex-trk-t">${escH(h.lbl)}</div><div class="ex-trk-s">${h.weeklyGoal?h.weeklyGoal+'×/semana':'diario'}</div></div>${btn}</div>`;
   }).join('');
 
@@ -2996,9 +3056,21 @@ function closeBackupPrompt(){
 }
 
 /* ── INIT ── */
-load();checkAchievements();render();scheduleR();
+load();checkUnlock();checkAchievements();render();checkWeekComplete();scheduleR();
 // Pedir almacenamiento persistente: reduce el riesgo de que el navegador borre localStorage
 if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
+// Al volver a la app: si cambió el día, re-evaluar todo (fases, cofres, misiones)
+// y re-agendar el recordatorio con datos frescos (racha/% se congelan al agendar)
+let _lastDay=todayStr();
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden)return;
+  if(todayStr()!==_lastDay){
+    _lastDay=todayStr();
+    ADATE=todayStr();EOFF=0;EOFF_EDIT=false;
+    checkUnlock();checkAchievements();render();checkWeekComplete();
+  }
+  scheduleR();
+});
 // Primer uso: lanzar prompt de Mi Por Qué si aún no se ha definido ni pospuesto
 if(SETS.whyStatement===undefined)setTimeout(showWhyPrompt,700);
 // Día de la suerte: toast una sola vez al día
