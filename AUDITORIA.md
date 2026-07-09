@@ -4,9 +4,10 @@
 **Método:** lectura completa del código con verificación línea por línea; solo se incluyen hallazgos confirmados con referencia al código.
 
 > **Estado (2026-07-09): CORREGIDO en esta misma rama.**
-> ✅ Resueltos: A1-A8 completos · M1, M3-M9, M10, M11, M12, M16, M17 · M2 y M13 parciales (recordatorios se re-agendan al volver a la app; Escape cierra modales) · B1, B2, B6, B7, B8, B9.
-> ⏳ Pendientes (decisiones de diseño, no bugs): M14 (consolidar la cascada de overlays de celebración), M15 (deduplicar logros en Hoy y unificar offsets semanales), B3 (visualViewport con teclado iOS), B4 (render incremental), M13 completo (focus-trap con `<dialog>`).
-> Verificación: 23 checks de humo con Playwright/Chromium + prueba offline real (la app abre y opera sin conexión). Las referencias de línea de este documento corresponden al código *antes* de las correcciones.
+> ✅ Resueltos: A1-A8 completos · M1, M3-M17 (todos los medios salvo M2 parcial: los recordatorios se re-agendan al volver a la app, límite de la API TimestampTrigger) · B1, B2, B3, B6, B7, B8, B9.
+> ⏳ Único pendiente: B4 (render incremental en vez de innerHTML total — optimización, sin impacto funcional a esta escala).
+> ➕ Además se agregó el sistema de **hábitos dominados (🎓 graduación)**: los hábitos ya interiorizados salen del registro diario (y del % del día) conservando historial, XP y medallas — reversible desde Config.
+> Verificación: 39 checks de humo con Playwright/Chromium + prueba offline real. Las referencias de línea de este documento corresponden al código *antes* de las correcciones.
 
 ---
 
