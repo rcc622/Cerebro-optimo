@@ -1102,7 +1102,21 @@ function curMon(){return shift(monday(todayStr()),WOFF*7)}
 
 /* ── STORAGE ── */
 function load(){
-  try{const r=localStorage.getItem('cog6');if(r){const p=JSON.parse(r);DB=p.d||{};SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},p.s||{});SETS.achievements=SETS.achievements||{};}}catch(e){}
+  let raw=null;
+  try{raw=localStorage.getItem('cog6');}catch(e){}
+  if(raw){
+    try{
+      const p=JSON.parse(raw);
+      DB=p.d||{};SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},p.s||{});SETS.achievements=SETS.achievements||{};
+    }catch(e){
+      // JSON corrupto: respaldar el blob antes de que el primer save() lo sobreescriba
+      try{localStorage.setItem('cog6_corrupt_'+todayStr(),raw);}catch(_){}
+      setTimeout(()=>toast('⚠️ Datos ilegibles — se guardó una copia. Importa tu último backup.'),600);
+    }
+  }
+  migratePhaseHistory();
+}
+function migratePhaseHistory(){
   // MIGRATION: build phaseHistory from current phase + phaseStart so historical days keep correct phase
   if(!SETS.phaseHistory||!Array.isArray(SETS.phaseHistory)||SETS.phaseHistory.length===0){
     const cur=SETS.phase||0;
@@ -1118,7 +1132,16 @@ function load(){
     save();
   }
 }
-function save(){try{localStorage.setItem('cog6',JSON.stringify({d:DB,s:SETS}))}catch(e){}}
+let _saveFailWarned=false;
+function save(){
+  try{
+    localStorage.setItem('cog6',JSON.stringify({d:DB,s:SETS}));
+    _saveFailWarned=false;
+  }catch(e){
+    // QuotaExceeded u otro fallo: sin este aviso el usuario sigue marcando sin que nada persista
+    if(!_saveFailWarned){_saveFailWarned=true;setTimeout(()=>toast('⚠️ No se pudo guardar tu progreso — exporta un backup ya'),50);}
+  }
+}
 
 /* ── HABIT UTILS ── */
 function ph(){return SETS.phase||0}
@@ -1248,24 +1271,16 @@ function calcXP(){
         if(h.challenge&&h.xpBonus)dayXp+=h.xpBonus; // challenge bonus
       }
     });
-    dayXp+=Math.min(d.agua||0,7)*3;
+    dayXp+=Math.min(d.agua||0,wg(date))*3;
     xp+=Math.round(dayXp*mult); // Multiplicador de Día de la Suerte aplicado al XP diario de hábitos
     // Bonuses eventuales (chest/noche libre/misión/racha) NO se multiplican
-    if(d._streakBonus)xp+=d._streakBonus;
-    if(d._nocheLibreBonus)xp+=d._nocheLibreBonus;
-    if(d._missionBonus)xp+=d._missionBonus;
-    // Date-aware raw % for the +10 bonus (consistente con dayRate: crédito parcial)
-    const dl=dailyH(date);
-    const W=wg(date);
-    let allH=0;
-    dl.forEach(h=>{
-      if(h.subSteps)allH+=subRatio(d,h);
-      else if(isDone(d,h))allH++;
-    });
-    const wFull=(d.agua||0)>=W;
-    const tot=dl.length+W;
-    const raw=tot?Math.round((allH+(wFull?W:0))/tot*100):0;
-    if(raw>=80&&!d._streakBonus)xp+=10;
+    // Misma validación que chest_*: entero finito 0-500 (protege contra backups manipulados)
+    const okBonus=v=>typeof v==='number'&&Number.isFinite(v)&&v>0&&v<=500?v:0;
+    if(d._streakBonus)xp+=okBonus(d._streakBonus);
+    if(d._nocheLibreBonus)xp+=okBonus(d._nocheLibreBonus);
+    if(d._missionBonus)xp+=okBonus(d._missionBonus);
+    // +10 por día ≥80% — mismo criterio que dayRate (crédito parcial de agua incluido)
+    if(dayRate(date)>=80&&!d._streakBonus)xp+=10;
   });
   Object.entries(SETS).forEach(([k,v])=>{
     // Valida chest_*: entero finito entre 0 y 500 (rango máximo de weeklyChestXP)
@@ -1802,7 +1817,7 @@ function toggle(s,id){
   if(lvlA>lvlB)setTimeout(()=>triggerLevelUp(lvlA),300);
   checkUnlock();checkAchievements();checkMissions();
   if(s===todayStr()){checkDayComplete();checkNocheLibre();}
-  if(id==='agua'&&!wasOn&&s===todayStr()){
+  if(id==='agua'&&!wasOn&&s===todayStr()&&shouldPromptBackup()){
     setTimeout(()=>showBackupPrompt(),800);
   }
   render(true);
@@ -2541,7 +2556,61 @@ function exportProfile(){
   a.download='cerebro-optimo-backup-'+todayStr()+'.json';
   a.click();
   URL.revokeObjectURL(url);
+  SETS.lastBackupDate=todayStr();save();
   toast('✅ Backup exportado · '+todayStr());
+}
+const RE_DATE=/^\d{4}-\d{2}-\d{2}$/;
+function isObj(v){return v&&typeof v==='object'&&!Array.isArray(v);}
+function numIn(v,min,max){return typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max;}
+function sanitizeImport(data){
+  // Un backup manipulado/corrupto no debe poder inyectar HTML, inflar XP ni dejar estado roto
+  if(!isObj(data)||!isObj(data.d)||!isObj(data.s))return null;
+  const d={};
+  Object.entries(data.d).forEach(([k,day])=>{
+    if(!RE_DATE.test(k)||!isObj(day))return;
+    const clean={};
+    Object.entries(day).forEach(([hk,hv])=>{
+      if(hk==='agua'||hk==='aguaCre'){if(numIn(hv,0,20))clean[hk]=Math.round(hv);return;}
+      if(hk==='_streakBonus'||hk==='_nocheLibreBonus'||hk==='_missionBonus'){if(numIn(hv,0,500))clean[hk]=Math.round(hv);return;}
+      if(hk.endsWith('_text')){if(typeof hv==='string')clean[hk]=hv.slice(0,5000);return;}
+      if(hv===true||typeof hv==='number'&&numIn(hv,0,20)){clean[hk]=hv;return;}
+      if(isObj(hv)){const sub={};Object.entries(hv).forEach(([sk,sv])=>{if(sv===true)sub[sk]=true;});clean[hk]=sub;}
+    });
+    d[k]=clean;
+  });
+  const raw=data.s,s={reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}};
+  if(typeof raw.reminderTime==='string'&&/^\d{2}:\d{2}$/.test(raw.reminderTime))s.reminderTime=raw.reminderTime;
+  s.notifications=raw.notifications===true;
+  if(numIn(raw.phase,0,4))s.phase=Math.round(raw.phase);
+  if(typeof raw.phaseStart==='string'&&RE_DATE.test(raw.phaseStart))s.phaseStart=raw.phaseStart;
+  if(isObj(raw.achievements))Object.entries(raw.achievements).forEach(([k,v])=>{if(typeof v==='string'&&RE_DATE.test(v))s.achievements[k]=v;});
+  if(Array.isArray(raw.phaseHistory)){
+    const ph2=raw.phaseHistory.filter(e=>isObj(e)&&numIn(e.phase,0,4)&&typeof e.start==='string'&&RE_DATE.test(e.start)).map(e=>({phase:Math.round(e.phase),start:e.start}));
+    if(ph2.length)s.phaseHistory=ph2;
+  }
+  Object.entries(raw).forEach(([k,v])=>{
+    if(k.startsWith('chest_')&&RE_DATE.test(k.slice(6))&&numIn(v,0,500)){s[k]=Math.round(v);return;}
+  });
+  ['lastDayComplete','luckyShown','lastBackupDate','backupPromptDay'].forEach(k=>{if(typeof raw[k]==='string'&&RE_DATE.test(raw[k]))s[k]=raw[k];});
+  if(numIn(raw.nocheLibreCount,0,9999))s.nocheLibreCount=Math.round(raw.nocheLibreCount);
+  if(numIn(raw.nocheLibreLastStreak,0,9999))s.nocheLibreLastStreak=Math.round(raw.nocheLibreLastStreak);
+  if(numIn(raw.comebackFrom,0,9999))s.comebackFrom=Math.round(raw.comebackFrom);
+  if(typeof raw.whyStatement==='string')s.whyStatement=raw.whyStatement.slice(0,500);
+  else if(raw.whyStatement==='')s.whyStatement='';
+  if(isObj(raw.pr)){s.pr={};if(numIn(raw.pr.streak,0,9999))s.pr.streak=Math.round(raw.pr.streak);if(typeof raw.pr.streakDate==='string'&&RE_DATE.test(raw.pr.streakDate))s.pr.streakDate=raw.pr.streakDate;}
+  if(isObj(raw.masteryAwarded)){s.masteryAwarded={};Object.entries(raw.masteryAwarded).forEach(([k,v])=>{if(numIn(v,0,3))s.masteryAwarded[k]=Math.round(v);});}
+  if(isObj(raw.missions)){
+    s.missions={};
+    const TYPES=['EXPLORAR','DOMINAR','DEFENDER','CONQUISTAR'];
+    Object.entries(raw.missions).forEach(([mon,mi])=>{
+      if(!RE_DATE.test(mon)||!isObj(mi)||!Array.isArray(mi.candidates))return;
+      const cands=mi.candidates.filter(m=>isObj(m)&&typeof m.id==='string'&&TYPES.includes(m.type)&&typeof m.hid==='string'&&numIn(m.goal,1,7)&&numIn(m.xp,0,500))
+        .map(m=>({id:m.id.slice(0,40),type:m.type,hid:m.hid.slice(0,40),dom:'retos',goal:Math.round(m.goal),xp:Math.round(m.xp),weekMon:mon}));
+      const done=Array.isArray(mi.completedIds)?mi.completedIds.filter(x=>typeof x==='string').map(x=>x.slice(0,40)):[];
+      s.missions[mon]={candidates:cands,completedIds:done};
+    });
+  }
+  return{d,s};
 }
 function importProfile(file){
   if(!file)return;
@@ -2549,12 +2618,17 @@ function importProfile(file){
   reader.onload=e=>{
     try{
       const data=JSON.parse(e.target.result);
-      if(!data.d||!data.s){toast('❌ Archivo inválido');return;}
+      const clean=sanitizeImport(data);
+      if(!clean){toast('❌ Archivo inválido');return;}
       // Confirm before overwriting
-      if(!confirm('¿Restaurar backup del '+( data.exported||'?')+' ? Esto reemplazará todos tus datos actuales.')){return;}
-      DB=data.d||{};
-      SETS=Object.assign({reminderTime:'21:00',notifications:false,phase:0,phaseStart:null,achievements:{}},data.s||{});
-      save();render();
+      if(!confirm('¿Restaurar backup del '+(typeof data.exported==='string'&&RE_DATE.test(data.exported)?data.exported:'?')+' ? Esto reemplazará todos tus datos actuales.')){return;}
+      DB=clean.d;
+      SETS=clean.s;
+      migratePhaseHistory();
+      save();
+      checkAchievements();
+      scheduleR();
+      render();
       toast('✅ Perfil restaurado correctamente');
     }catch(err){toast('❌ Error al leer el archivo');}
   };
@@ -2901,7 +2975,14 @@ function saveJournal(){
   if(text)toast('📝 Nota guardada');
 }
 /* ── BACKUP PROMPT ── */
+function shouldPromptBackup(){
+  // Máx. 1 vez al día, y solo si nunca ha exportado o su último backup tiene >7 días
+  if(SETS.backupPromptDay===todayStr())return false;
+  const last=SETS.lastBackupDate;
+  return !last||shift(last,7)<=todayStr();
+}
 function showBackupPrompt(){
+  SETS.backupPromptDay=todayStr();save();
   const el=document.getElementById('backupprompt');
   if(el)el.style.display='flex';
   const btn=document.getElementById('bp-export-btn');
@@ -2914,6 +2995,8 @@ function closeBackupPrompt(){
 
 /* ── INIT ── */
 load();checkAchievements();render();scheduleR();
+// Pedir almacenamiento persistente: reduce el riesgo de que el navegador borre localStorage
+if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});
 // Primer uso: lanzar prompt de Mi Por Qué si aún no se ha definido ni pospuesto
 if(SETS.whyStatement===undefined)setTimeout(showWhyPrompt,700);
 // Día de la suerte: toast una sola vez al día
